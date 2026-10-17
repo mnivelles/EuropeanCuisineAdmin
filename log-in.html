@@ -16,65 +16,69 @@
     <title>Log in | Escale Europe</title>
   </head>
   <body>
-    <button onclick="togglePassword()" class="bulma-button bulma-is-primary">
-      Toggle
-    </button>
     <div class="loginContainer">
       <div class="leftColumn">
-        <div class="formContainer">
-          <div class="formContainer_header">
-            <div class="title bulma-is-size-2 bulma-has-text-weight-bold">
-              Log in
+        <div class="siteName">
+          <span class="es-icon es-icon-branch"></span>
+          <div class="label">Escale Europe</div>
+        </div>
+        <div class="formWrapper">
+          <div class="formContainer">
+            <div class="formContainer_header">
+              <div class="title bulma-is-size-2 bulma-has-text-weight-bold">
+                Log in
+              </div>
+              <div class="subtitle">
+                Access the festival back office with your staff or admin
+                account.
+              </div>
             </div>
-            <div class="subtitle">
-              Access the festival back office with your staff or admin account.
-            </div>
-          </div>
-          <form action="" id="loginForm" class="formContainer_main">
-            <div class="bulma-field email">
-              <p class="bulma-control bulma-has-icons-left">
-                <input
-                  class="bulma-input"
-                  name="email"
-                  type="text"
-                  placeholder="sasha@hamel.me"
-                />
-                <span
-                  class="bulma-icon bulma-is-small bulma-is-left es-icon es-icon-email"
-                ></span>
-              </p>
-            </div>
+            <form action="" id="loginForm" class="formContainer_main">
+              <div class="bulma-field email">
+                <p class="bulma-control bulma-has-icons-left">
+                  <input
+                    class="bulma-input"
+                    name="email"
+                    type="text"
+                    placeholder="sasha@hamel.me"
+                  />
+                  <span
+                    class="bulma-icon bulma-is-small bulma-is-left es-icon es-icon-email"
+                  ></span>
+                </p>
+              </div>
 
-            <div class="bulma-field password">
-              <p
-                class="bulma-control bulma-has-icons-left bulma-has-icons-right"
+              <div class="bulma-field password">
+                <p
+                  class="bulma-control bulma-has-icons-left bulma-has-icons-right"
+                >
+                  <input
+                    class="bulma-input"
+                    name="password"
+                    type="password"
+                    placeholder="Password"
+                  />
+                  <span
+                    class="bulma-icon bulma-is-small bulma-is-left es-icon es-icon-password"
+                  ></span>
+                  <span
+                    class="togglePassword bulma-icon bulma-is-small bulma-is-right es-icon es-icon-password-show"
+                    role="button"
+                    tabindex="0"
+                    aria-label="Show password"
+                  ></span>
+                </p>
+              </div>
+
+              <button
+                id="loginButton"
+                class="bulma-button bulma-is-primary"
+                disabled
               >
-                <input
-                  class="bulma-input"
-                  name="password"
-                  type="password"
-                  placeholder="Password"
-                />
-                <span
-                  class="bulma-icon bulma-is-small bulma-is-left es-icon es-icon-password"
-                ></span>
-                <span
-                  class="togglePassword bulma-icon bulma-is-small bulma-is-right es-icon es-icon-password-show"
-                  role="button"
-                  tabindex="0"
-                  aria-label="Show password"
-                ></span>
-              </p>
-            </div>
-
-            <button
-              id="loginButton"
-              class="bulma-button bulma-is-primary"
-              disabled
-            >
-              Log in
-            </button>
-          </form>
+                Log in
+              </button>
+            </form>
+          </div>
         </div>
       </div>
       <div class="rightColumn">

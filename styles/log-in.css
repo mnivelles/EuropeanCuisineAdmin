@@ -1,12 +1,40 @@
 .loginContainer {
   display: grid;
   grid-template-columns: 1fr 1fr;
+  height: 100vh;
+  overflow: hidden;
 }
 
 .loginContainer .leftColumn {
   display: flex;
+  flex-direction: column;
   align-items: center;
-  justify-content: center;
+  padding-top: 2rem;
+
+  .siteName {
+    display: inline-flex;
+    flex-direction: row;
+    align-items: center;
+    gap: 0.5rem;
+
+    .label {
+      font-family: "Dosis", sans-serif;
+      font-weight: 700;
+      font-size: 2rem;
+    }
+
+    .es-icon {
+      color: var(--bulma-primary-25);
+      font-size: 2rem;
+    }
+  }
+
+  .formWrapper {
+    flex: 1;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+  }
 
   .formContainer {
     width: 360px;
@@ -29,8 +57,13 @@
 }
 
 .loginContainer .rightColumn {
+  min-height: 0;
+
   img {
     display: block;
+    width: 100%;
+    height: 100%;
+    object-fit: cover;
   }
 }
 
