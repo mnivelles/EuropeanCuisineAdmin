@@ -1,0 +1,112 @@
+@font-face {
+  font-family: "Escalade-Icon";
+  src:
+    url("../fonts/Escalade-Icon.woff") format("woff"),
+    url("../fonts/Escalade-Icon.ttf") format("truetype"),
+    url("../fonts/Escalade-Icon.woff") format("woff");
+  font-weight: normal;
+  font-style: normal;
+  font-display: block;
+}
+.es-icon,
+[class^="es-icon-"],
+[class*=" es-icon-"] {
+  /* Use !important to prevent extensions from overriding this font. */
+  font-family: "Escalade-Icon" !important;
+  font-style: normal;
+  font-weight: normal;
+  font-variant: normal;
+  text-transform: none;
+  line-height: 1;
+
+  /* Better Font Rendering =========== */
+  -webkit-font-smoothing: antialiased;
+  -moz-osx-font-smoothing: grayscale;
+}
+.es-icon-tile:before {
+  content: "\f520";
+}
+.es-icon-workshop:before {
+  content: "\f4c2";
+}
+.es-icon-search:before {
+  content: "\f5ae";
+}
+.es-icon-add-square:before {
+  content: "\f14b";
+}
+.es-icon-category:before {
+  content: "\f38d";
+}
+.es-icon-calendar:before {
+  content: "\f009";
+}
+.es-icon-table:before {
+  content: "\f24e";
+}
+.es-icon-log-out:before {
+  content: "\f66b";
+}
+.es-icon-password-hide:before {
+  content: "\f349";
+}
+.es-icon-password-show:before {
+  content: "\f15e";
+}
+.es-icon-chevron-right:before {
+  content: "\f41e";
+}
+.es-icon-chevron-left:before {
+  content: "\f026";
+}
+.es-icon-chevron-down:before {
+  content: "\f4fa";
+}
+.es-icon-xmark:before {
+  content: "\f44f";
+}
+.es-icon-checkmark:before {
+  content: "\f313";
+}
+.es-icon-theme-device:before {
+  content: "\100fe";
+}
+.es-icon-theme-light:before {
+  content: "\fa91";
+}
+.es-icon-theme-dark:before {
+  content: "\f4ba";
+}
+.es-icon-not-log-in:before {
+  content: "\f2db";
+}
+.es-icon-reset:before {
+  content: "\f4c0";
+}
+.es-icon-reservation:before {
+  content: "\f0ae";
+}
+.es-icon-delete:before {
+  content: "\f182";
+}
+.es-icon-edit:before {
+  content: "\f3e1";
+}
+.es-icon-branch:before {
+  content: "\f000";
+}
+.es-icon-user:before {
+  content: "\f53b";
+}
+.es-icon-password:before {
+  content: "\f43e";
+}
+.es-icon-home:before {
+  content: "\f514";
+}
+.es-icon-email:before {
+  content: "\f3bb";
+}
+.es-icon-booth:before {
+  content: "\f400";
+}

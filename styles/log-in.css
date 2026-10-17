@@ -1,0 +1,40 @@
+.loginContainer {
+  display: grid;
+  grid-template-columns: 1fr 1fr;
+}
+
+.loginContainer .leftColumn {
+  display: flex;
+  align-items: center;
+  justify-content: center;
+
+  .formContainer {
+    width: 360px;
+    display: flex;
+    flex-direction: column;
+    gap: 3rem;
+
+    .formContainer_header {
+      display: flex;
+      flex-direction: column;
+      gap: 0.5rem;
+    }
+
+    .formContainer_main {
+      display: flex;
+      flex-direction: column;
+      gap: 1.5rem;
+    }
+  }
+}
+
+.loginContainer .rightColumn {
+  img {
+    display: block;
+  }
+}
+
+.bulma-control.bulma-has-icons-right .bulma-icon.togglePassword {
+  pointer-events: auto;
+  cursor: pointer;
+}

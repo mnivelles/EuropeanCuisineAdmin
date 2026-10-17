@@ -1,0 +1,117 @@
+<!doctype html>
+<html lang="en">
+  <head>
+    <meta charset="UTF-8" />
+    <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+    <link rel="stylesheet" href="./styles/icons.css" />
+    <link
+      rel="preload"
+      href="./fonts/Escalade-Icon.woff"
+      as="font"
+      type="font/woff"
+      crossorigin="anonymous"
+    />
+    <link rel="stylesheet" href="./styles/app.css" />
+    <link rel="stylesheet" href="./styles/log-in.css" />
+    <title>Log in | Escale Europe</title>
+  </head>
+  <body>
+    <button onclick="togglePassword()" class="bulma-button bulma-is-primary">
+      Toggle
+    </button>
+    <div class="loginContainer">
+      <div class="leftColumn">
+        <div class="formContainer">
+          <div class="formContainer_header">
+            <div class="title bulma-is-size-2 bulma-has-text-weight-bold">
+              Log in
+            </div>
+            <div class="subtitle">
+              Access the festival back office with your staff or admin account.
+            </div>
+          </div>
+          <form action="" id="loginForm" class="formContainer_main">
+            <div class="bulma-field email">
+              <p class="bulma-control bulma-has-icons-left">
+                <input
+                  class="bulma-input"
+                  name="email"
+                  type="text"
+                  placeholder="sasha@hamel.me"
+                />
+                <span
+                  class="bulma-icon bulma-is-small bulma-is-left es-icon es-icon-email"
+                ></span>
+              </p>
+            </div>
+
+            <div class="bulma-field password">
+              <p
+                class="bulma-control bulma-has-icons-left bulma-has-icons-right"
+              >
+                <input
+                  class="bulma-input"
+                  name="password"
+                  type="password"
+                  placeholder="Password"
+                />
+                <span
+                  class="bulma-icon bulma-is-small bulma-is-left es-icon es-icon-password"
+                ></span>
+                <span
+                  class="togglePassword bulma-icon bulma-is-small bulma-is-right es-icon es-icon-password-show"
+                  role="button"
+                  tabindex="0"
+                  aria-label="Show password"
+                ></span>
+              </p>
+            </div>
+
+            <button
+              id="loginButton"
+              class="bulma-button bulma-is-primary"
+              disabled
+            >
+              Log in
+            </button>
+          </form>
+        </div>
+      </div>
+      <div class="rightColumn">
+        <img src="./images/login-hero.jpg" alt="Log in hero photo" />
+      </div>
+    </div>
+
+    <script>
+      // Toggle visibility of Password
+      const toggle = document.querySelector(
+        ".bulma-field.password .togglePassword",
+      );
+      const input = document.querySelector(".bulma-field.password input");
+
+      toggle.addEventListener("click", () => {
+        const show = input.type === "password";
+        input.type = show ? "text" : "password";
+        toggle.classList.toggle("es-icon-password-show", !show);
+        toggle.classList.toggle("es-icon-password-hide", show);
+      });
+
+      // Toggle disabled of loginButton
+      const form = document.querySelector("#loginForm");
+      const emailInput = form.querySelector(".bulma-field.email input");
+      const passwordInput = form.querySelector(".bulma-field.password input");
+      const loginButton = document.querySelector("#loginButton");
+
+      function toggleLoginButtonDisabled() {
+        const isEmpty =
+          emailInput.value.trim() === "" || passwordInput.value === "";
+        loginButton.disabled = isEmpty;
+      }
+
+      emailInput.addEventListener("input", toggleLoginButtonDisabled);
+      passwordInput.addEventListener("input", toggleLoginButtonDisabled);
+
+      toggleLoginButtonDisabled();
+    </script>
+  </body>
+</html>

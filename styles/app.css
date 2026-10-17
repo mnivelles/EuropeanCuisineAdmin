@@ -1,0 +1,6 @@
+@import url("https://fonts.googleapis.com/css2?family=Dosis:wght@700&family=Montserrat:wght@400;500;600;700&display=swap");
+@import "https://cdn.jsdelivr.net/npm/bulma@1.0.4/css/versions/bulma-prefixed.min.css";
+
+:root {
+  --bulma-family-primary: "Montserrat", sans-serif;
+}
