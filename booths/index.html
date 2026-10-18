@@ -1,0 +1,216 @@
+<!doctype html>
+<html lang="en">
+  <head>
+    <meta charset="UTF-8" />
+    <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+    <link rel="stylesheet" href="/styles/icons.css" />
+    <link
+      rel="preload"
+      href="/fonts/Escalade-Icon.woff"
+      as="font"
+      type="font/woff"
+      crossorigin="anonymous"
+    />
+    <link rel="stylesheet" href="/styles/app.css" />
+    <title>Booths | Admin - Escale Europe</title>
+  </head>
+  <body>
+    <div class="page bulma-container bulma-is-widescreen">
+      <div class="page_header">
+        <div class="siteName">
+          <span class="es-icon es-icon-branch"></span>
+          <div class="label">Escale Europe</div>
+        </div>
+
+        <nav class="navBar">
+          <a href="/index.html" class="navBar_item">
+            <span class="es-icon es-icon-home"></span>
+            <div class="label">Home</div>
+          </a>
+          <a href="/workshops/index.html" class="navBar_item">
+            <span class="es-icon es-icon-workshop"></span>
+            <div class="label">Workshops</div>
+          </a>
+          <a href="/reservations/index.html" class="navBar_item">
+            <span class="es-icon es-icon-reservation"></span>
+            <div class="label">Reservations</div>
+          </a>
+          <a href="/booths/index.html" class="navBar_item isSelected">
+            <span class="es-icon es-icon-booth"></span>
+            <div class="label">Booths</div>
+          </a>
+          <a href="/users/index.html" class="navBar_item">
+            <span class="es-icon es-icon-user"></span>
+            <div class="label">Users</div>
+          </a>
+        </nav>
+
+        <button
+          class="userMenu"
+          type="button"
+          popovertarget="userSettingsModal"
+        >
+          <img
+            class="userMenu_photo"
+            src="https://picsum.photos/seed/neko-mimi/600/300"
+            alt="User Picture"
+          />
+          <span class="userMenu_indicator es-icon es-icon-chevron-down"></span>
+        </button>
+
+        <dialog
+          id="userSettingsModal"
+          class="userSettingsModal"
+          closedby="any"
+          popover
+        >
+          <div class="userSettingsModal_row nameEmail">
+            <div class="name">Felipe Lebsack</div>
+            <div class="email">felipe@lebsack.me</div>
+          </div>
+          <div class="userSettingsModal_divider"></div>
+          <div class="userSettingsModal_row theme">
+            <div class="label">Thème</div>
+            <div class="content">Light</div>
+          </div>
+          <div class="userSettingsModal_divider"></div>
+          <div class="userSettingsModal_row logOut">
+            <span class="es-icon es-icon-log-out"></span>
+            <span class="label">Log out</span>
+          </div>
+        </dialog>
+      </div>
+
+      <div class="page_main">
+        <div class="main_header">
+          <div class="breadcrumb">
+            <div class="breadcrumb_item isCurrent">
+              <span class="es-icon es-icon-booth"></span>
+              <span class="label">Booths</span>
+            </div>
+            <!-- <span
+              class="breadcrumb_separator es-icon es-icon-chevron-right"
+            ></span>
+            <div class="breadcrumb_item isCurrent">
+              <span class="label">Edit</span>
+            </div> -->
+          </div>
+
+          <div class="actions">
+            <button class="bulma-button bulma-is-primary">
+              <span class="bulma-icon es-icon es-icon-add-square"></span>
+              <span>New booth</span>
+            </button>
+          </div>
+        </div>
+
+        <div class="main_table">
+          <div class="table_toolbar">
+            <p class="bulma-control bulma-has-icons-left search">
+              <input
+                class="bulma-input"
+                name="search"
+                type="text"
+                placeholder="Search a workshop"
+              />
+              <span class="es-icon es-icon-search bulma-icon bulma-is-left">
+              </span>
+            </p>
+            <div class="bulma-select">
+              <select>
+                <option value="name">Sort by Name</option>
+                <option value="country">Sort by Location</option>
+                <option value="country">Sort by Country</option>
+                <option value="created_at">Sort by Creation Date</option>
+                <option value="updated_at">Sort by Update Date</option>
+              </select>
+            </div>
+            <button class="bulma-button">Apply</button>
+            <button class="bulma-button bulma-is-ghost">Reset</button>
+          </div>
+          <div class="bulma-table-container">
+            <table class="bulma-table bulma-is-fullwidth bulma-is-hoverable">
+              <thead>
+                <tr>
+                  <th></th>
+                  <th>ID</th>
+                  <th>Name</th>
+                  <th>Location</th>
+                  <th>Country</th>
+                  <th>Opening Hours</th>
+                  <th>Actions</th>
+                </tr>
+              </thead>
+              <tbody>
+                <tr>
+                  <td>
+                    <img
+                      src="https://picsum.photos/seed/aliquam/200/300"
+                      alt="XYZ photos"
+                    />
+                  </td>
+                  <td>101</td>
+                  <td>Et Vel Aliquam</td>
+                  <td>Stand 1</td>
+                  <td>Spain</td>
+                  <td>9:30 AM<br />2:30 PM</td>
+                  <td>
+                    <p class="bulma-buttons">
+                      <button class="bulma-button bulma-is-primary">
+                        <span class="es-icon es-icon-edit bulma-icon"></span>
+                      </button>
+                      <button class="bulma-button bulma-is-danger">
+                        <span class="es-icon es-icon-delete bulma-icon"></span>
+                      </button>
+                    </p>
+                  </td>
+                </tr>
+              </tbody>
+            </table>
+          </div>
+          <div class="table_footer">
+            <div class="footer_summary">
+              Affichage de 1 à XX sur YYY éléments
+            </div>
+            <nav class="bulma-pagination bulma-is-small bulma-is-rounded">
+              <ul class="bulma-pagination-list">
+                <li>
+                  <a class="bulma-pagination-link bulma-is-current">1</a>
+                </li>
+                <li>
+                  <a href="#" class="bulma-pagination-link">2</a>
+                </li>
+                <li>
+                  <a href="#" class="bulma-pagination-link">3</a>
+                </li>
+              </ul>
+            </nav>
+          </div>
+        </div>
+      </div>
+    </div>
+    <script>
+      async function getData() {
+        const url = "http://127.0.0.1:8080/api/v0/admin/booths";
+        try {
+          const response = await fetch(url, {
+            headers: new Headers({
+              Authorization:
+                "Bearer " +
+                "eyJ0eXAiOiJKV1QiLCJhbGciOiJIUzI1NiJ9.eyJzdWJqZWN0IjoiNTJDQTRCNEQtODk1NC00QUQ2LTkwMTMtQzQzMkUxRjFGQzMyIiwiZXhwaXJhdGlvbiI6MTc5MjQ0NzQxMC41NjMyM30.oBFNuij8s3DRha5ZWawYXDZH1tAKaSDAzi-iycZJTSc",
+            }),
+          });
+          if (!response.ok) {
+            throw new Error(`Response status: ${response.status}`);
+          }
+
+          return await response.json();
+        } catch (error) {
+          console.error(error.message);
+        }
+      }
+
+      getData();
+    </script>
+  </body>
+</html>

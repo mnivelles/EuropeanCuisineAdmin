@@ -24,7 +24,7 @@
     }
 
     .es-icon {
-      color: var(--bulma-primary-25);
+      color: var(--branch-color);
       font-size: 2rem;
     }
   }
