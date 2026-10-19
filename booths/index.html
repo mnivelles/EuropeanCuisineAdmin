@@ -4,13 +4,6 @@
     <meta charset="UTF-8" />
     <meta name="viewport" content="width=device-width, initial-scale=1.0" />
     <link rel="stylesheet" href="/styles/icons.css" />
-    <link
-      rel="preload"
-      href="/fonts/Escalade-Icon.woff"
-      as="font"
-      type="font/woff"
-      crossorigin="anonymous"
-    />
     <link rel="stylesheet" href="/styles/app.css" />
     <title>Booths | Admin - Escale Europe</title>
   </head>
@@ -108,7 +101,7 @@
           <div class="table_toolbar">
             <p class="bulma-control bulma-has-icons-left search">
               <input
-                class="bulma-input"
+                class="bulma-input search"
                 name="search"
                 type="text"
                 placeholder="Search a workshop"
@@ -117,23 +110,22 @@
               </span>
             </p>
             <div class="bulma-select">
-              <select>
+              <select class="sortSelect">
                 <option value="name">Sort by Name</option>
-                <option value="country">Sort by Location</option>
+                <option value="location">Sort by Location</option>
                 <option value="country">Sort by Country</option>
                 <option value="created_at">Sort by Creation Date</option>
                 <option value="updated_at">Sort by Update Date</option>
               </select>
             </div>
-            <button class="bulma-button">Apply</button>
-            <button class="bulma-button bulma-is-ghost">Reset</button>
+            <button class="bulma-button apply">Apply</button>
+            <button class="bulma-button bulma-is-ghost reset">Reset</button>
           </div>
           <div class="bulma-table-container">
             <table class="bulma-table bulma-is-fullwidth bulma-is-hoverable">
               <thead>
                 <tr>
                   <th></th>
-                  <th>ID</th>
                   <th>Name</th>
                   <th>Location</th>
                   <th>Country</th>
@@ -141,76 +133,166 @@
                   <th>Actions</th>
                 </tr>
               </thead>
-              <tbody>
-                <tr>
-                  <td>
-                    <img
-                      src="https://picsum.photos/seed/aliquam/200/300"
-                      alt="XYZ photos"
-                    />
-                  </td>
-                  <td>101</td>
-                  <td>Et Vel Aliquam</td>
-                  <td>Stand 1</td>
-                  <td>Spain</td>
-                  <td>9:30 AM<br />2:30 PM</td>
-                  <td>
-                    <p class="bulma-buttons">
-                      <button class="bulma-button bulma-is-primary">
-                        <span class="es-icon es-icon-edit bulma-icon"></span>
-                      </button>
-                      <button class="bulma-button bulma-is-danger">
-                        <span class="es-icon es-icon-delete bulma-icon"></span>
-                      </button>
-                    </p>
-                  </td>
-                </tr>
-              </tbody>
+              <tbody></tbody>
             </table>
           </div>
           <div class="table_footer">
-            <div class="footer_summary">
-              Affichage de 1 à XX sur YYY éléments
-            </div>
-            <nav class="bulma-pagination bulma-is-small bulma-is-rounded">
-              <ul class="bulma-pagination-list">
-                <li>
-                  <a class="bulma-pagination-link bulma-is-current">1</a>
-                </li>
-                <li>
-                  <a href="#" class="bulma-pagination-link">2</a>
-                </li>
-                <li>
-                  <a href="#" class="bulma-pagination-link">3</a>
-                </li>
-              </ul>
-            </nav>
+            <div class="footer_summary"></div>
+            <nav class="bulma-pagination bulma-is-small bulma-is-rounded"></nav>
           </div>
         </div>
       </div>
     </div>
+    <script src="/scripts/table.js"></script>
+    <script src="/scripts/booths.js"></script>
     <script>
-      async function getData() {
-        const url = "http://127.0.0.1:8080/api/v0/admin/booths";
-        try {
-          const response = await fetch(url, {
-            headers: new Headers({
-              Authorization:
-                "Bearer " +
-                "eyJ0eXAiOiJKV1QiLCJhbGciOiJIUzI1NiJ9.eyJzdWJqZWN0IjoiNTJDQTRCNEQtODk1NC00QUQ2LTkwMTMtQzQzMkUxRjFGQzMyIiwiZXhwaXJhdGlvbiI6MTc5MjQ0NzQxMC41NjMyM30.oBFNuij8s3DRha5ZWawYXDZH1tAKaSDAzi-iycZJTSc",
-            }),
-          });
-          if (!response.ok) {
-            throw new Error(`Response status: ${response.status}`);
-          }
+      const itemsPerPage = 5;
 
-          return await response.json();
-        } catch (error) {
-          console.error(error.message);
+      const tableToolbarApplyButton = document.querySelector(
+        ".main_table .table_toolbar .bulma-button.apply",
+      );
+      tableToolbarApplyButton.addEventListener("click", () => {
+        fillTable();
+      });
+
+      const tableToolbarResetButton = document.querySelector(
+        ".main_table .table_toolbar .bulma-button.reset",
+      );
+      tableToolbarResetButton.addEventListener("click", () => {
+        reset();
+      });
+
+      async function fillTable(page = 1) {
+        const query = getSearchText();
+        const sort = getSort();
+
+        const result = await getBoothList(query, sort, page, itemsPerPage);
+
+        addBoothsToTbody(result.items);
+        updatePagination(result);
+      }
+
+      fillTable();
+
+      function reset() {
+        resetSearchText();
+        resetSort();
+
+        fillTable();
+      }
+
+      function createTrFromBooth(booth) {
+        const tr = document.createElement("tr");
+
+        const img = createTdWithImg(booth.pictureURL, `${booth.name} photo`);
+        tr.appendChild(img);
+
+        const name = createTdWithText(booth.name);
+        tr.appendChild(name);
+
+        const location = createTdWithText(booth.location);
+        tr.appendChild(location);
+
+        // Ajouter le drapeau
+        const country = createTdWithText(booth.countryName);
+        tr.appendChild(country);
+
+        const openingHours = createTdWithTime(booth.startTime, booth.endTime);
+        tr.appendChild(openingHours);
+
+        const actions = createTdActions();
+        tr.appendChild(actions);
+
+        return tr;
+      }
+
+      function addBoothsToTbody(booths) {
+        let tbody = document.querySelector(".main_table tbody");
+
+        tbody.innerHTML = "";
+
+        for (let index = 0; index < booths.length; index++) {
+          const booth = booths[index];
+
+          const tr = createTrFromBooth(booth);
+          tbody.appendChild(tr);
         }
       }
 
-      getData();
+      function updatePagination(result) {
+        let tableFooterSummary = document.querySelector(
+          ".main_table .table_footer .footer_summary",
+        );
+        tableFooterSummary.textContent = `Showing ${result.startOfPage} to ${result.endOfPage} of ${result.total} items`;
+
+        let tablePagination = document.querySelector(
+          ".main_table .table_footer .bulma-pagination",
+        );
+
+        tablePagination.innerHTML = "";
+
+        const tablePaginationUl = document.createElement("ul");
+        tablePaginationUl.className = "bulma-pagination-list";
+
+        if (result.totalPages < 1) {
+          return;
+        }
+
+        for (let index = 1; index <= result.totalPages; index++) {
+          const li = document.createElement("li");
+
+          const isCurrent = index === result.currentPage;
+          const button = document.createElement("button");
+          button.className = isCurrent
+            ? "bulma-pagination-link bulma-is-current"
+            : "bulma-pagination-link";
+          button.textContent = index;
+
+          if (!isCurrent) {
+            button.onclick = function () {
+              fillTable(index);
+            };
+          }
+
+          li.appendChild(button);
+
+          tablePaginationUl.appendChild(li);
+        }
+
+        tablePagination.appendChild(tablePaginationUl);
+      }
+
+      function getSearchText() {
+        const searchInput = document.querySelector(
+          ".main_table .table_toolbar .bulma-input.search",
+        );
+
+        return searchInput.value.trim();
+      }
+
+      function resetSearchText() {
+        const searchInput = document.querySelector(
+          ".main_table .table_toolbar .bulma-input.search",
+        );
+
+        searchInput.value = "";
+      }
+
+      function getSort() {
+        const sortSelect = document.querySelector(
+          ".main_table .table_toolbar .sortSelect",
+        );
+
+        return sortSelect.value;
+      }
+
+      function resetSort() {
+        const sortSelect = document.querySelector(
+          ".main_table .table_toolbar .sortSelect",
+        );
+
+        sortSelect.value = "name";
+      }
     </script>
   </body>
 </html>

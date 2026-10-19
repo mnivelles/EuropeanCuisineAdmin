@@ -1,9 +1,8 @@
 @font-face {
   font-family: "Escalade-Icon";
   src:
-    url("../fonts/Escalade-Icon.woff") format("woff"),
-    url("../fonts/Escalade-Icon.ttf") format("truetype"),
-    url("../fonts/Escalade-Icon.woff") format("woff");
+    url("/fonts/Escalade-Icon.woff") format("woff"),
+    url("/fonts/Escalade-Icon.ttf") format("truetype");
   font-weight: normal;
   font-style: normal;
   font-display: block;

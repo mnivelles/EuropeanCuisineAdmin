@@ -296,6 +296,7 @@ body {
     img {
       display: block;
       width: 2.5rem;
+      min-width: 2.5rem;
       height: 2.5rem;
       object-fit: cover;
       border-radius: 0.75rem;
