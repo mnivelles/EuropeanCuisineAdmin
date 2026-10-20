@@ -10,8 +10,7 @@
 
 body {
   background: var(--page-background);
-  width: 100vw;
-  height: 100vh;
+  min-height: 100vh;
 }
 
 .page {
@@ -21,6 +20,7 @@ body {
 /* Header  */
 
 .page .page_header {
+  position: relative;
   display: flex;
   align-items: center;
   justify-content: space-between;
@@ -46,6 +46,11 @@ body {
 }
 
 .page .page_header .navBar {
+  position: absolute;
+  inset: 0;
+  width: fit-content;
+  place-self: center;
+
   display: inline-flex;
   flex-direction: row;
   gap: 0.5rem;
@@ -230,7 +235,8 @@ body {
   padding-bottom: 2.5rem;
 }
 
-.page .page_main .main_header .breadcrumb {
+.page .page_main .main_header .breadcrumb,
+.page .page_island .island_header .breadcrumb {
   display: inline-flex;
   flex-direction: row;
   align-items: center;

@@ -15,28 +15,7 @@
           <div class="label">Escale Europe</div>
         </div>
 
-        <nav class="navBar">
-          <a href="/index.html" class="navBar_item">
-            <span class="es-icon es-icon-home"></span>
-            <div class="label">Home</div>
-          </a>
-          <a href="/workshops/index.html" class="navBar_item">
-            <span class="es-icon es-icon-workshop"></span>
-            <div class="label">Workshops</div>
-          </a>
-          <a href="/reservations/index.html" class="navBar_item">
-            <span class="es-icon es-icon-reservation"></span>
-            <div class="label">Reservations</div>
-          </a>
-          <a href="/booths/index.html" class="navBar_item isSelected">
-            <span class="es-icon es-icon-booth"></span>
-            <div class="label">Booths</div>
-          </a>
-          <a href="/users/index.html" class="navBar_item">
-            <span class="es-icon es-icon-user"></span>
-            <div class="label">Users</div>
-          </a>
-        </nav>
+        <nav class="navBar"></nav>
 
         <button
           class="userMenu"
@@ -81,19 +60,13 @@
               <span class="es-icon es-icon-booth"></span>
               <span class="label">Booths</span>
             </div>
-            <!-- <span
-              class="breadcrumb_separator es-icon es-icon-chevron-right"
-            ></span>
-            <div class="breadcrumb_item isCurrent">
-              <span class="label">Edit</span>
-            </div> -->
           </div>
 
           <div class="actions">
-            <button class="bulma-button bulma-is-primary">
+            <a data-route="booths.create" class="bulma-button bulma-is-primary">
               <span class="bulma-icon es-icon es-icon-add-square"></span>
               <span>New booth</span>
-            </button>
+            </a>
           </div>
         </div>
 
@@ -143,9 +116,12 @@
         </div>
       </div>
     </div>
+    <script src="/scripts/routes.js"></script>
     <script src="/scripts/table.js"></script>
     <script src="/scripts/booths.js"></script>
     <script>
+      renderNavBar();
+
       const itemsPerPage = 5;
 
       const tableToolbarApplyButton = document.querySelector(

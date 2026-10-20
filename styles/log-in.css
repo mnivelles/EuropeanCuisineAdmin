@@ -11,6 +11,8 @@
   align-items: center;
   padding-top: 2rem;
 
+  background-color: white;
+
   .siteName {
     display: inline-flex;
     flex-direction: row;

@@ -1,0 +1,93 @@
+.page .page_island {
+  padding: 1.5rem;
+  border-radius: 1.5rem;
+  background-color: white;
+
+  max-width: 35rem;
+  margin: 0 auto;
+}
+
+.page .page_island .island_header {
+  padding-bottom: 2.5rem;
+}
+
+.page .page_island .island_form {
+  display: flex;
+  flex-direction: column;
+  gap: 1.5rem;
+
+  #picturePreview {
+    display: none;
+    max-width: 18rem;
+
+    margin: 0 auto;
+    border: 1px solid hsl(0, 0%, 90%);
+    border-radius: var(--bulma-radius);
+  }
+
+  .bulma-select {
+    width: 100%;
+
+    select {
+      width: 100%;
+    }
+  }
+
+  .bulma-field.picture {
+    text-align: center;
+
+    input[type="file"] {
+      display: none;
+    }
+
+    .bulma-label {
+      cursor: pointer;
+
+      border: 1px dashed var(--bulma-info-35);
+      display: inline-flex;
+      justify-content: center;
+      align-items: center;
+
+      width: 8rem;
+      height: 8rem;
+
+      border-radius: var(--bulma-radius);
+      background-color: var(--bulma-info-95);
+
+      color: var(--bulma-info-35);
+      font-size: 1rem;
+      font-weight: 600;
+
+      &.hasPicture {
+        width: 10rem;
+        height: 4rem;
+
+        color: var(--bulma-success-35);
+        border: 1px solid var(--bulma-success-35);
+        background-color: var(--bulma-success-95);
+      }
+    }
+  }
+
+  .twoColumns {
+    display: grid;
+    grid-template-columns: 1fr 1fr;
+    gap: 0.75rem;
+  }
+
+  .bulma-checkbox:has(input:checked) {
+    font-weight: 600;
+  }
+
+  .checkboxGrid {
+    display: grid;
+    grid-template-columns: 1fr 1fr;
+    gap: 0.75rem;
+  }
+
+  .checkboxColumn {
+    display: flex;
+    flex-direction: column;
+    gap: 0.75rem;
+  }
+}

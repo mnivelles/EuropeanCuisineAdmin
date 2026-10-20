@@ -5,7 +5,7 @@ async function getBoothList(query = "", sort = "name", page = 1, per = 10) {
       headers: new Headers({
         Authorization:
           "Bearer " +
-          "eyJ0eXAiOiJKV1QiLCJhbGciOiJIUzI1NiJ9.eyJzdWJqZWN0IjoiNTJDQTRCNEQtODk1NC00QUQ2LTkwMTMtQzQzMkUxRjFGQzMyIiwiZXhwaXJhdGlvbiI6MTc5MjQ0NzQxMC41NjMyM30.oBFNuij8s3DRha5ZWawYXDZH1tAKaSDAzi-iycZJTSc",
+          "eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJzdWJqZWN0IjoiNUNGOUFCRTgtRTlDQi00RDIxLUFCMUYtNjNERDJGREY2MzA3IiwiZXhwaXJhdGlvbiI6MTc5MjYyMDM4My45NTExMzh9.Y-qmXkXgKQJQo5qVgzsEq2FBp_3Lq686n9MCQEER6iY",
       }),
     });
     if (!response.ok) {
@@ -33,6 +33,23 @@ async function getBoothList(query = "", sort = "name", page = 1, per = 10) {
     return result;
   } catch (error) {
     // FIXME: update return value
+    console.error(error.message);
+    return [];
+  }
+}
+
+async function getBoothCountryList() {
+  const url = `http://127.0.0.1:8080/api/v0/booth-countries`;
+  try {
+    const response = await fetch(url);
+    if (!response.ok) {
+      throw new Error(`Response status: ${response.status}`);
+    }
+
+    const reponseJSON = await response.json();
+
+    return reponseJSON;
+  } catch (error) {
     console.error(error.message);
     return [];
   }
