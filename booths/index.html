@@ -15,7 +15,7 @@
           <div class="label">Escale Europe</div>
         </div>
 
-        <nav class="navBar"></nav>
+        <nav id="mainNavBar"></nav>
 
         <button
           class="userMenu"
@@ -70,7 +70,7 @@
           </div>
         </div>
 
-        <div class="main_table">
+        <div id="mainTableSection">
           <div class="table_toolbar">
             <p class="bulma-control bulma-has-icons-left search">
               <input
@@ -95,7 +95,10 @@
             <button class="bulma-button bulma-is-ghost reset">Reset</button>
           </div>
           <div class="bulma-table-container">
-            <table class="bulma-table bulma-is-fullwidth bulma-is-hoverable">
+            <table
+              id="mainDataTable"
+              class="bulma-table bulma-is-fullwidth bulma-is-hoverable"
+            >
               <thead>
                 <tr>
                   <th></th>
@@ -125,14 +128,14 @@
       const itemsPerPage = 5;
 
       const tableToolbarApplyButton = document.querySelector(
-        ".main_table .table_toolbar .bulma-button.apply",
+        "#mainTableSection .table_toolbar .bulma-button.apply",
       );
       tableToolbarApplyButton.addEventListener("click", () => {
         fillTable();
       });
 
       const tableToolbarResetButton = document.querySelector(
-        ".main_table .table_toolbar .bulma-button.reset",
+        "#mainTableSection .table_toolbar .bulma-button.reset",
       );
       tableToolbarResetButton.addEventListener("click", () => {
         reset();
@@ -183,7 +186,7 @@
       }
 
       function addBoothsToTbody(booths) {
-        let tbody = document.querySelector(".main_table tbody");
+        let tbody = document.querySelector("#mainDataTable tbody");
 
         tbody.innerHTML = "";
 
@@ -197,12 +200,12 @@
 
       function updatePagination(result) {
         let tableFooterSummary = document.querySelector(
-          ".main_table .table_footer .footer_summary",
+          "#mainTableSection .table_footer .footer_summary",
         );
         tableFooterSummary.textContent = `Showing ${result.startOfPage} to ${result.endOfPage} of ${result.total} items`;
 
         let tablePagination = document.querySelector(
-          ".main_table .table_footer .bulma-pagination",
+          "#mainTableSection .table_footer .bulma-pagination",
         );
 
         tablePagination.innerHTML = "";
@@ -240,7 +243,7 @@
 
       function getSearchText() {
         const searchInput = document.querySelector(
-          ".main_table .table_toolbar .bulma-input.search",
+          "#mainTableSection .table_toolbar .bulma-input.search",
         );
 
         return searchInput.value.trim();
@@ -248,7 +251,7 @@
 
       function resetSearchText() {
         const searchInput = document.querySelector(
-          ".main_table .table_toolbar .bulma-input.search",
+          "#mainTableSection .table_toolbar .bulma-input.search",
         );
 
         searchInput.value = "";
@@ -256,7 +259,7 @@
 
       function getSort() {
         const sortSelect = document.querySelector(
-          ".main_table .table_toolbar .sortSelect",
+          "#mainTableSection .table_toolbar .sortSelect",
         );
 
         return sortSelect.value;
@@ -264,7 +267,7 @@
 
       function resetSort() {
         const sortSelect = document.querySelector(
-          ".main_table .table_toolbar .sortSelect",
+          "#mainTableSection .table_toolbar .sortSelect",
         );
 
         sortSelect.value = "name";

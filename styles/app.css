@@ -45,7 +45,7 @@ body {
   }
 }
 
-.page .page_header .navBar {
+#mainNavBar {
   position: absolute;
   inset: 0;
   width: fit-content;
@@ -59,7 +59,7 @@ body {
   border-radius: calc(infinity * 1px);
   background: white;
 
-  .navBar_item {
+  .mainNavBar_item {
     display: flex;
     flex-direction: row;
     align-items: center;
@@ -94,7 +94,7 @@ body {
     }
   }
 
-  .navBar_item.isSelected {
+  .mainNavBar_item.isSelected {
     box-shadow: 0px 0px 16px hsla(0, 0%, 0%, 0.12);
 
     .label,
@@ -278,13 +278,13 @@ body {
   }
 }
 
-.page .page_main .main_table {
+#mainTableSection {
   display: flex;
   flex-direction: column;
   gap: 1.5rem;
 }
 
-.page .page_main .main_table .table_toolbar {
+#mainTableSection .table_toolbar {
   display: flex;
   flex-direction: row;
   align-items: center;
@@ -295,7 +295,7 @@ body {
   }
 }
 
-.page .page_main .main_table .bulma-table {
+#mainDataTable {
   td {
     vertical-align: middle;
 
@@ -310,7 +310,7 @@ body {
   }
 }
 
-.page .page_main .main_table .table_footer {
+#mainTableSection .table_footer {
   display: flex;
   flex-direction: row;
   align-items: center;
