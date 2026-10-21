@@ -5,7 +5,7 @@ async function getBoothList(query = "", sort = "name", page = 1, per = 10) {
       headers: new Headers({
         Authorization:
           "Bearer " +
-          "eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJzdWJqZWN0IjoiNUNGOUFCRTgtRTlDQi00RDIxLUFCMUYtNjNERDJGREY2MzA3IiwiZXhwaXJhdGlvbiI6MTc5MjYyMDM4My45NTExMzh9.Y-qmXkXgKQJQo5qVgzsEq2FBp_3Lq686n9MCQEER6iY",
+          "eyJ0eXAiOiJKV1QiLCJhbGciOiJIUzI1NiJ9.eyJleHBpcmF0aW9uIjoxNzk1MDE1ODI5LjkyMzIxMiwic3ViamVjdCI6IjYzRkNCQzI0LTg0MjMtNEZFQS1BMTRFLTBFMTI0NEFFMkU3NSJ9.8Rwt8SZVb1AW1AfeBuhUNtvf6Df8Opok2csZYWlDM5k",
       }),
     });
     if (!response.ok) {
