@@ -1,0 +1,204 @@
+<!doctype html>
+<html lang="fr">
+  <head>
+    <meta charset="UTF-8" />
+    <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+    <title>Escale Europe - Workshops</title>
+    <link rel="stylesheet" href="style.css" />
+  </head>
+  <body>
+    <main class="content-panel">
+      <div class="workshop-toolbar">
+        <h1><span class="title-icon"></span>Workshops</h1>
+
+        <button id="add-workshop-button" type="button">+ New workshop</button>
+      </div>
+
+      <div class="filters">
+        <input
+          id="search-workshop"
+          type="search"
+          placeholder="Search a workshop"
+        />
+
+        <select id="sort-workshops">
+          <option value="name">Sort by Name</option>
+          <option value="category">Sort by Category</option>
+          <option value="location">Sort by Location</option>
+          <option value="date">Sort by Date</option>
+        </select>
+
+        <button id="apply-filters" type="button">Apply</button>
+
+        <button id="reset-filters" type="button">Reset</button>
+      </div>
+
+      <div class="table-container">
+        <table class="workshops-table">
+          <thead>
+            <tr>
+              <th class="image-column"></th>
+              <th>Name</th>
+              <th>Category</th>
+              <th>Location</th>
+              <th>Date</th>
+              <th>Time</th>
+              <th>Capacity</th>
+              <th>Actions</th>
+            </tr>
+          </thead>
+
+          <tbody id="workshops-container"></tbody>
+        </table>
+      </div>
+
+      <div class="table-footer">
+        <div class="footer-summary"></div>
+        <nav class="pagination"></nav>
+      </div>
+    </main>
+
+    <script src="/workshops.js"></script>
+    <script>
+      const itemsPerPage = 5;
+
+      const applyButton = document.getElementById("apply-filters");
+      applyButton.addEventListener("click", () => {
+        fillTable();
+      });
+
+      const resetButton = document.getElementById("reset-filters");
+      resetButton.addEventListener("click", () => {
+        reset();
+      });
+
+      async function fillTable(page = 1) {
+        const query = getSearchText();
+        const sort = getSort();
+        const result = await getWorkshopList(query, sort, page, itemsPerPage);
+        
+        addWorkshopsToTable(result.items);
+        updatePagination(result);
+      }
+      fillTable();
+
+      function addWorkshopsToTable(workshops) {
+        const container = document.getElementById("workshops-container");
+        container.innerHTML = "";
+        for (let index = 0; index < workshops.length; index++) {
+          const workshop = workshops[index];
+
+          const tr = document.createElement("tr");
+
+          const pictureTd = document.createElement("td");
+          const img = document.createElement("img");
+          img.src = workshop.pictureURL;
+          img.setAttribute("alt", `${workshop.name} picture`);
+          pictureTd.appendChild(img);
+          tr.appendChild(pictureTd);
+
+          const nameTd = document.createElement("td");
+          nameTd.textContent = workshop.name;
+          tr.appendChild(nameTd);
+
+          const categoryTd = document.createElement("td");
+          categoryTd.textContent = workshop.category;
+          tr.appendChild(categoryTd);
+
+          const locationTd = document.createElement("td");
+          locationTd.textContent = workshop.location;
+          tr.appendChild(locationTd);
+
+          const dateTd = document.createElement("td");
+          dateTd.textContent = workshop.date;
+          tr.appendChild(dateTd);
+
+          const timeTd = document.createElement("td");
+          timeTd.innerHTML = `${workshop.startTime}<br/>${workshop.endTime}`;
+          tr.appendChild(timeTd);
+
+          const capacityTd = document.createElement("td");
+          capacityTd.textContent = workshop.capacity;
+          tr.appendChild(capacityTd);
+
+          const actionTd = document.createElement("td");
+          tr.appendChild(actionTd);
+
+          container.appendChild(tr);
+        }
+      }
+
+      function getSearchText() {
+        const searchInput = document.getElementById("search-workshop");
+
+        return searchInput.value.trim();
+      }
+
+      function resetSearchText() {
+        const searchInput = document.getElementById("search-workshop");
+
+        searchInput.value = "";
+      }
+
+      function getSort() {
+        const sortSelect = document.getElementById("sort-workshops");
+
+        return sortSelect.value;
+      }
+
+      function resetSort() {
+        const sortSelect = document.getElementById("sort-workshops");
+
+        sortSelect.value = "name";
+      }
+
+      function reset() {
+        resetSearchText();
+        resetSort();
+        fillTable();
+      }
+
+      function updatePagination(result) {
+        let tableFooterSummary = document.querySelector(
+          ".table-footer .footer-summary",
+        );
+        tableFooterSummary.textContent = `Showing ${result.startOfPage} to ${result.endOfPage} of ${result.total} items`;
+
+        let tablePagination = document.querySelector(
+          ".table-footer .pagination",
+        );
+
+        tablePagination.innerHTML = "";
+
+        const tablePaginationUl = document.createElement("ul");
+
+        if (result.totalPages < 1) {
+          return;
+        }
+
+        for (let index = 1; index <= result.totalPages; index++) {
+          const li = document.createElement("li");
+
+          const isCurrent = index === result.currentPage;
+          const button = document.createElement("button");
+          button.className = isCurrent
+            ? "active"
+            : "";
+          button.textContent = index;
+
+          if (!isCurrent) {
+            button.onclick = function () {
+              fillTable(index);
+            };
+          }
+
+          li.appendChild(button);
+
+          tablePaginationUl.appendChild(li);
+        }
+
+        tablePagination.appendChild(tablePaginationUl);
+      }
+    </script>
+  </body>
+</html>
