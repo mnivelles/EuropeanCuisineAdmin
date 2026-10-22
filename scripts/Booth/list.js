@@ -5,32 +5,51 @@ import { TableUtils } from "/scripts/Common/TableUtils.js";
 Header.render();
 
 const itemsPerPage = 5;
+const COLUMN_COUNT = 6;
 
-let appliedFilters;
+const section = document.getElementById("mainTableSection");
+const toolbar = section.querySelector(".table_toolbar");
+const applyButton = toolbar.querySelector(".bulma-button.apply");
+const resetButton = toolbar.querySelector(".bulma-button.reset");
+const searchInput = toolbar.querySelector(".bulma-input.search");
+const sortSelect = toolbar.querySelector(".sortSelect");
+const tbody = document.querySelector("#mainDataTable tbody");
+const footerSummary = section.querySelector(".table_footer .footer_summary");
+const pagination = section.querySelector(".table_footer .bulma-pagination");
+
+const defaultSort = sortSelect.value;
+
+let appliedFilters = { query: "", sort: defaultSort };
+
+applyButton.addEventListener("click", applyFilters);
+resetButton.addEventListener("click", reset);
+searchInput.addEventListener("keydown", (event) => {
+  if (event.key === "Enter") {
+    applyFilters();
+  }
+});
 
 function applyFilters() {
-  appliedFilters = { query: getSearchText(), sort: getSort() };
+  appliedFilters = { query: searchInput.value.trim(), sort: sortSelect.value };
   fillTable();
 }
 
-const tableToolbarApplyButton = document.querySelector(
-  "#mainTableSection .table_toolbar .bulma-button.apply",
-);
-tableToolbarApplyButton.addEventListener("click", () => {
-  applyFilters();
-});
+function reset() {
+  searchInput.value = "";
+  sortSelect.value = defaultSort;
 
-const tableToolbarResetButton = document.querySelector(
-  "#mainTableSection .table_toolbar .bulma-button.reset",
-);
-tableToolbarResetButton.addEventListener("click", () => {
-  reset();
-});
+  applyFilters();
+}
+
+function setLoading(isLoading) {
+  applyButton.classList.toggle("bulma-is-loading", isLoading);
+}
 
 async function fillTable(page = 1) {
+  setLoading(true);
+
   try {
-    const client = new BoothAPIClient();
-    const result = await client.fetchBoothList({
+    const result = await new BoothAPIClient().fetchBoothList({
       ...appliedFilters,
       page,
       per: itemsPerPage,
@@ -38,104 +57,58 @@ async function fillTable(page = 1) {
 
     addBoothsToTbody(result.items);
 
-    let tableFooterSummary = document.querySelector(
-      "#mainTableSection .table_footer .footer_summary",
-    );
-    let tablePagination = document.querySelector(
-      "#mainTableSection .table_footer .bulma-pagination",
-    );
-    TableUtils.fillPagination(
-      result,
-      tableFooterSummary,
-      tablePagination,
-      fillTable,
-    );
+    if (result.items.length === 0) {
+      clearTableFooter();
+    } else {
+      TableUtils.fillPagination(result, footerSummary, pagination, fillTable);
+    }
   } catch (error) {
-    console.error(error.message);
+    console.error(error);
+    showTableMessage("Failed to load booths");
+    clearTableFooter();
+  } finally {
+    setLoading(false);
   }
 }
 
-applyFilters();
+fillTable();
+
+function showTableMessage(text) {
+  const td = document.createElement("td");
+  td.colSpan = COLUMN_COUNT;
+  td.textContent = text;
+
+  const tr = document.createElement("tr");
+  tr.appendChild(td);
+
+  tbody.replaceChildren(tr);
+}
+
+function addBoothsToTbody(booths) {
+  if (booths.length === 0) {
+    showTableMessage("No booths found");
+    return;
+  }
+
+  tbody.replaceChildren(...booths.map(createTrFromBooth));
+}
 
 function createTrFromBooth(booth) {
   const tr = document.createElement("tr");
 
-  const img = TableUtils.createTdWithImg(
-    booth.pictureURL,
-    `${booth.name} photo`,
+  tr.appendChild(
+    TableUtils.createTdWithImg(booth.pictureURL, `${booth.name} photo`),
   );
-  tr.appendChild(img);
-
-  const name = TableUtils.createTdWithText(booth.name);
-  tr.appendChild(name);
-
-  const location = TableUtils.createTdWithText(booth.location);
-  tr.appendChild(location);
-
-  // Ajouter le drapeau
-  const country = TableUtils.createTdWithText(booth.countryName);
-  tr.appendChild(country);
-
-  const openingHours = TableUtils.createTdWithTime(
-    booth.startTime,
-    booth.endTime,
-  );
-  tr.appendChild(openingHours);
-
-  const actions = TableUtils.createTdActions();
-  tr.appendChild(actions);
+  tr.appendChild(TableUtils.createTdWithText(booth.name));
+  tr.appendChild(TableUtils.createTdWithText(booth.location));
+  tr.appendChild(TableUtils.createTdWithText(booth.countryName)); // TODO: add flag
+  tr.appendChild(TableUtils.createTdWithTime(booth.startTime, booth.endTime));
+  tr.appendChild(TableUtils.createTdActions());
 
   return tr;
 }
 
-function addBoothsToTbody(booths) {
-  let tbody = document.querySelector("#mainDataTable tbody");
-
-  tbody.innerHTML = "";
-
-  for (let index = 0; index < booths.length; index++) {
-    const booth = booths[index];
-
-    const tr = createTrFromBooth(booth);
-    tbody.appendChild(tr);
-  }
-}
-
-function reset() {
-  resetSearchText();
-  resetSort();
-
-  applyFilters();
-}
-
-function getSearchText() {
-  const searchInput = document.querySelector(
-    "#mainTableSection .table_toolbar .bulma-input.search",
-  );
-
-  return searchInput.value.trim();
-}
-
-function resetSearchText() {
-  const searchInput = document.querySelector(
-    "#mainTableSection .table_toolbar .bulma-input.search",
-  );
-
-  searchInput.value = "";
-}
-
-function getSort() {
-  const sortSelect = document.querySelector(
-    "#mainTableSection .table_toolbar .sortSelect",
-  );
-
-  return sortSelect.value;
-}
-
-function resetSort() {
-  const sortSelect = document.querySelector(
-    "#mainTableSection .table_toolbar .sortSelect",
-  );
-
-  sortSelect.value = "name";
+function clearTableFooter() {
+  footerSummary.textContent = "";
+  pagination.replaceChildren();
 }
