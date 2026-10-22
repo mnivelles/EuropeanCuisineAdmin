@@ -1,8 +1,8 @@
-import { NavBar } from "/scripts/Common/NavBar.js";
+import { Header } from "/scripts/Common/Header.js";
 import { BoothAPIClient } from "/scripts/APIClient/BoothAPIClient.js";
 import { TableUtils } from "/scripts/Common/TableUtils.js";
 
-NavBar.render();
+Header.render();
 
 const itemsPerPage = 5;
 

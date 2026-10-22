@@ -10,49 +10,7 @@
   </head>
   <body>
     <div class="page bulma-container bulma-is-widescreen">
-      <div class="page_header">
-        <div class="siteName">
-          <span class="es-icon es-icon-branch"></span>
-          <div class="label">Escale Europe</div>
-        </div>
-
-        <nav id="mainNavBar"></nav>
-
-        <button
-          class="userMenu"
-          type="button"
-          popovertarget="userSettingsModal"
-        >
-          <img
-            class="userMenu_photo"
-            src="https://picsum.photos/seed/neko-mimi/600/300"
-            alt="User Picture"
-          />
-          <span class="userMenu_indicator es-icon es-icon-chevron-down"></span>
-        </button>
-
-        <dialog
-          id="userSettingsModal"
-          class="userSettingsModal"
-          closedby="any"
-          popover
-        >
-          <div class="userSettingsModal_row nameEmail">
-            <div class="name">Felipe Lebsack</div>
-            <div class="email">felipe@lebsack.me</div>
-          </div>
-          <div class="userSettingsModal_divider"></div>
-          <div class="userSettingsModal_row theme">
-            <div class="label">Thème</div>
-            <div class="content">Light</div>
-          </div>
-          <div class="userSettingsModal_divider"></div>
-          <div class="userSettingsModal_row logOut">
-            <span class="es-icon es-icon-log-out"></span>
-            <span class="label">Log out</span>
-          </div>
-        </dialog>
-      </div>
+      <div id="pageHeader" class="page_header"></div>
 
       <div class="page_main">
         Consequatur assumenda fugiat ipsam eligendi hic repellat consequatur. Ut
@@ -60,10 +18,6 @@
       </div>
     </div>
 
-    <script src="/scripts/routes.js"></script>
-
-    <script>
-      renderNavBar();
-    </script>
+    <script type="module" src="/scripts/Home/index.js"></script>
   </body>
 </html>

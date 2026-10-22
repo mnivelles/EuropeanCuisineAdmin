@@ -1,3 +1,5 @@
+import { AuthAPIClient } from "/scripts/APIClient/AuthAPIClient.js";
+
 // Toggle visibility of Password
 const toggle = document.querySelector(".bulma-field.password .togglePassword");
 const input = document.querySelector(".bulma-field.password input");
@@ -24,3 +26,16 @@ emailInput.addEventListener("input", toggleLoginButtonDisabled);
 passwordInput.addEventListener("input", toggleLoginButtonDisabled);
 
 toggleLoginButtonDisabled();
+
+loginButton.addEventListener("click", () => {
+  logInUser();
+});
+
+async function logInUser() {
+  const client = new AuthAPIClient();
+  try {
+    await client.logIn(emailInput.value, passwordInput.value);
+  } catch (error) {
+    console.error(error.message);
+  }
+}

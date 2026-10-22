@@ -1,11 +1,16 @@
 import { BaseAPIClient, HTTPMethod } from "/scripts/APIClient/BaseAPIClient.js";
+import { TokenCookie } from "/scripts/Auth/TokenCookie.js";
 
 export class BoothAPIClient {
   constructor() {}
 
   async fetchBoothList({ query = "", sort = "name", page = 1, per = 10 }) {
-    const token =
-      "eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJzdWJqZWN0IjoiNUREOTg0QkEtMTFGOC00MkVCLTk5RjktRkQ3MjQ2Rjg5NzA2IiwiZXhwaXJhdGlvbiI6MTc5NTAzNjc1OS41OTA0Njd9.rDpzvmB0hm1d4mMCr8l0LG-AxssdvuhnhKzLagHPcvQ";
+    if (!TokenCookie.has()) {
+      console.log("No cookie found");
+
+      return [];
+    }
+    const token = TokenCookie.get();
     const path = `admin/booths?query=${query.trim()}&sort=${sort}&page=${page}&per=${per}`;
 
     const client = new BaseAPIClient();

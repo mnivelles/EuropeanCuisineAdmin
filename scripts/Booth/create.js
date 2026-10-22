@@ -1,11 +1,11 @@
-import { NavBar } from "/scripts/Common/NavBar.js";
+import { Header } from "/scripts/Common/Header.js";
 import { BoothAPIClient } from "/scripts/APIClient/BoothAPIClient.js";
 import { AllergenAPIClient } from "/scripts/APIClient/AllergenAPIClient.js";
 import { TimeAPIClient } from "/scripts/APIClient/TimeAPIClient.js";
 import { BoothForm } from "/scripts/Booth/BoothForm.js";
 import { TimeForm } from "/scripts/Common/TimeForm.js";
 
-NavBar.render();
+Header.render();
 
 // Picture
 function setupPicture() {
