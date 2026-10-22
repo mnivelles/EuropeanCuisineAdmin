@@ -24,28 +24,30 @@ async function fillTable(page = 1) {
   const query = getSearchText();
   const sort = getSort();
 
-  const client = new BoothAPIClient();
-  const result = await client.fetchBoothList({
-    query,
-    sort,
-    page,
-    per: itemsPerPage,
-  });
+  try {
+    const client = new BoothAPIClient();
+    const result = await client.fetchBoothList({
+      query,
+      sort,
+      page,
+      per: itemsPerPage,
+    });
 
-  addBoothsToTbody(result.items);
+    addBoothsToTbody(result.items);
 
-  let tableFooterSummary = document.querySelector(
-    "#mainTableSection .table_footer .footer_summary",
-  );
-  let tablePagination = document.querySelector(
-    "#mainTableSection .table_footer .bulma-pagination",
-  );
-  TableUtils.fillPagination(
-    result,
-    tableFooterSummary,
-    tablePagination,
-    fillTable,
-  );
+    let tableFooterSummary = document.querySelector(
+      "#mainTableSection .table_footer .footer_summary",
+    );
+    let tablePagination = document.querySelector(
+      "#mainTableSection .table_footer .bulma-pagination",
+    );
+    TableUtils.fillPagination(
+      result,
+      tableFooterSummary,
+      tablePagination,
+      fillTable,
+    );
+  } catch (error) {}
 }
 
 fillTable();

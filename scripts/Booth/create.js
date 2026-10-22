@@ -9,28 +9,56 @@ import Routes from "/scripts/Common/Routes.js";
 
 Header.render();
 
+const form = document.getElementById("createForm");
+const createButton = document.getElementById("createButton");
+const TEXT_FIELDS = [
+  { name: "name", label: "Name" },
+  { name: "location", label: "Location" },
+  { name: "about", label: "About" },
+];
+let isSubmitting = false;
+const MAX_PICTURE_SIZE = 1.5 * 1024 * 1024; // 1.5 MB
+const ACCEPTED_PICTURE_TYPES = form.elements.picture.accept
+  .split(",")
+  .map((type) => type.trim());
+
 // Picture
 function setupPicture() {
   const input = document.getElementById("field_picture");
   const preview = document.getElementById("picturePreview");
   const label = document.querySelector(".bulma-field.picture .bulma-label");
 
+  let currentObjectUrl = null;
+
+  function releasePreviewUrl() {
+    if (currentObjectUrl) {
+      URL.revokeObjectURL(currentObjectUrl);
+      currentObjectUrl = null;
+    }
+  }
+
   input.addEventListener("change", () => {
     const file = input.files[0];
 
+    releasePreviewUrl();
+
     if (!file) {
+      preview.removeAttribute("src");
+      preview.style.display = "none";
+      label.textContent = "Add Picture";
+      label.classList.remove("hasPicture");
       return;
     }
 
-    preview.src = URL.createObjectURL(file);
+    currentObjectUrl = URL.createObjectURL(file);
+    preview.src = currentObjectUrl;
     preview.style.display = "block";
 
     label.textContent = "Update Picture";
-
-    if (!label.classList.contains("hasPicture")) {
-      label.classList.add("hasPicture");
-    }
+    label.classList.add("hasPicture");
   });
+
+  window.addEventListener("pagehide", releasePreviewUrl);
 }
 
 setupPicture();
@@ -39,60 +67,76 @@ setupPicture();
 
 async function fillCountrySelect() {
   const client = new BoothAPIClient();
-  const countries = await client.fetchBoothCountryList();
-  const countryBulmaSelect = document.querySelector(
-    "#createForm .bulma-field.country .bulma-select",
-  );
 
-  countryBulmaSelect.innerHTML = "";
+  hideFieldError("country", false);
 
-  const countrySelect = document.createElement("select");
-  countrySelect.setAttribute("name", "country");
+  try {
+    const countries = await client.fetchBoothCountryList();
+    const countryBulmaSelect = document.querySelector(
+      "#createForm .bulma-field.country .bulma-select",
+    );
 
-  for (let index = 0; index < countries.length; index++) {
-    const country = countries[index];
+    countryBulmaSelect.innerHTML = "";
 
-    const option = document.createElement("option");
-    option.value = country.code;
-    option.textContent = country.name;
+    const countrySelect = document.createElement("select");
+    countrySelect.setAttribute("name", "country");
 
-    countrySelect.appendChild(option);
+    for (let index = 0; index < countries.length; index++) {
+      const country = countries[index];
+
+      const option = document.createElement("option");
+      option.value = country.code;
+      option.textContent = country.name;
+
+      countrySelect.appendChild(option);
+    }
+
+    countryBulmaSelect.appendChild(countrySelect);
+  } catch (error) {
+    showFieldError("country", `Failed to load countries`, false);
   }
-
-  countryBulmaSelect.appendChild(countrySelect);
 }
 
 fillCountrySelect();
 
 async function fillTimesOptions() {
   const client = new TimeAPIClient();
-  const times = await client.fetchTimeOptionList();
 
-  // Start Time
-  const startTimeOptionBulmaSelect = document.querySelector(
-    "#createForm .bulma-field.startTime .bulma-select",
-  );
-  startTimeOptionBulmaSelect.innerHTML = "";
+  hideFieldError("startTime", false);
+  hideFieldError("endTime", false);
 
-  const startTimeOptionSelect = TimeForm.getTimeOptionSelect(times);
-  startTimeOptionSelect.setAttribute("name", "startTime");
+  try {
+    const times = await client.fetchTimeOptionList();
 
-  startTimeOptionSelect.addEventListener("input", adjustEndTime);
+    // Start Time
+    const startTimeOptionBulmaSelect = document.querySelector(
+      "#createForm .bulma-field.startTime .bulma-select",
+    );
+    startTimeOptionBulmaSelect.innerHTML = "";
 
-  startTimeOptionBulmaSelect.appendChild(startTimeOptionSelect);
+    const startTimeOptionSelect = TimeForm.getTimeOptionSelect(times);
+    startTimeOptionSelect.setAttribute("name", "startTime");
 
-  // End Time
-  const endTimeOptionBulmaSelect = document.querySelector(
-    "#createForm .bulma-field.endTime .bulma-select",
-  );
-  endTimeOptionBulmaSelect.innerHTML = "";
+    startTimeOptionSelect.addEventListener("input", adjustEndTime);
 
-  const endTimeOptionSelect = TimeForm.getTimeOptionSelect(times);
-  endTimeOptionSelect.setAttribute("name", "endTime");
+    startTimeOptionBulmaSelect.appendChild(startTimeOptionSelect);
 
-  endTimeOptionSelect.addEventListener("input", adjustStartTime);
+    // End Time
+    const endTimeOptionBulmaSelect = document.querySelector(
+      "#createForm .bulma-field.endTime .bulma-select",
+    );
+    endTimeOptionBulmaSelect.innerHTML = "";
 
-  endTimeOptionBulmaSelect.appendChild(endTimeOptionSelect);
+    const endTimeOptionSelect = TimeForm.getTimeOptionSelect(times);
+    endTimeOptionSelect.setAttribute("name", "endTime");
+
+    endTimeOptionSelect.addEventListener("input", adjustStartTime);
+
+    endTimeOptionBulmaSelect.appendChild(endTimeOptionSelect);
+  } catch (error) {
+    showFieldError("startTime", `Failed to load time options`, false);
+    showFieldError("endTime", `Failed to load time options`, false);
+  }
 }
 
 fillTimesOptions();
@@ -121,13 +165,20 @@ function adjustEndTime(e) {
 
 async function fillAllergens() {
   const client = new AllergenAPIClient();
-  const allergens = await client.fetchAllergenOptionList();
 
-  const allergensContainer = document.querySelector(
-    "#createForm .bulma-field.allergens .bulma-control",
-  );
+  hideFieldError("allergens", false);
 
-  BoothForm.fillAllergenOptionCheckboxesIn(allergensContainer, allergens);
+  try {
+    const allergens = await client.fetchAllergenOptionList();
+
+    const allergensContainer = document.querySelector(
+      "#createForm .bulma-field.allergens .bulma-control",
+    );
+
+    BoothForm.fillAllergenOptionCheckboxesIn(allergensContainer, allergens);
+  } catch (error) {
+    showFieldError("allergens", `Failed to load allergens`, false);
+  }
 }
 
 fillAllergens();
@@ -148,7 +199,6 @@ const FIELD_NAMES = [
   "isFamilyFriendly",
 ];
 
-// Coupe sur ", " seulement si ce qui suit commence par un nom de champ
 const SPLIT_REGEX = new RegExp(`,\\s*(?=(?:${FIELD_NAMES.join("|")})\\s)`);
 
 function splitReason(reason) {
@@ -190,26 +240,33 @@ document
   .querySelector(".bulma-delete")
   .addEventListener("click", clearFormError);
 
-document.getElementById("createButton").addEventListener("click", submitForm);
+createButton.addEventListener("click", submitForm);
 
 async function submitForm(event) {
   event.preventDefault();
 
-  const button = document.getElementById("createButton");
+  if (isSubmitting || !validateForm()) return;
 
-  validatePicture();
-  validateName();
-  validateLocation();
-  validateAbout();
+  isSubmitting = true;
+  createButton.classList.add("bulma-is-loading");
+  createButton.disabled = true;
 
-  if (!isFormValid()) {
-    return;
+  try {
+    const body = buildFormData();
+
+    await new BoothAPIClient().createBooth(body);
+
+    window.location.href = Routes.booths.list;
+  } catch (error) {
+    showFormError(error.message);
+
+    isSubmitting = false;
+    createButton.classList.remove("bulma-is-loading");
+    toggleCreateButtonDisabled();
   }
+}
 
-  button.classList.add("bulma-is-loading");
-  button.disabled = true;
-
-  const form = document.getElementById("createForm");
+function buildFormData() {
   const {
     picture,
     name,
@@ -239,174 +296,131 @@ async function submitForm(event) {
     .querySelectorAll('input[name="allergens"]:checked')
     .forEach((input) => body.append("allergens[]", input.value));
 
-  try {
-    const client = new BoothAPIClient();
-    await client.createBooth(body);
-
-    window.location.href = Routes.booths.list;
-  } catch (error) {
-    showFormError(error.message);
-
-    button.classList.remove("bulma-is-loading");
-    button.disabled = false;
-  }
+  return body;
 }
 
-function showFieldError(name, message) {
+function showFieldError(name, message, withInput = true) {
   const errorElement = document.getElementById(`fieldError_${name}`);
 
   errorElement.textContent = message;
   errorElement.hidden = false;
 
-  const inputElement = document.getElementById(`field_${name}`);
-  inputElement.classList.add("is-danger");
+  if (withInput) {
+    const inputElement = document.getElementById(`field_${name}`);
+    inputElement.classList.add("bulma-is-danger");
+  }
 }
 
-function hideFieldError(name) {
+function hideFieldError(name, withInput = true) {
   const errorElement = document.getElementById(`fieldError_${name}`);
   errorElement.innerHTML = "";
   errorElement.hidden = true;
 
-  const inputElement = document.getElementById(`field_${name}`);
-  inputElement.classList.remove("is-danger");
+  if (withInput) {
+    const inputElement = document.getElementById(`field_${name}`);
+    inputElement.classList.remove("bulma-is-danger");
+  }
 }
 
-// Toggle disabled of createButton
-function setupFormValidation() {
-  const form = document.querySelector("#createForm");
+// --- Calcul des erreurs (aucun accès au DOM en écriture) ---
 
-  const pictureElement = form.elements.picture;
-  const nameElement = form.elements.name;
-  const locationElement = form.elements.location;
-  const aboutElement = form.elements.about;
+function getPictureError() {
+  const file = form.elements.picture.files[0];
 
-  pictureElement.addEventListener("input", toggleCreateButtonDisabled);
-  nameElement.addEventListener("input", toggleCreateButtonDisabled);
-  locationElement.addEventListener("input", toggleCreateButtonDisabled);
-  aboutElement.addEventListener("input", toggleCreateButtonDisabled);
+  if (!file) {
+    return "Picture file is missing";
+  }
+  if (!ACCEPTED_PICTURE_TYPES.includes(file.type)) {
+    return "Picture must be a PNG, JPEG, AVIF or WebP image";
+  }
+  if (file.size > MAX_PICTURE_SIZE) {
+    const sizeInMB = (file.size / (1024 * 1024)).toFixed(2);
+    return `Picture must be 1.5 MB max (current: ${sizeInMB} MB)`;
+  }
+  return null;
 }
 
-setupFormValidation();
+function getTextError({ name, label }) {
+  const value = form.elements[name].value.trim();
+  const { minLength, maxLength } = MODEL_CONSTRAINT[name];
 
-function toggleCreateButtonDisabled() {
-  const form = document.querySelector("#createForm");
-
-  const pictureElement = form.elements.picture;
-  const nameElement = form.elements.name;
-  const locationElement = form.elements.location;
-  const aboutElement = form.elements.about;
-
-  const createButton = document.querySelector("#createButton");
-
-  const isEmpty =
-    !pictureElement.files[0] ||
-    nameElement.value.trim() === "" ||
-    locationElement.value.trim() === "" ||
-    aboutElement.value.trim() === "";
-  createButton.disabled = isEmpty;
+  if (value.length < minLength) {
+    return `${label} must be at least ${minLength} characters`;
+  }
+  if (value.length > maxLength) {
+    return `${label} must be ${maxLength} characters max`;
+  }
+  return null;
 }
 
 function isFormValid() {
-  const form = document.getElementById("createForm");
-
-  let isValid = true;
-
-  const picture = form.elements.picture.files[0];
-  if (!picture) {
-    isValid = false;
-  }
-
-  const name = form.elements.name.value;
-  if (name < MODEL_CONSTRAINT.name.minLength) {
-    isValid = false;
-  } else if (name > MODEL_CONSTRAINT.name.maxLength) {
-    isValid = false;
-  }
-
-  const location = form.elements.location.value;
-  if (location < MODEL_CONSTRAINT.location.minLength) {
-    isValid = false;
-  } else if (location > MODEL_CONSTRAINT.location.maxLength) {
-    isValid = false;
-  }
-
-  const about = form.elements.about.value;
-  if (about < MODEL_CONSTRAINT.about.minLength) {
-    isValid = false;
-  } else if (about > MODEL_CONSTRAINT.about.maxLength) {
-    isValid = false;
-  }
-
-  return isValid;
+  return !getPictureError() && TEXT_FIELDS.every((f) => !getTextError(f));
 }
+
+// --- Affichage des erreurs (s'appuie sur les fonctions ci-dessus) ---
 
 function validatePicture() {
-  const errorElement = document.getElementById("fieldError_picture");
+  const message = getPictureError();
 
-  errorElement.innerHTML = "";
-  errorElement.hidden = true;
-
-  const picture =
-    document.getElementById("createForm").elements.picture.files[0];
-  if (!picture) {
-    errorElement.textContent = "Picture file is missing";
-    errorElement.hidden = false;
+  if (message) {
+    showFieldError("picture", message, false);
+  } else {
+    hideFieldError("picture", false);
   }
+
+  return !message;
 }
 
-function validateName() {
-  const form = document.getElementById("createForm");
-  const value = form.elements.name.value.trim();
+function validateText(field) {
+  const message = getTextError(field);
 
-  hideFieldError("name");
-
-  if (value.length < MODEL_CONSTRAINT.name.minLength) {
-    showFieldError(
-      "name",
-      `Name must be at least ${MODEL_CONSTRAINT.name.minLength} characters`,
-    );
-  } else if (value.length > MODEL_CONSTRAINT.name.maxLength) {
-    showFieldError(
-      "name",
-      `Name must be ${MODEL_CONSTRAINT.name.maxLength} characters max`,
-    );
+  if (message) {
+    showFieldError(field.name, message);
+  } else {
+    hideFieldError(field.name);
   }
+
+  return !message;
 }
 
-function validateLocation() {
-  const form = document.getElementById("createForm");
-  const value = form.elements.location.value.trim();
+function validateForm() {
+  const results = [validatePicture(), ...TEXT_FIELDS.map(validateText)];
 
-  hideFieldError("location");
-
-  if (value.length < MODEL_CONSTRAINT.location.minLength) {
-    showFieldError(
-      "location",
-      `Location must be at least ${MODEL_CONSTRAINT.location.minLength} characters`,
-    );
-  } else if (value.length > MODEL_CONSTRAINT.location.maxLength) {
-    showFieldError(
-      "location",
-      `Location must be ${MODEL_CONSTRAINT.location.maxLength} characters max`,
-    );
-  }
+  return results.every(Boolean);
 }
 
-function validateAbout() {
-  const form = document.getElementById("createForm");
-  const value = form.elements.about.value.trim();
+// --- Bouton : utilise la même validation que la soumission ---
 
-  hideFieldError("about");
-
-  if (value.length < MODEL_CONSTRAINT.about.minLength) {
-    showFieldError(
-      "about",
-      `About must be at least ${MODEL_CONSTRAINT.about.minLength} characters`,
-    );
-  } else if (value.length > MODEL_CONSTRAINT.about.maxLength) {
-    showFieldError(
-      "about",
-      `About must be ${MODEL_CONSTRAINT.about.maxLength} characters max`,
-    );
-  }
+function toggleCreateButtonDisabled() {
+  createButton.disabled = isSubmitting || !isFormValid();
 }
+
+function setupFormValidation() {
+  form.elements.picture.addEventListener("change", () => {
+    if (form.elements.picture.files[0]) {
+      validatePicture();
+    } else {
+      hideFieldError("picture", false);
+    }
+    toggleCreateButtonDisabled();
+  });
+
+  for (const field of TEXT_FIELDS) {
+    const element = form.elements[field.name];
+
+    element.addEventListener("input", () => {
+      hideFieldError(field.name);
+      toggleCreateButtonDisabled();
+    });
+
+    element.addEventListener("blur", () => {
+      if (element.value.trim() !== "") {
+        validateText(field);
+      }
+    });
+  }
+
+  toggleCreateButtonDisabled();
+}
+
+setupFormValidation();
