@@ -91,3 +91,8 @@
     gap: 0.75rem;
   }
 }
+
+.fieldError {
+  font-size: 0.875rem;
+  color: var(--bulma-danger-40);
+}

@@ -67,12 +67,12 @@ const NAV_ITEMS = [
 ];
 
 function renderNavBar() {
-  const navBar = document.querySelector(".page .page_header .navBar");
+  const navBar = document.querySelector("#mainNavBar");
 
   let children = NAV_ITEMS.map((item) => {
     const link = document.createElement("a");
     link.href = item.href;
-    link.className = `navBar_item`;
+    link.className = `mainNavBar_item`;
 
     const iconSpan = document.createElement("span");
     iconSpan.className = item.iconClasses;

@@ -65,3 +65,39 @@ function createDeleteButton() {
 
   return button;
 }
+
+function fillPagination(result, summaryContainer, paginationContainer) {
+  summaryContainer.textContent = `Showing ${result.startOfPage} to ${result.endOfPage} of ${result.total} items`;
+
+  paginationContainer.innerHTML = "";
+
+  const tablePaginationUl = document.createElement("ul");
+  tablePaginationUl.className = "bulma-pagination-list";
+
+  if (result.totalPages < 1) {
+    return;
+  }
+
+  for (let index = 1; index <= result.totalPages; index++) {
+    const li = document.createElement("li");
+
+    const isCurrent = index === result.currentPage;
+    const button = document.createElement("button");
+    button.className = isCurrent
+      ? "bulma-pagination-link bulma-is-current"
+      : "bulma-pagination-link";
+    button.textContent = index;
+
+    if (!isCurrent) {
+      button.onclick = function () {
+        fillTable(index);
+      };
+    }
+
+    li.appendChild(button);
+
+    tablePaginationUl.appendChild(li);
+  }
+
+  paginationContainer.appendChild(tablePaginationUl);
+}

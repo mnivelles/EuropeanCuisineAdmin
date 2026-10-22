@@ -6,9 +6,9 @@ async function getAllergenOptionList() {
       throw new Error(`Response status: ${response.status}`);
     }
 
-    const reponseJSON = await response.json();
+    const responseJSON = await response.json();
 
-    return reponseJSON;
+    return responseJSON;
   } catch (error) {
     console.error(error.message);
     return [];

@@ -5,25 +5,25 @@ async function getBoothList(query = "", sort = "name", page = 1, per = 10) {
       headers: new Headers({
         Authorization:
           "Bearer " +
-          "eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJzdWJqZWN0IjoiNUNGOUFCRTgtRTlDQi00RDIxLUFCMUYtNjNERDJGREY2MzA3IiwiZXhwaXJhdGlvbiI6MTc5MjYyMDM4My45NTExMzh9.Y-qmXkXgKQJQo5qVgzsEq2FBp_3Lq686n9MCQEER6iY",
+          "eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJzdWJqZWN0IjoiNUREOTg0QkEtMTFGOC00MkVCLTk5RjktRkQ3MjQ2Rjg5NzA2IiwiZXhwaXJhdGlvbiI6MTc5NTAzNjc1OS41OTA0Njd9.rDpzvmB0hm1d4mMCr8l0LG-AxssdvuhnhKzLagHPcvQ",
       }),
     });
     if (!response.ok) {
       throw new Error(`Response status: ${response.status}`);
     }
 
-    const reponseJSON = await response.json();
+    const responseJSON = await response.json();
 
-    const total = reponseJSON.metadata.total;
-    const perPage = reponseJSON.metadata.per;
-    const currentPage = reponseJSON.metadata.page;
+    const total = responseJSON.metadata.total;
+    const perPage = responseJSON.metadata.per;
+    const currentPage = responseJSON.metadata.page;
     const totalPages = Math.ceil(total / perPage);
     const startOfPage = (currentPage - 1) * perPage + 1;
     let endOfPage = currentPage * perPage;
     endOfPage = endOfPage > total ? total : endOfPage;
 
     let result = {
-      items: reponseJSON.items,
+      items: responseJSON.items,
       total,
       currentPage,
       totalPages,
@@ -46,9 +46,9 @@ async function getBoothCountryList() {
       throw new Error(`Response status: ${response.status}`);
     }
 
-    const reponseJSON = await response.json();
+    const responseJSON = await response.json();
 
-    return reponseJSON;
+    return responseJSON;
   } catch (error) {
     console.error(error.message);
     return [];
