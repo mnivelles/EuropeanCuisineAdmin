@@ -4,6 +4,8 @@ import { AllergenAPIClient } from "/scripts/APIClient/AllergenAPIClient.js";
 import { TimeAPIClient } from "/scripts/APIClient/TimeAPIClient.js";
 import { BoothForm } from "/scripts/Booth/BoothForm.js";
 import { TimeForm } from "/scripts/Common/TimeForm.js";
+import { MODEL_CONSTRAINT } from "/scripts/Common/Constraints.js";
+import Routes from "/scripts/Common/Routes.js";
 
 Header.render();
 
@@ -188,9 +190,12 @@ document
   .querySelector(".bulma-delete")
   .addEventListener("click", clearFormError);
 
-async function submitForm() {
-  //(event) {
-  // event.preventDefault();
+document.getElementById("createButton").addEventListener("click", submitForm);
+
+async function submitForm(event) {
+  event.preventDefault();
+
+  const button = document.getElementById("createButton");
 
   validatePicture();
   validateName();
@@ -201,70 +206,49 @@ async function submitForm() {
     return;
   }
 
+  button.classList.add("bulma-is-loading");
+  button.disabled = true;
+
   const form = document.getElementById("createForm");
-
-  const pictureElement = form.elements.picture;
-  const nameElement = form.elements.name;
-  const countryElement = form.elements.country;
-  const locationElement = form.elements.location;
-  const startTimeElement = form.elements.startTime;
-  const endTimeElement = form.elements.endTime;
-  const aboutElement = form.elements.about;
-  const allergensElement = form.elements.allergens;
-  const isVeganElement = form.elements.isVegan;
-  const isPRMElement = form.elements.isPRM;
-  const isFamilyFriendlyElement = form.elements.isFamilyFriendly;
-
-  const pictureFile = pictureElement.files[0];
+  const {
+    picture,
+    name,
+    country,
+    location,
+    startTime,
+    endTime,
+    about,
+    isVegan,
+    isPRM,
+    isFamilyFriendly,
+  } = form.elements;
 
   const body = new FormData();
-  body.append("picture", pictureFile);
-  body.append("name", nameElement.value);
-  body.append("country", countryElement.value);
-  body.append("location", locationElement.value);
-  body.append("startTime", startTimeElement.value);
-  body.append("endTime", endTimeElement.value);
-  body.append("about", aboutElement.value);
-  body.append("isVegan", isVeganElement.checked);
-  body.append("isPRM", isPRMElement.checked);
-  body.append("isFamilyFriendly", isFamilyFriendlyElement.checked);
+  body.append("picture", picture.files[0]);
+  body.append("name", name.value);
+  body.append("country", country.value);
+  body.append("location", location.value);
+  body.append("startTime", startTime.value);
+  body.append("endTime", endTime.value);
+  body.append("about", about.value);
+  body.append("isVegan", isVegan.checked);
+  body.append("isPRM", isPRM.checked);
+  body.append("isFamilyFriendly", isFamilyFriendly.checked);
 
   form
     .querySelectorAll('input[name="allergens"]:checked')
     .forEach((input) => body.append("allergens[]", input.value));
 
-  const url = `http://127.0.0.1:8080/api/v0/admin/booths`;
   try {
-    const response = await fetch(url, {
-      method: "POST",
-      body,
-      headers: new Headers({
-        Authorization:
-          "Bearer " +
-          "eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJzdWJqZWN0IjoiNUREOTg0QkEtMTFGOC00MkVCLTk5RjktRkQ3MjQ2Rjg5NzA2IiwiZXhwaXJhdGlvbiI6MTc5NTAzNjc1OS41OTA0Njd9.rDpzvmB0hm1d4mMCr8l0LG-AxssdvuhnhKzLagHPcvQ",
-      }),
-    });
+    const client = new BoothAPIClient();
+    await client.createBooth(body);
 
-    if (!response.ok) {
-      let reason = `Erreur ${response.status}`;
-      try {
-        const data = await response.json();
-        reason = data.reason ?? reason;
-      } catch {}
-
-      showFormError(reason);
-      return;
-    }
-
-    const responseJSON = await response.json();
-
-    console.log(responseJSON);
-    // return responseJSON;
+    window.location.href = Routes.booths.list;
   } catch (error) {
     showFormError(error.message);
 
-    console.error(error.message);
-    return [];
+    button.classList.remove("bulma-is-loading");
+    button.disabled = false;
   }
 }
 
@@ -296,8 +280,6 @@ function setupFormValidation() {
   const locationElement = form.elements.location;
   const aboutElement = form.elements.about;
 
-  const createButton = document.querySelector("#createButton");
-
   pictureElement.addEventListener("input", toggleCreateButtonDisabled);
   nameElement.addEventListener("input", toggleCreateButtonDisabled);
   locationElement.addEventListener("input", toggleCreateButtonDisabled);
@@ -307,6 +289,15 @@ function setupFormValidation() {
 setupFormValidation();
 
 function toggleCreateButtonDisabled() {
+  const form = document.querySelector("#createForm");
+
+  const pictureElement = form.elements.picture;
+  const nameElement = form.elements.name;
+  const locationElement = form.elements.location;
+  const aboutElement = form.elements.about;
+
+  const createButton = document.querySelector("#createButton");
+
   const isEmpty =
     !pictureElement.files[0] ||
     nameElement.value.trim() === "" ||

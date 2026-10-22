@@ -63,4 +63,24 @@ export class BoothAPIClient {
       return [];
     }
   }
+
+  async createBooth(body) {
+    if (!TokenCookie.has()) {
+      throw Error("User is not authenticated");
+    }
+
+    const token = TokenCookie.get();
+    const path = "admin/booths";
+
+    const client = new BaseAPIClient();
+
+    let data = await client.perform({
+      path,
+      method: HTTPMethod.POST,
+      body,
+      authenticationToken: token,
+    });
+
+    return data;
+  }
 }
