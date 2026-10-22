@@ -1,0 +1,61 @@
+import { BaseAPIClient, HTTPMethod } from "/scripts/APIClient/BaseAPIClient.js";
+
+export class BoothAPIClient {
+  constructor() {}
+
+  async fetchBoothList({ query = "", sort = "name", page = 1, per = 10 }) {
+    const token =
+      "eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJzdWJqZWN0IjoiNUREOTg0QkEtMTFGOC00MkVCLTk5RjktRkQ3MjQ2Rjg5NzA2IiwiZXhwaXJhdGlvbiI6MTc5NTAzNjc1OS41OTA0Njd9.rDpzvmB0hm1d4mMCr8l0LG-AxssdvuhnhKzLagHPcvQ";
+    const path = `admin/booths?query=${query.trim()}&sort=${sort}&page=${page}&per=${per}`;
+
+    const client = new BaseAPIClient();
+
+    try {
+      const data = await client.perform({
+        path,
+        method: HTTPMethod.GET,
+        authenticationToken: token,
+      });
+
+      const total = data.metadata.total;
+      const perPage = data.metadata.per;
+      const currentPage = data.metadata.page;
+      const totalPages = Math.ceil(total / perPage);
+      const startOfPage = (currentPage - 1) * perPage + 1;
+      let endOfPage = currentPage * perPage;
+      endOfPage = endOfPage > total ? total : endOfPage;
+
+      let result = {
+        items: data.items,
+        total,
+        currentPage,
+        totalPages,
+        startOfPage,
+        endOfPage,
+      };
+      return result;
+    } catch (error) {
+      // FIXME: update return value
+      console.error(error.message);
+      return [];
+    }
+  }
+
+  async fetchBoothCountryList() {
+    const path = "booth-countries";
+
+    const client = new BaseAPIClient();
+
+    try {
+      const data = await client.perform({
+        path,
+        method: HTTPMethod.GET,
+      });
+
+      return data;
+    } catch (error) {
+      console.error(error.message);
+      return [];
+    }
+  }
+}
