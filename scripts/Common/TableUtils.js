@@ -69,7 +69,7 @@ export class TableUtils {
     return button;
   }
 
-  static fillPagination(result, summaryContainer, paginationContainer) {
+  static fillPagination(result, summaryContainer, paginationContainer, action) {
     summaryContainer.textContent = `Showing ${result.startOfPage} to ${result.endOfPage} of ${result.total} items`;
 
     paginationContainer.innerHTML = "";
@@ -93,7 +93,7 @@ export class TableUtils {
 
       if (!isCurrent) {
         button.onclick = function () {
-          fillTable(index);
+          action(index);
         };
       }
 

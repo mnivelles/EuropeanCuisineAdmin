@@ -40,7 +40,12 @@ async function fillTable(page = 1) {
   let tablePagination = document.querySelector(
     "#mainTableSection .table_footer .bulma-pagination",
   );
-  TableUtils.fillPagination(result, tableFooterSummary, tablePagination);
+  TableUtils.fillPagination(
+    result,
+    tableFooterSummary,
+    tablePagination,
+    fillTable,
+  );
 }
 
 fillTable();
