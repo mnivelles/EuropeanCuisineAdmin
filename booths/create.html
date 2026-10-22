@@ -85,26 +85,29 @@
           </div>
 
           <div class="bulma-field picture">
-            <label class="bulma-label" for="pictureInput">Add Picture</label>
+            <label class="bulma-label" for="field_picture">Add Picture</label>
             <input
               type="file"
-              id="pictureInput"
+              id="field_picture"
               name="picture"
               accept="image/png,image/jpeg,image/avif,image/webp"
               required
             />
+            <div id="fieldError_picture" class="fieldError" hidden></div>
           </div>
 
           <div class="bulma-field name">
-            <label class="bulma-label">Name</label>
+            <label class="bulma-label" for="field_name">Name</label>
             <p class="bulma-control">
               <input
+                id="field_name"
                 class="bulma-input"
                 name="name"
                 type="text"
                 placeholder="Sasha Hamel"
               />
             </p>
+            <div id="fieldError_name" class="fieldError" hidden></div>
           </div>
 
           <div class="bulma-field country">
@@ -115,15 +118,17 @@
           </div>
 
           <div class="bulma-field location">
-            <label class="bulma-label">Location</label>
+            <label class="bulma-label" for="field_location">Location</label>
             <p class="bulma-control">
               <input
+                id="field_location"
                 class="bulma-input"
                 name="location"
                 type="text"
                 placeholder="Aisle A - Stand 3"
               />
             </p>
+            <div id="fieldError_location" class="fieldError" hidden></div>
           </div>
 
           <div class="twoColumns">
@@ -143,14 +148,16 @@
           </div>
 
           <div class="bulma-field about">
-            <label class="bulma-label">About</label>
+            <label class="bulma-label" for="field_about">About</label>
             <p class="bulma-control">
               <textarea
+                id="field_about"
                 class="bulma-textarea"
                 placeholder="About the booth"
                 name="about"
               ></textarea>
             </p>
+            <div id="fieldError_about" class="fieldError" hidden></div>
           </div>
 
           <div class="bulma-field allergens">
@@ -161,15 +168,20 @@
           <div class="bulma-field goodToKnow">
             <label class="bulma-label">Good to Know</label>
             <div class="bulma-control checkboxColumn">
-              <label class="bulma-checkbox">
-                <input type="checkbox" name="isVegan" /> Vegan
+              <label class="bulma-checkbox" for="field_isVegan">
+                <input id="field_isVegan" type="checkbox" name="isVegan" />
+                Vegan
               </label>
-              <label class="bulma-checkbox">
-                <input type="checkbox" name="isPRM" /> Person with Reduced
-                Mobility
+              <label class="bulma-checkbox" for="field_isPRM">
+                <input id="field_isPRM" type="checkbox" name="isPRM" /> Person
+                with Reduced Mobility
               </label>
-              <label class="bulma-checkbox">
-                <input type="checkbox" name="isFamilyFriendly" />
+              <label class="bulma-checkbox" for="field_isFamilyFriendly">
+                <input
+                  id="field_isFamilyFriendly"
+                  type="checkbox"
+                  name="isFamilyFriendly"
+                />
                 Family-friendly
               </label>
             </div>
@@ -178,7 +190,7 @@
           <button
             id="createButton"
             class="bulma-button bulma-is-primary"
-            type="submit"
+            type="button"
             disabled
           >
             Create
@@ -199,7 +211,7 @@
 
       // Picture
       function setupPicture() {
-        const input = document.getElementById("pictureInput");
+        const input = document.getElementById("field_picture");
         const preview = document.getElementById("picturePreview");
         const label = document.querySelector(
           ".bulma-field.picture .bulma-label",
@@ -383,6 +395,15 @@
         //(event) {
         // event.preventDefault();
 
+        validatePicture();
+        validateName();
+        validateLocation();
+        validateAbout();
+
+        if (!isFormValid()) {
+          return;
+        }
+
         const form = document.getElementById("createForm");
 
         const pictureElement = form.elements.picture;
@@ -398,10 +419,6 @@
         const isFamilyFriendlyElement = form.elements.isFamilyFriendly;
 
         const pictureFile = pictureElement.files[0];
-        if (!pictureFile) {
-          showFormError("Picture file is missing");
-          return;
-        }
 
         const body = new FormData();
         body.append("picture", pictureFile);
@@ -454,15 +471,43 @@
         }
       }
 
+      function showFieldError(name, message) {
+        const errorElement = document.getElementById(`fieldError_${name}`);
+
+        errorElement.textContent = message;
+        errorElement.hidden = false;
+
+        const inputElement = document.getElementById(`field_${name}`);
+        inputElement.classList.add("is-danger");
+      }
+
+      function hideFieldError(name) {
+        const errorElement = document.getElementById(`fieldError_${name}`);
+        errorElement.innerHTML = "";
+        errorElement.hidden = true;
+
+        const inputElement = document.getElementById(`field_${name}`);
+        inputElement.classList.remove("is-danger");
+      }
+
       // Toggle disabled of createButton
-      const form = document.querySelector("#createForm");
+      function setupFormValidation() {
+        const form = document.querySelector("#createForm");
 
-      const pictureElement = form.elements.picture;
-      const nameElement = form.elements.name;
-      const locationElement = form.elements.location;
-      const aboutElement = form.elements.about;
+        const pictureElement = form.elements.picture;
+        const nameElement = form.elements.name;
+        const locationElement = form.elements.location;
+        const aboutElement = form.elements.about;
 
-      const createButton = document.querySelector("#createButton");
+        const createButton = document.querySelector("#createButton");
+
+        pictureElement.addEventListener("input", toggleCreateButtonDisabled);
+        nameElement.addEventListener("input", toggleCreateButtonDisabled);
+        locationElement.addEventListener("input", toggleCreateButtonDisabled);
+        aboutElement.addEventListener("input", toggleCreateButtonDisabled);
+      }
+
+      setupFormValidation();
 
       function toggleCreateButtonDisabled() {
         const isEmpty =
@@ -473,10 +518,125 @@
         createButton.disabled = isEmpty;
       }
 
-      pictureElement.addEventListener("input", toggleCreateButtonDisabled);
-      nameElement.addEventListener("input", toggleCreateButtonDisabled);
-      locationElement.addEventListener("input", toggleCreateButtonDisabled);
-      aboutElement.addEventListener("input", toggleCreateButtonDisabled);
+      const MODEL_LIMIT = Object.freeze({
+        name: {
+          minLength: 1,
+          maxLength: 100,
+        },
+        location: {
+          minLength: 1,
+          maxLength: 100,
+        },
+        about: {
+          minLength: 1,
+          maxLength: 1000,
+        },
+      });
+
+      function isFormValid() {
+        const form = document.getElementById("createForm");
+
+        let isValid = true;
+
+        const picture = form.elements.picture.files[0];
+        if (!picture) {
+          isValid = false;
+        }
+
+        const name = form.elements.name.value;
+        if (name < MODEL_LIMIT.name.minLength) {
+          isValid = false;
+        } else if (name > MODEL_LIMIT.name.maxLength) {
+          isValid = false;
+        }
+
+        const location = form.elements.location.value;
+        if (location < MODEL_LIMIT.location.minLength) {
+          isValid = false;
+        } else if (location > MODEL_LIMIT.location.maxLength) {
+          isValid = false;
+        }
+
+        const about = form.elements.about.value;
+        if (about < MODEL_LIMIT.about.minLength) {
+          isValid = false;
+        } else if (about > MODEL_LIMIT.about.maxLength) {
+          isValid = false;
+        }
+
+        return isValid;
+      }
+
+      function validatePicture() {
+        const errorElement = document.getElementById("fieldError_picture");
+
+        errorElement.innerHTML = "";
+        errorElement.hidden = true;
+
+        const picture =
+          document.getElementById("createForm").elements.picture.files[0];
+        if (!picture) {
+          errorElement.textContent = "Picture file is missing";
+          errorElement.hidden = false;
+        }
+      }
+
+      function validateName() {
+        const form = document.getElementById("createForm");
+        const value = form.elements.name.value.trim();
+
+        hideFieldError("name");
+
+        if (value.length < MODEL_LIMIT.name.minLength) {
+          showFieldError(
+            "name",
+            `Name must be at least ${MODEL_LIMIT.name.minLength} characters`,
+          );
+        } else if (value.length > MODEL_LIMIT.name.maxLength) {
+          showFieldError(
+            "name",
+            `Name must be ${MODEL_LIMIT.name.maxLength} characters max`,
+          );
+        }
+      }
+
+      function validateLocation() {
+        const form = document.getElementById("createForm");
+        const value = form.elements.location.value.trim();
+
+        hideFieldError("location");
+
+        if (value.length < MODEL_LIMIT.location.minLength) {
+          showFieldError(
+            "location",
+            `Location must be at least ${MODEL_LIMIT.location.minLength} characters`,
+          );
+        } else if (value.length > MODEL_LIMIT.location.maxLength) {
+          showFieldError(
+            "location",
+            `Location must be ${MODEL_LIMIT.location.maxLength} characters max`,
+          );
+        }
+      }
+
+      function validateAbout() {
+        const form = document.getElementById("createForm");
+        const value = form.elements.about.value.trim();
+
+        hideFieldError("about");
+
+        if (value.length < MODEL_LIMIT.about.minLength) {
+          showFieldError(
+            "about",
+            `About must be at least ${MODEL_LIMIT.about.minLength} characters`,
+          );
+        } else if (value.length > MODEL_LIMIT.about.maxLength) {
+          showFieldError(
+            "about",
+            `About must be ${MODEL_LIMIT.about.maxLength} characters max`,
+          );
+        }
+      }
     </script>
   </body>
 </html>
