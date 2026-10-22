@@ -6,11 +6,18 @@ Header.render();
 
 const itemsPerPage = 5;
 
+let appliedFilters;
+
+function applyFilters() {
+  appliedFilters = { query: getSearchText(), sort: getSort() };
+  fillTable();
+}
+
 const tableToolbarApplyButton = document.querySelector(
   "#mainTableSection .table_toolbar .bulma-button.apply",
 );
 tableToolbarApplyButton.addEventListener("click", () => {
-  fillTable();
+  applyFilters();
 });
 
 const tableToolbarResetButton = document.querySelector(
@@ -21,14 +28,10 @@ tableToolbarResetButton.addEventListener("click", () => {
 });
 
 async function fillTable(page = 1) {
-  const query = getSearchText();
-  const sort = getSort();
-
   try {
     const client = new BoothAPIClient();
     const result = await client.fetchBoothList({
-      query,
-      sort,
+      ...appliedFilters,
       page,
       per: itemsPerPage,
     });
@@ -47,10 +50,12 @@ async function fillTable(page = 1) {
       tablePagination,
       fillTable,
     );
-  } catch (error) {}
+  } catch (error) {
+    console.error(error.message);
+  }
 }
 
-fillTable();
+applyFilters();
 
 function createTrFromBooth(booth) {
   const tr = document.createElement("tr");
@@ -100,7 +105,7 @@ function reset() {
   resetSearchText();
   resetSort();
 
-  fillTable();
+  applyFilters();
 }
 
 function getSearchText() {
