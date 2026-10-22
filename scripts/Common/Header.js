@@ -1,5 +1,6 @@
 import Routes from "/scripts/Common/Routes.js";
 import { AuthAPIClient } from "/scripts/APIClient/AuthAPIClient.js";
+import { UserCookie } from "/scripts/Auth/UserCookie.js";
 
 export class Header {
   constructor() {}
@@ -102,6 +103,8 @@ export class Header {
   }
 
   static #renderUserMenu() {
+    const user = UserCookie.get() ?? { name: "No name", email: "No email" };
+
     const html = `
     <button
           class="userMenu"
@@ -123,8 +126,8 @@ export class Header {
           popover
         >
           <div class="userSettingsModal_row nameEmail">
-            <div class="name">Felipe Lebsack</div>
-            <div class="email">felipe@lebsack.me</div>
+            <div class="name">${user.name}</div>
+            <div class="email">${user.email}</div>
           </div>
           <div class="userSettingsModal_divider"></div>
           <div class="userSettingsModal_row theme">
