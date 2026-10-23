@@ -73,6 +73,7 @@
             <div class="bulma-control">
               <div class="bulma-select"></div>
             </div>
+            <div id="fieldError_country" class="fieldError" hidden></div>
           </div>
 
           <div class="bulma-field location">
@@ -95,6 +96,7 @@
               <div class="bulma-control">
                 <div class="bulma-select"></div>
               </div>
+              <div id="fieldError_startTime" class="fieldError" hidden></div>
             </div>
 
             <div class="bulma-field endTime">
@@ -102,6 +104,7 @@
               <div class="bulma-control">
                 <div class="bulma-select"></div>
               </div>
+              <div id="fieldError_endTime" class="fieldError" hidden></div>
             </div>
           </div>
 
@@ -121,6 +124,7 @@
           <div class="bulma-field allergens">
             <label class="bulma-label">Allergens</label>
             <div class="bulma-control checkboxGrid"></div>
+            <div id="fieldError_allergens" class="fieldError" hidden></div>
           </div>
 
           <div class="bulma-field goodToKnow">
@@ -149,13 +153,10 @@
             id="createButton"
             class="bulma-button bulma-is-primary"
             type="button"
-            disabled
           >
             Create
           </button>
         </form>
-
-        <button onclick="submitForm()">Test Form</button>
       </div>
     </div>
 

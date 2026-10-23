@@ -1,0 +1,56 @@
+#mainTableSection {
+  display: flex;
+  flex-direction: column;
+  gap: 1.5rem;
+}
+
+#mainTableSection .table_toolbar {
+  display: flex;
+  flex-direction: row;
+  align-items: center;
+  gap: 0.75rem;
+
+  .bulma-control.search {
+    width: 16rem;
+  }
+}
+
+#mainDataTable {
+  td {
+    vertical-align: middle;
+
+    .picture {
+      display: block;
+      width: 2.5rem;
+      min-width: 2.5rem;
+      height: 2.5rem;
+      object-fit: cover;
+      border-radius: 0.75rem;
+    }
+
+    .country {
+      display: inline-flex;
+      flex-direction: row;
+      align-items: center;
+      gap: 0.5rem;
+    }
+
+    .flag {
+      display: block;
+      width: 1.5rem;
+      border-radius: 0.25rem;
+      border: 1px solid hsla(0, 0%, 0%, 0.08);
+    }
+  }
+}
+
+#mainTableSection .table_footer {
+  display: flex;
+  flex-direction: row;
+  align-items: center;
+  justify-content: space-between;
+
+  .footer_summary {
+    font-size: 0.875rem;
+  }
+}

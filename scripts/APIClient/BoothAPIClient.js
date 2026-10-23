@@ -41,7 +41,7 @@ export class BoothAPIClient {
       return result;
     } catch (error) {
       // FIXME: update return value
-      console.error(error.message);
+      console.error(error);
       return [];
     }
   }
@@ -59,8 +59,28 @@ export class BoothAPIClient {
 
       return data;
     } catch (error) {
-      console.error(error.message);
+      console.error(error);
       return [];
     }
+  }
+
+  async createBooth(body) {
+    if (!TokenCookie.has()) {
+      throw Error("User is not authenticated");
+    }
+
+    const token = TokenCookie.get();
+    const path = "admin/booths";
+
+    const client = new BaseAPIClient();
+
+    let data = await client.perform({
+      path,
+      method: HTTPMethod.POST,
+      body,
+      authenticationToken: token,
+    });
+
+    return data;
   }
 }
