@@ -1,6 +1,10 @@
 export class TableUtils {
   constructor() {}
 
+  static createTrFromColumns(item, columns) {
+    return TableUtils.createTr(columns.map((column) => column(item)));
+  }
+
   static createTr(cells) {
     const tr = document.createElement("tr");
 
@@ -11,21 +15,17 @@ export class TableUtils {
     return tr;
   }
 
-  static createTrFromColumns(item, columns) {
-    return TableUtils.createTr(columns.map((column) => column(item)));
-  }
-
   static emptyColumn() {
     return () => document.createElement("td");
   }
 
   static textColumn(property) {
-    return (item) => TableUtils.createTdWithText(item[property]);
+    return (item) => TableUtils.#createTdWithText(item[property]);
   }
 
   static pictureColumn(urlProperty = "pictureURL", nameProperty = "name") {
     return (item) =>
-      TableUtils.createTdWithPicture(
+      TableUtils.#createTdWithPicture(
         item[urlProperty],
         `${item[nameProperty]} photo`,
       );
@@ -36,16 +36,16 @@ export class TableUtils {
     codeProperty = "countryCode",
   ) {
     return (item) =>
-      TableUtils.createTdWithCountry(item[nameProperty], item[codeProperty]);
+      TableUtils.#createTdWithCountry(item[nameProperty], item[codeProperty]);
   }
 
   static timeColumn(startProperty = "startTime", endProperty = "endTime") {
     return (item) =>
-      TableUtils.createTdWithTime(item[startProperty], item[endProperty]);
+      TableUtils.#createTdWithTime(item[startProperty], item[endProperty]);
   }
 
   static actionsColumn() {
-    return () => TableUtils.createTdActions();
+    return () => TableUtils.#createTdActions();
   }
 
   static createTh(content) {
@@ -104,7 +104,7 @@ export class TableUtils {
     paginationContainer.appendChild(tablePaginationUl);
   }
 
-  static createTdWithText(content) {
+  static #createTdWithText(content) {
     const td = document.createElement("td");
     const elementContent = document.createTextNode(content);
     td.appendChild(elementContent);
@@ -112,7 +112,7 @@ export class TableUtils {
     return td;
   }
 
-  static createTdWithPicture(src, alt) {
+  static #createTdWithPicture(src, alt) {
     const td = document.createElement("td");
 
     const img = document.createElement("img");
@@ -129,14 +129,14 @@ export class TableUtils {
     return td;
   }
 
-  static createTdWithTime(startTime, endTime) {
+  static #createTdWithTime(startTime, endTime) {
     const td = document.createElement("td");
     td.innerHTML = `${startTime}<br />${endTime}`;
 
     return td;
   }
 
-  static createTdWithCountry(name, code) {
+  static #createTdWithCountry(name, code) {
     const td = document.createElement("td");
 
     const container = document.createElement("div");
@@ -160,7 +160,7 @@ export class TableUtils {
     return td;
   }
 
-  static createTdWithStatus(content) {
+  static #createTdWithStatus(content) {
     const td = document.createElement("td");
     const elementContent = document.createTextNode(content);
     td.appendChild(elementContent);
@@ -168,20 +168,20 @@ export class TableUtils {
     return td;
   }
 
-  static createTdActions() {
+  static #createTdActions() {
     const td = document.createElement("td");
 
     const p = document.createElement("p");
     p.className = "bulma-buttons";
-    p.appendChild(TableUtils.createEditButton());
-    p.appendChild(TableUtils.createDeleteButton());
+    p.appendChild(TableUtils.#createEditButton());
+    p.appendChild(TableUtils.#createDeleteButton());
 
     td.appendChild(p);
 
     return td;
   }
 
-  static createEditButton() {
+  static #createEditButton() {
     const button = document.createElement("button");
     button.className = "bulma-button bulma-is-primary";
 
@@ -193,7 +193,7 @@ export class TableUtils {
     return button;
   }
 
-  static createDeleteButton() {
+  static #createDeleteButton() {
     const button = document.createElement("button");
     button.className = "bulma-button bulma-is-danger";
 
