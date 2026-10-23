@@ -97,11 +97,13 @@ function createTrFromBooth(booth) {
   const tr = document.createElement("tr");
 
   tr.appendChild(
-    TableUtils.createTdWithImg(booth.pictureURL, `${booth.name} photo`),
+    TableUtils.createTdWithPicture(booth.pictureURL, `${booth.name} photo`),
   );
   tr.appendChild(TableUtils.createTdWithText(booth.name));
   tr.appendChild(TableUtils.createTdWithText(booth.location));
-  tr.appendChild(TableUtils.createTdWithText(booth.countryName)); // TODO: add flag
+  tr.appendChild(
+    TableUtils.createTdWithCountry(booth.countryName, booth.countryCode),
+  );
   tr.appendChild(TableUtils.createTdWithTime(booth.startTime, booth.endTime));
   tr.appendChild(TableUtils.createTdActions());
 

@@ -9,10 +9,11 @@ export class TableUtils {
     return td;
   }
 
-  static createTdWithImg(src, alt) {
+  static createTdWithPicture(src, alt) {
     const td = document.createElement("td");
 
     const img = document.createElement("img");
+    img.className = "picture";
     const srcAttribute = document.createAttribute("src");
     srcAttribute.value = src;
     const altAttribute = document.createAttribute("alt");
@@ -28,6 +29,30 @@ export class TableUtils {
   static createTdWithTime(startTime, endTime) {
     const td = document.createElement("td");
     td.innerHTML = `${startTime}<br />${endTime}`;
+
+    return td;
+  }
+
+  static createTdWithCountry(name, code) {
+    const td = document.createElement("td");
+
+    const container = document.createElement("div");
+    container.className = "country";
+
+    const img = document.createElement("img");
+    img.className = "flag";
+    const srcAttribute = document.createAttribute("src");
+    srcAttribute.value = `/images/flags/${code}.svg`;
+    const altAttribute = document.createAttribute("alt");
+    altAttribute.value = `Flag of ${name}`;
+    img.setAttributeNode(srcAttribute);
+    img.setAttributeNode(altAttribute);
+    container.appendChild(img);
+
+    const elementContent = document.createTextNode(name);
+    container.appendChild(elementContent);
+
+    td.appendChild(container);
 
     return td;
   }
