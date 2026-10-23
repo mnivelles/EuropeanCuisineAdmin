@@ -233,7 +233,17 @@ body {
   flex-direction: row;
   align-items: center;
   justify-content: space-between;
-  padding-bottom: 2.5rem;
+  margin-bottom: 2.5rem;
+
+  position: relative;
+  height: 46px;
+
+  #mainTabView {
+    position: absolute;
+    inset: 0;
+    width: fit-content;
+    place-self: center;
+  }
 }
 
 .page .page_main .main_header .breadcrumb,
