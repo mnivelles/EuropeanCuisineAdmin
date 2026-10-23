@@ -331,3 +331,26 @@ body {
     color: white;
   }
 }
+
+.statusChip {
+  padding: 0.25rem 0.5rem;
+  border-radius: 99px;
+
+  font-size: 0.875rem;
+  font-weight: 500;
+
+  &.confirmed {
+    color: var(--bulma-success-35);
+    background-color: var(--bulma-success-95);
+  }
+
+  &.pending {
+    color: var(--bulma-warning-35);
+    background-color: var(--bulma-warning-95);
+  }
+
+  &.cancelled {
+    color: var(--bulma-danger-35);
+    background-color: var(--bulma-danger-95);
+  }
+}

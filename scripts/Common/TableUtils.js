@@ -44,6 +44,10 @@ export class TableUtils {
       TableUtils.#createTdWithTime(item[startProperty], item[endProperty]);
   }
 
+  static statusColumn(statusProperty = "status") {
+    return (item) => TableUtils.#createTdWithStatus(item[statusProperty]);
+  }
+
   static actionsColumn() {
     return () => TableUtils.#createTdActions();
   }
@@ -162,8 +166,17 @@ export class TableUtils {
 
   static #createTdWithStatus(content) {
     const td = document.createElement("td");
+
+    const chip = document.createElement("span");
+    chip.className = "statusChip";
+
+    chip.classList.add(content);
+
     const elementContent = document.createTextNode(content);
-    td.appendChild(elementContent);
+
+    chip.appendChild(elementContent);
+
+    td.appendChild(chip);
 
     return td;
   }

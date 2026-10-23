@@ -116,7 +116,7 @@ const reservationColumns = [
   TableUtils.textColumn("date"),
   TableUtils.timeColumn(),
   TableUtils.textColumn("userName"),
-  TableUtils.textColumn("status"),
+  TableUtils.statusColumn("status"),
   TableUtils.actionsColumn(),
 ];
 
