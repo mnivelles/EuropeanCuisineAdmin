@@ -1,0 +1,77 @@
+<!doctype html>
+<html lang="en">
+  <head>
+    <meta charset="UTF-8" />
+    <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+    <link rel="stylesheet" href="/styles/icons.css" />
+    <link rel="stylesheet" href="/styles/app.css" />
+    <link rel="stylesheet" href="/styles/table.css" />
+    <title>Reservations | Admin - Escale Europe</title>
+  </head>
+  <body>
+    <div class="page bulma-container bulma-is-widescreen">
+      <div id="pageHeader" class="page_header"></div>
+
+      <div class="page_main">
+        <div class="main_header">
+          <div class="breadcrumb">
+            <div class="breadcrumb_item isCurrent">
+              <span class="es-icon es-icon-reservation"></span>
+              <span class="label">Reservations</span>
+            </div>
+          </div>
+        </div>
+
+        <div id="mainTableSection">
+          <div class="table_toolbar">
+            <p class="bulma-control bulma-has-icons-left search">
+              <input
+                class="bulma-input search"
+                name="search"
+                type="text"
+                placeholder="Search a reservation"
+              />
+              <span class="es-icon es-icon-search bulma-icon bulma-is-left">
+              </span>
+            </p>
+            <div class="bulma-select">
+              <select class="sortSelect">
+                <option value="name">Sort by Workshop</option>
+                <option value="category">Sort by Category</option>
+                <option value="date">Sort by Date</option>
+              </select>
+            </div>
+            <button class="bulma-button apply">Apply</button>
+            <button class="bulma-button bulma-is-ghost reset">Reset</button>
+          </div>
+          <div class="bulma-table-container">
+            <table
+              id="mainDataTable"
+              class="bulma-table bulma-is-fullwidth bulma-is-hoverable"
+            >
+              <thead>
+                <tr>
+                  <th>Workshop</th>
+                  <th>Category</th>
+                  <th>Date</th>
+                  <th>Time</th>
+                  <th>UserName</th>
+                  <th>Status</th>
+                  <th>Actions</th>
+                </tr>
+              </thead>
+              <tbody></tbody>
+            </table>
+          </div>
+
+         <div class="table_footer">
+            <div class="footer_summary"></div>
+            <nav class="bulma-pagination bulma-is-small bulma-is-rounded"></nav>
+          </div>
+        </div>
+      </div>
+    </div>
+
+    <script type="module" src="/scripts/Reservation/list.js"></script>
+  </body>
+</html>
