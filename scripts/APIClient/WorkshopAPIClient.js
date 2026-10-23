@@ -1,7 +1,7 @@
 import { BaseAPIClient, HTTPMethod } from "/scripts/APIClient/BaseAPIClient.js";
 import { TokenCookie } from "/scripts/Auth/TokenCookie.js";
 
-export class BoothAPIClient {
+export class WorkshopAPIClient {
   constructor() {}
 
   async fetchWorkshopList({ query = "", sort = "name", page = 1, per = 10 }) {
@@ -40,7 +40,7 @@ export class BoothAPIClient {
       };
       return result;
     } catch (error) {
-      console.error(error.message);
+      console.error(error);
       return [];
     }
   }
