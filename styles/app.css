@@ -278,3 +278,46 @@ body {
     font-weight: 400;
   }
 }
+
+.segmentedControl {
+  display: inline-flex;
+  flex-direction: row;
+  align-items: center;
+  gap: 0;
+
+  border: 1px solid var(--bulma-grey-lighter);
+  border-radius: var(--bulma-radius);
+  overflow: hidden;
+
+  & > :not(:first-child) {
+    border-left: 1px solid var(--bulma-grey-lighter);
+  }
+
+  .segmentedControl_item {
+    display: inline-flex;
+    flex-direction: row;
+    align-items: center;
+    gap: 0.25rem;
+
+    height: 2.5rem;
+    padding: 0 1rem;
+
+    color: var(--bulma-text);
+    font-size: 1rem;
+    font-weight: 500;
+
+    .es-icon {
+      font-size: 1.125rem;
+    }
+
+    &:hover {
+      background-color: var(--bulma-primary-95);
+    }
+  }
+
+  .segmentedControl_item.isCurrent {
+    background-color: var(--bulma-primary-25);
+
+    color: white;
+  }
+}

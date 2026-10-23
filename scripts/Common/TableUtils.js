@@ -57,6 +57,14 @@ export class TableUtils {
     return td;
   }
 
+  static createTdWithStatus(content) {
+    const td = document.createElement("td");
+    const elementContent = document.createTextNode(content);
+    td.appendChild(elementContent);
+
+    return td;
+  }
+
   static createTdActions() {
     const td = document.createElement("td");
 

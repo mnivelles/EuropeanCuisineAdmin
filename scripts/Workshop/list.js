@@ -1,8 +1,18 @@
 import { Header } from "/scripts/Common/Header.js";
 import { WorkshopAPIClient } from "/scripts/APIClient/WorkshopAPIClient.js";
 import { TableUtils } from "/scripts/Common/TableUtils.js";
+import { Components } from "/scripts/Common/Components.js";
+import { SEGMENTS } from "/scripts/Common/Routes.js";
 
 Header.render();
+
+const mainTabView = document.getElementById("mainTabView");
+const selectedSegment = "table";
+Components.addSegmentedControlIn(
+  mainTabView,
+  SEGMENTS.workshops,
+  selectedSegment,
+);
 
 const itemsPerPage = 5;
 const COLUMN_COUNT = 8;
@@ -54,7 +64,7 @@ async function fillTable(page = 1) {
       page,
       per: itemsPerPage,
     });
-    
+
     addWorkshopsToTbody(result.items);
 
     if (result.items.length === 0) {
@@ -97,15 +107,18 @@ function createTrFromWorkshop(workshop) {
   const tr = document.createElement("tr");
 
   tr.appendChild(
-    TableUtils.createTdWithPicture(workshop.pictureURL, `${workshop.name} photo`),
+    TableUtils.createTdWithPicture(
+      workshop.pictureURL,
+      `${workshop.name} photo`,
+    ),
   );
   tr.appendChild(TableUtils.createTdWithText(workshop.name));
   tr.appendChild(TableUtils.createTdWithText(workshop.category));
-  tr.appendChild(
-    TableUtils.createTdWithText(workshop.location),
-  );
+  tr.appendChild(TableUtils.createTdWithText(workshop.location));
   tr.appendChild(TableUtils.createTdWithTime(workshop.date));
-  tr.appendChild(TableUtils.createTdWithTime(workshop.startTime, workshop.endTime));
+  tr.appendChild(
+    TableUtils.createTdWithTime(workshop.startTime, workshop.endTime),
+  );
   tr.appendChild(TableUtils.createTdWithText(workshop.capacity));
   tr.appendChild(TableUtils.createTdActions());
 
