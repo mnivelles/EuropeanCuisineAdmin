@@ -26,7 +26,7 @@ async function getWorkshopList(query = "", sort = "name", page = 1, per = 10) {
     };
     return result;
   } catch (error) {
-    console.error(error.message);
+    console.error(error);
     return [];
   }
 }

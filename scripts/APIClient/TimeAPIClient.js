@@ -16,7 +16,7 @@ export class TimeAPIClient {
 
       return data;
     } catch (error) {
-      console.error(error.message);
+      console.error(error);
       return [];
     }
   }

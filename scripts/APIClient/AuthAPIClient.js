@@ -14,7 +14,7 @@ export class AuthAPIClient {
     const data = await client.perform({
       path,
       method: HTTPMethod.POST,
-      body: JSON.stringify({ email, password }),
+      body: { email, password },
     });
 
     const token = data.token;

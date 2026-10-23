@@ -36,6 +36,6 @@ async function logInUser() {
   try {
     await client.logIn(emailInput.value, passwordInput.value);
   } catch (error) {
-    console.error(error.message);
+    console.error(error);
   }
 }
