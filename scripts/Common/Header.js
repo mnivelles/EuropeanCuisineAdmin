@@ -1,4 +1,4 @@
-import Routes from "/scripts/Common/Routes.js";
+import Routes, { NAV_ITEMS } from "/scripts/Common/Routes.js";
 import { AuthAPIClient } from "/scripts/APIClient/AuthAPIClient.js";
 import { UserCookie } from "/scripts/Auth/UserCookie.js";
 
@@ -29,7 +29,7 @@ export class Header {
     const navBar = Header.#createElement("nav");
     navBar.id = "mainNavBar";
 
-    const items = Header.#navItems.map((item) => {
+    const items = NAV_ITEMS.map((item) => {
       const link = Header.#createElement("a", "mainNavBar_item");
       link.href = item.href;
       link.classList.toggle("isSelected", Header.#isCurrentPage(item.href));
@@ -46,39 +46,6 @@ export class Header {
 
     Header.#container.appendChild(navBar);
   }
-
-  static #navItems = [
-    {
-      id: "home",
-      label: "Home",
-      iconClasses: "es-icon es-icon-home",
-      href: Routes.home,
-    },
-    {
-      id: "workshops",
-      label: "Workshops",
-      iconClasses: "es-icon es-icon-workshop",
-      href: Routes.workshops.list,
-    },
-    {
-      id: "reservations",
-      label: "Reservations",
-      iconClasses: "es-icon es-icon-reservation",
-      href: Routes.reservations.list,
-    },
-    {
-      id: "booths",
-      label: "Booths",
-      iconClasses: "es-icon es-icon-booth",
-      href: Routes.booths.list,
-    },
-    {
-      id: "users",
-      label: "Users",
-      iconClasses: "es-icon es-icon-user",
-      href: Routes.users.list,
-    },
-  ];
 
   static #isCurrentPage(href) {
     const path = location.pathname;
