@@ -14,47 +14,35 @@ export class Header {
   }
 
   static #renderSiteName() {
-    const siteName = document.createElement("div");
-    siteName.id = "userMenuContainer";
-    siteName.className = "siteName";
+    const siteName = Header.#createElement("a", "siteName");
+    siteName.href = Routes.home;
 
-    siteName.innerHTML = `<span class="es-icon es-icon-branch"></span>
-    <div class="label">Escale Europe</div>`;
+    siteName.append(
+      Header.#createIcon("es-icon-branch"),
+      Header.#createElement("div", "label", "Escale Europe"),
+    );
 
     Header.#container.appendChild(siteName);
   }
 
   static #renderNavBar() {
-    const navBar = document.createElement("nav");
+    const navBar = Header.#createElement("nav");
     navBar.id = "mainNavBar";
 
-    let children = Header.#navItems.map((item) => {
-      const link = document.createElement("a");
+    const items = Header.#navItems.map((item) => {
+      const link = Header.#createElement("a", "mainNavBar_item");
       link.href = item.href;
-      link.className = `mainNavBar_item`;
-
-      const iconSpan = document.createElement("span");
-      iconSpan.className = item.iconClasses;
-
-      const labelElement = document.createElement("div");
-      labelElement.className = "label";
-      labelElement.textContent = item.label;
-
       link.classList.toggle("isSelected", Header.#isCurrentPage(item.href));
 
-      link.appendChild(iconSpan);
-      link.appendChild(labelElement);
+      link.append(
+        Header.#createIcon(item.iconClasses),
+        Header.#createElement("div", "label", item.label),
+      );
 
       return link;
     });
 
-    navBar.innerHTML = "";
-
-    for (let index = 0; index < children.length; index++) {
-      const child = children[index];
-
-      navBar.appendChild(child);
-    }
+    navBar.append(...items);
 
     Header.#container.appendChild(navBar);
   }
@@ -103,57 +91,113 @@ export class Header {
   }
 
   static #renderUserMenu() {
-    const user = UserCookie.get() ?? { name: "No name", email: "No email" };
+    const user = UserCookie.get() ?? {};
 
-    const html = `
-    <button
-          class="userMenu"
-          type="button"
-          popovertarget="userSettingsModal"
-        >
-          <img
-            class="userMenu_photo"
-            src="https://picsum.photos/seed/neko-mimi/600/300"
-            alt="User Picture"
-          />
-          <span class="userMenu_indicator es-icon es-icon-chevron-down"></span>
-        </button>
-
-        <dialog
-          id="userSettingsModal"
-          class="userSettingsModal"
-          closedby="any"
-          popover
-        >
-          <div class="userSettingsModal_row nameEmail">
-            <div class="name">${user.name}</div>
-            <div class="email">${user.email}</div>
-          </div>
-          <div class="userSettingsModal_divider"></div>
-          <div class="userSettingsModal_row theme">
-            <div class="label">Thème</div>
-            <div class="content">Light</div>
-          </div>
-          <div class="userSettingsModal_divider"></div>
-          <button type="button" class="userSettingsModal_row logOut">
-            <span class="es-icon es-icon-log-out"></span>
-            <span class="label">Log out</span>
-          </button>
-        </dialog>
-    `;
-
-    const userMenuContainer = document.createElement("div");
+    const userMenuContainer = Header.#createElement("div");
     userMenuContainer.id = "userMenuContainer";
 
-    userMenuContainer.innerHTML = html;
-
-    let button = userMenuContainer.querySelector("button.logOut");
-
-    button.onclick = () => {
-      const client = new AuthAPIClient();
-      client.logOut();
-    };
+    userMenuContainer.append(
+      Header.#createUserMenuButton(),
+      Header.#createUserSettingsModal(user),
+    );
 
     Header.#container.appendChild(userMenuContainer);
+  }
+
+  static #createUserMenuButton() {
+    const button = Header.#createElement("button", "userMenu");
+    button.type = "button";
+    button.setAttribute("popovertarget", "userSettingsModal");
+
+    const photo = Header.#createElement("img", "userMenu_photo");
+    photo.src = "https://picsum.photos/seed/neko-mimi/600/300";
+    photo.alt = "User Picture";
+
+    const indicator = Header.#createIcon(
+      "userMenu_indicator es-icon-chevron-down",
+    );
+
+    button.append(photo, indicator);
+
+    return button;
+  }
+
+  static #createUserSettingsModal(user) {
+    const modal = Header.#createElement("div", "userSettingsModal");
+    modal.id = "userSettingsModal";
+    modal.setAttribute("popover", "");
+
+    const nameEmailRow = Header.#createElement(
+      "div",
+      "userSettingsModal_row nameEmail",
+    );
+    nameEmailRow.append(
+      Header.#createElement("div", "name", user.name || "No name"),
+      Header.#createElement("div", "email", user.email || "No email"),
+    );
+
+    const themeRow = Header.#createElement(
+      "div",
+      "userSettingsModal_row theme",
+    );
+    themeRow.append(
+      Header.#createElement("div", "label", "Theme"),
+      Header.#createElement("div", "content", "Light"),
+    );
+
+    modal.append(
+      nameEmailRow,
+      Header.#createElement("div", "userSettingsModal_divider"),
+      themeRow,
+      Header.#createElement("div", "userSettingsModal_divider"),
+      Header.#createLogOutButton(),
+    );
+
+    return modal;
+  }
+
+  static #createLogOutButton() {
+    const button = Header.#createElement(
+      "button",
+      "userSettingsModal_row logOut",
+    );
+    button.type = "button";
+
+    button.append(
+      Header.#createIcon("es-icon-log-out"),
+      Header.#createElement("span", "label", "Log out"),
+    );
+
+    button.addEventListener("click", async () => {
+      button.disabled = true;
+
+      try {
+        await new AuthAPIClient().logOut();
+      } catch (error) {
+        console.error(error);
+        button.disabled = false;
+      }
+    });
+
+    return button;
+  }
+
+  static #createElement(tag, className, text) {
+    const element = document.createElement(tag);
+
+    if (className) {
+      element.className = className;
+    }
+    if (text !== undefined) {
+      element.textContent = text;
+    }
+
+    return element;
+  }
+
+  static #createIcon(className) {
+    const icon = Header.#createElement("span", `es-icon ${className}`);
+
+    return icon;
   }
 }
