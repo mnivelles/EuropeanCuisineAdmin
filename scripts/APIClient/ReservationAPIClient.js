@@ -4,7 +4,12 @@ import { TokenCookie } from "/scripts/Auth/TokenCookie.js";
 export class ReservationAPIClient {
   constructor() {}
 
-  async fetchReservationList({ query = "", sort = "name", page = 1, per = 10 }) {
+  async fetchReservationList({
+    query = "",
+    sort = "name",
+    page = 1,
+    per = 10,
+  }) {
     if (!TokenCookie.has()) {
       console.log("No cookie found");
 
@@ -15,33 +20,28 @@ export class ReservationAPIClient {
 
     const client = new BaseAPIClient();
 
-    try {
-      const data = await client.perform({
-        path,
-        method: HTTPMethod.GET,
-        authenticationToken: token,
-      });
+    const data = await client.perform({
+      path,
+      method: HTTPMethod.GET,
+      authenticationToken: token,
+    });
 
-      const total = data.metadata.total;
-      const perPage = data.metadata.per;
-      const currentPage = data.metadata.page;
-      const totalPages = Math.ceil(total / perPage);
-      const startOfPage = (currentPage - 1) * perPage + 1;
-      let endOfPage = currentPage * perPage;
-      endOfPage = endOfPage > total ? total : endOfPage;
+    const total = data.metadata.total;
+    const perPage = data.metadata.per;
+    const currentPage = data.metadata.page;
+    const totalPages = Math.ceil(total / perPage);
+    const startOfPage = (currentPage - 1) * perPage + 1;
+    let endOfPage = currentPage * perPage;
+    endOfPage = endOfPage > total ? total : endOfPage;
 
-      let result = {
-        items: data.items,
-        total,
-        currentPage,
-        totalPages,
-        startOfPage,
-        endOfPage,
-      };
-      return result;
-    } catch (error) {
-      console.error(error);
-      return [];
-    }
+    let result = {
+      items: data.items,
+      total,
+      currentPage,
+      totalPages,
+      startOfPage,
+      endOfPage,
+    };
+    return result;
   }
 }

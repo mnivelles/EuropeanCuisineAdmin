@@ -4,8 +4,18 @@ import { TableUtils } from "/scripts/Common/TableUtils.js";
 
 Header.render();
 
+const tableHeaders = [
+  "Workshop",
+  "Category",
+  "Date",
+  "Time",
+  "User Name",
+  "Status",
+  "Actions",
+];
+
 const itemsPerPage = 5;
-const COLUMN_COUNT = 8;
+const COLUMN_COUNT = tableHeaders.length;
 
 const section = document.getElementById("mainTableSection");
 const toolbar = section.querySelector(".table_toolbar");
@@ -13,11 +23,14 @@ const applyButton = toolbar.querySelector(".bulma-button.apply");
 const resetButton = toolbar.querySelector(".bulma-button.reset");
 const searchInput = toolbar.querySelector(".bulma-input.search");
 const sortSelect = toolbar.querySelector(".sortSelect");
+const thead = document.querySelector("#mainDataTable thead");
 const tbody = document.querySelector("#mainDataTable tbody");
 const footerSummary = section.querySelector(".table_footer .footer_summary");
 const pagination = section.querySelector(".table_footer .bulma-pagination");
 
 const defaultSort = sortSelect.value;
+
+addThead(tableHeaders);
 
 let appliedFilters = { query: "", sort: defaultSort };
 
@@ -84,6 +97,10 @@ function showTableMessage(text) {
   tbody.replaceChildren(tr);
 }
 
+function addThead(headers) {
+  thead.appendChild(TableUtils.createHeaderTr(headers));
+}
+
 function addReservationToTbody(reservations) {
   if (reservations.length === 0) {
     showTableMessage("No reservations found");
@@ -93,20 +110,18 @@ function addReservationToTbody(reservations) {
   tbody.replaceChildren(...reservations.map(createTrFromReservation));
 }
 
+const reservationColumns = [
+  TableUtils.textColumn("workshop"),
+  TableUtils.textColumn("category"),
+  TableUtils.textColumn("date"),
+  TableUtils.timeColumn(),
+  TableUtils.textColumn("userName"),
+  TableUtils.textColumn("status"),
+  TableUtils.actionsColumn(),
+];
+
 function createTrFromReservation(reservation) {
-  const tr = document.createElement("tr");
-
-  tr.appendChild(TableUtils.createTdWithText(reservation.workshop));
-  tr.appendChild(TableUtils.createTdWithText(reservation.category));
-  tr.appendChild(TableUtils.createTdWithText(reservation.date));
-  tr.appendChild(
-    TableUtils.createTdWithTime(reservation.startTime, reservation.endTime),
-  );
-  tr.appendChild(TableUtils.createTdWithText(reservation.userName));
-  tr.appendChild(TableUtils.createTdWithText(reservation.status));
-  tr.appendChild(TableUtils.createTdActions());
-
-  return tr;
+  return TableUtils.createTrFromColumns(reservation, reservationColumns);
 }
 
 function clearTableFooter() {

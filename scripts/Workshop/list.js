@@ -6,6 +6,17 @@ import { SEGMENTS } from "/scripts/Common/Routes.js";
 
 Header.render();
 
+const tableHeaders = [
+  "",
+  "Name",
+  "Category",
+  "Location",
+  "Date",
+  "Time",
+  "Capacity",
+  "Actions",
+];
+
 const mainTabView = document.getElementById("mainTabView");
 const selectedSegment = "table";
 Components.addSegmentedControlIn(
@@ -15,7 +26,7 @@ Components.addSegmentedControlIn(
 );
 
 const itemsPerPage = 5;
-const COLUMN_COUNT = 8;
+const COLUMN_COUNT = tableHeaders.length;
 
 const section = document.getElementById("mainTableSection");
 const toolbar = section.querySelector(".table_toolbar");
@@ -23,11 +34,14 @@ const applyButton = toolbar.querySelector(".bulma-button.apply");
 const resetButton = toolbar.querySelector(".bulma-button.reset");
 const searchInput = toolbar.querySelector(".bulma-input.search");
 const sortSelect = toolbar.querySelector(".sortSelect");
+const thead = document.querySelector("#mainDataTable thead");
 const tbody = document.querySelector("#mainDataTable tbody");
 const footerSummary = section.querySelector(".table_footer .footer_summary");
 const pagination = section.querySelector(".table_footer .bulma-pagination");
 
 const defaultSort = sortSelect.value;
+
+addThead(tableHeaders);
 
 let appliedFilters = { query: "", sort: defaultSort };
 
@@ -94,6 +108,10 @@ function showTableMessage(text) {
   tbody.replaceChildren(tr);
 }
 
+function addThead(headers) {
+  thead.appendChild(TableUtils.createHeaderTr(headers));
+}
+
 function addWorkshopsToTbody(workshops) {
   if (workshops.length === 0) {
     showTableMessage("No workshops found");
@@ -103,26 +121,19 @@ function addWorkshopsToTbody(workshops) {
   tbody.replaceChildren(...workshops.map(createTrFromWorkshop));
 }
 
+const workshopColumns = [
+  TableUtils.pictureColumn(),
+  TableUtils.textColumn("name"),
+  TableUtils.textColumn("category"),
+  TableUtils.textColumn("location"),
+  TableUtils.textColumn("date"),
+  TableUtils.timeColumn(),
+  TableUtils.textColumn("capacity"),
+  TableUtils.actionsColumn(),
+];
+
 function createTrFromWorkshop(workshop) {
-  const tr = document.createElement("tr");
-
-  tr.appendChild(
-    TableUtils.createTdWithPicture(
-      workshop.pictureURL,
-      `${workshop.name} photo`,
-    ),
-  );
-  tr.appendChild(TableUtils.createTdWithText(workshop.name));
-  tr.appendChild(TableUtils.createTdWithText(workshop.category));
-  tr.appendChild(TableUtils.createTdWithText(workshop.location));
-  tr.appendChild(TableUtils.createTdWithText(workshop.date));
-  tr.appendChild(
-    TableUtils.createTdWithTime(workshop.startTime, workshop.endTime),
-  );
-  tr.appendChild(TableUtils.createTdWithText(workshop.capacity));
-  tr.appendChild(TableUtils.createTdActions());
-
-  return tr;
+  return TableUtils.createTrFromColumns(workshop, workshopColumns);
 }
 
 function clearTableFooter() {

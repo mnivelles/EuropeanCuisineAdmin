@@ -6,12 +6,22 @@ import { TableUtils } from "/scripts/Common/TableUtils.js";
 
 Header.render();
 
+const tableHeaders = [
+  "",
+  "",
+  "Name",
+  "Email",
+  "Role",
+  "Creation Date",
+  "Actions",
+];
+
 const mainTabView = document.getElementById("mainTabView");
 const selectedSegment = "table";
 Components.addSegmentedControlIn(mainTabView, SEGMENTS.users, selectedSegment);
 
 const itemsPerPage = 5;
-const COLUMN_COUNT = 7;
+const COLUMN_COUNT = tableHeaders.length;
 
 const section = document.getElementById("mainTableSection");
 const toolbar = section.querySelector(".table_toolbar");
@@ -20,12 +30,15 @@ const resetButton = toolbar.querySelector(".bulma-button.reset");
 const searchInput = toolbar.querySelector(".bulma-input.search");
 const sortSelect = toolbar.querySelector(".sortSelect");
 const filterSelect = toolbar.querySelector(".filterSelect");
+const thead = document.querySelector("#mainDataTable thead");
 const tbody = document.querySelector("#mainDataTable tbody");
 const footerSummary = section.querySelector(".table_footer .footer_summary");
 const pagination = section.querySelector(".table_footer .bulma-pagination");
 
 const defaultSort = sortSelect.value;
 const defaultFilter = filterSelect.value;
+
+addThead(tableHeaders);
 
 let appliedFilters = { query: "", sort: defaultSort, role: defaultFilter };
 
@@ -96,6 +109,10 @@ function showTableMessage(text) {
   tbody.replaceChildren(tr);
 }
 
+function addThead(headers) {
+  thead.appendChild(TableUtils.createHeaderTr(headers));
+}
+
 function addUsersToTbody(users) {
   if (users.length === 0) {
     showTableMessage("No users found");
@@ -105,20 +122,18 @@ function addUsersToTbody(users) {
   tbody.replaceChildren(...users.map(createTrFromUser));
 }
 
+const userColumns = [
+  TableUtils.emptyColumn(),
+  TableUtils.pictureColumn(),
+  TableUtils.textColumn("name"),
+  TableUtils.textColumn("email"),
+  TableUtils.textColumn("role"),
+  TableUtils.textColumn("creationDate"),
+  TableUtils.actionsColumn(),
+];
+
 function createTrFromUser(user) {
-  const tr = document.createElement("tr");
-
-  tr.appendChild(document.createElement("td"));
-  tr.appendChild(
-    TableUtils.createTdWithPicture(user.pictureURL, `${user.name} photo`),
-  );
-  tr.appendChild(TableUtils.createTdWithText(user.name));
-  tr.appendChild(TableUtils.createTdWithText(user.email));
-  tr.appendChild(TableUtils.createTdWithText(user.role));
-  tr.appendChild(TableUtils.createTdWithText(user.creationDate));
-  tr.appendChild(TableUtils.createTdActions());
-
-  return tr;
+  return TableUtils.createTrFromColumns(user, userColumns);
 }
 
 function clearTableFooter() {

@@ -4,8 +4,17 @@ import { TableUtils } from "/scripts/Common/TableUtils.js";
 
 Header.render();
 
+const tableHeaders = [
+  "",
+  "Name",
+  "Location",
+  "Country",
+  "Opening Hours",
+  "Actions",
+];
+
 const itemsPerPage = 5;
-const COLUMN_COUNT = 6;
+const COLUMN_COUNT = tableHeaders.length;
 
 const section = document.getElementById("mainTableSection");
 const toolbar = section.querySelector(".table_toolbar");
@@ -13,11 +22,14 @@ const applyButton = toolbar.querySelector(".bulma-button.apply");
 const resetButton = toolbar.querySelector(".bulma-button.reset");
 const searchInput = toolbar.querySelector(".bulma-input.search");
 const sortSelect = toolbar.querySelector(".sortSelect");
+const thead = document.querySelector("#mainDataTable thead");
 const tbody = document.querySelector("#mainDataTable tbody");
 const footerSummary = section.querySelector(".table_footer .footer_summary");
 const pagination = section.querySelector(".table_footer .bulma-pagination");
 
 const defaultSort = sortSelect.value;
+
+addThead(tableHeaders);
 
 let appliedFilters = { query: "", sort: defaultSort };
 
@@ -84,6 +96,10 @@ function showTableMessage(text) {
   tbody.replaceChildren(tr);
 }
 
+function addThead(headers) {
+  thead.appendChild(TableUtils.createHeaderTr(headers));
+}
+
 function addBoothsToTbody(booths) {
   if (booths.length === 0) {
     showTableMessage("No booths found");
@@ -93,21 +109,17 @@ function addBoothsToTbody(booths) {
   tbody.replaceChildren(...booths.map(createTrFromBooth));
 }
 
+const boothColumns = [
+  TableUtils.pictureColumn(),
+  TableUtils.textColumn("name"),
+  TableUtils.textColumn("location"),
+  TableUtils.countryColumn(),
+  TableUtils.timeColumn(),
+  TableUtils.actionsColumn(),
+];
+
 function createTrFromBooth(booth) {
-  const tr = document.createElement("tr");
-
-  tr.appendChild(
-    TableUtils.createTdWithPicture(booth.pictureURL, `${booth.name} photo`),
-  );
-  tr.appendChild(TableUtils.createTdWithText(booth.name));
-  tr.appendChild(TableUtils.createTdWithText(booth.location));
-  tr.appendChild(
-    TableUtils.createTdWithCountry(booth.countryName, booth.countryCode),
-  );
-  tr.appendChild(TableUtils.createTdWithTime(booth.startTime, booth.endTime));
-  tr.appendChild(TableUtils.createTdActions());
-
-  return tr;
+  return TableUtils.createTrFromColumns(booth, boothColumns);
 }
 
 function clearTableFooter() {

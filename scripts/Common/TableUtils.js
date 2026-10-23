@@ -1,6 +1,109 @@
 export class TableUtils {
   constructor() {}
 
+  static createTr(cells) {
+    const tr = document.createElement("tr");
+
+    for (const cell of cells) {
+      tr.appendChild(cell ?? document.createElement("td"));
+    }
+
+    return tr;
+  }
+
+  static createTrFromColumns(item, columns) {
+    return TableUtils.createTr(columns.map((column) => column(item)));
+  }
+
+  static emptyColumn() {
+    return () => document.createElement("td");
+  }
+
+  static textColumn(property) {
+    return (item) => TableUtils.createTdWithText(item[property]);
+  }
+
+  static pictureColumn(urlProperty = "pictureURL", nameProperty = "name") {
+    return (item) =>
+      TableUtils.createTdWithPicture(
+        item[urlProperty],
+        `${item[nameProperty]} photo`,
+      );
+  }
+
+  static countryColumn(
+    nameProperty = "countryName",
+    codeProperty = "countryCode",
+  ) {
+    return (item) =>
+      TableUtils.createTdWithCountry(item[nameProperty], item[codeProperty]);
+  }
+
+  static timeColumn(startProperty = "startTime", endProperty = "endTime") {
+    return (item) =>
+      TableUtils.createTdWithTime(item[startProperty], item[endProperty]);
+  }
+
+  static actionsColumn() {
+    return () => TableUtils.createTdActions();
+  }
+
+  static createTh(content) {
+    const th = document.createElement("th");
+
+    if (content) {
+      th.appendChild(document.createTextNode(content));
+    }
+
+    return th;
+  }
+
+  static createHeaderTr(titles) {
+    const tr = document.createElement("tr");
+
+    for (const title of titles) {
+      tr.appendChild(TableUtils.createTh(title));
+    }
+
+    return tr;
+  }
+
+  static fillPagination(result, summaryContainer, paginationContainer, action) {
+    summaryContainer.textContent = `Showing ${result.startOfPage} to ${result.endOfPage} of ${result.total} items`;
+
+    paginationContainer.innerHTML = "";
+
+    const tablePaginationUl = document.createElement("ul");
+    tablePaginationUl.className = "bulma-pagination-list";
+
+    if (result.totalPages < 1) {
+      return;
+    }
+
+    for (let index = 1; index <= result.totalPages; index++) {
+      const li = document.createElement("li");
+
+      const isCurrent = index === result.currentPage;
+      const button = document.createElement("button");
+      button.className = isCurrent
+        ? "bulma-pagination-link bulma-is-current"
+        : "bulma-pagination-link";
+      button.textContent = index;
+
+      if (!isCurrent) {
+        button.onclick = function () {
+          action(index);
+        };
+      }
+
+      li.appendChild(button);
+
+      tablePaginationUl.appendChild(li);
+    }
+
+    paginationContainer.appendChild(tablePaginationUl);
+  }
+
   static createTdWithText(content) {
     const td = document.createElement("td");
     const elementContent = document.createTextNode(content);
@@ -100,41 +203,5 @@ export class TableUtils {
     button.appendChild(span);
 
     return button;
-  }
-
-  static fillPagination(result, summaryContainer, paginationContainer, action) {
-    summaryContainer.textContent = `Showing ${result.startOfPage} to ${result.endOfPage} of ${result.total} items`;
-
-    paginationContainer.innerHTML = "";
-
-    const tablePaginationUl = document.createElement("ul");
-    tablePaginationUl.className = "bulma-pagination-list";
-
-    if (result.totalPages < 1) {
-      return;
-    }
-
-    for (let index = 1; index <= result.totalPages; index++) {
-      const li = document.createElement("li");
-
-      const isCurrent = index === result.currentPage;
-      const button = document.createElement("button");
-      button.className = isCurrent
-        ? "bulma-pagination-link bulma-is-current"
-        : "bulma-pagination-link";
-      button.textContent = index;
-
-      if (!isCurrent) {
-        button.onclick = function () {
-          action(index);
-        };
-      }
-
-      li.appendChild(button);
-
-      tablePaginationUl.appendChild(li);
-    }
-
-    paginationContainer.appendChild(tablePaginationUl);
   }
 }
