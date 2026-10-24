@@ -1,3 +1,5 @@
+import Routes from "/scripts/Common/Routes.js";
+
 export class TileUtils {
   constructor() {}
 
@@ -21,8 +23,9 @@ export class TileUtils {
   }
 
   static createBaseUserTile(user, rightContent) {
-    const tile = document.createElement("div");
+    const tile = document.createElement("a");
     tile.className = "userTile";
+    tile.href = Routes.users.edit(user.id);
 
     const left = document.createElement("div");
     left.className = "left";
@@ -80,12 +83,17 @@ export class TileUtils {
   static createResetButton(onClick) {
     const button = document.createElement("button");
     button.className = "resetButton";
+    button.type = "button";
 
     const icon = document.createElement("span");
     icon.className = "es-icon es-icon-reset";
     button.appendChild(icon);
 
-    button.onclick = onClick;
+    button.addEventListener("click", (event) => {
+      event.preventDefault();
+      event.stopPropagation();
+      onClick(event);
+    });
 
     return button;
   }

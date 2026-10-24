@@ -64,4 +64,43 @@ export class UserAPIClient {
 
     return data;
   }
+
+  async fetchUserToEdit(id) {
+    if (!TokenCookie.has()) {
+      throw Error("User is not authenticated");
+    }
+
+    const token = TokenCookie.get();
+    const path = `admin/users/${id}`;
+
+    const client = new BaseAPIClient();
+
+    const data = await client.perform({
+      path,
+      method: HTTPMethod.GET,
+      authenticationToken: token,
+    });
+
+    return data;
+  }
+
+  async updateUser(id, body) {
+    if (!TokenCookie.has()) {
+      throw Error("User is not authenticated");
+    }
+
+    const token = TokenCookie.get();
+    const path = `admin/users/${id}`;
+
+    const client = new BaseAPIClient();
+
+    const data = await client.perform({
+      path,
+      method: HTTPMethod.PUT,
+      body,
+      authenticationToken: token,
+    });
+
+    return data;
+  }
 }

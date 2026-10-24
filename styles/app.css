@@ -388,3 +388,9 @@ body {
     background-color: var(--bulma-warning-50);
   }
 }
+
+.bulma-buttons {
+  .bulma-button.is-maxwidth {
+    flex: 1;
+  }
+}

@@ -245,7 +245,9 @@ createButton.addEventListener("click", submitForm);
 async function submitForm(event) {
   event.preventDefault();
 
-  if (isSubmitting || !validateForm()) return;
+  if (isSubmitting || !validateForm()) {
+    return;
+  }
 
   isSubmitting = true;
   createButton.classList.add("bulma-is-loading");
@@ -322,8 +324,6 @@ function hideFieldError(name, withInput = true) {
   }
 }
 
-// --- Calcul des erreurs (aucun accès au DOM en écriture) ---
-
 function getPictureError() {
   const file = form.elements.picture.files[0];
 
@@ -342,7 +342,7 @@ function getPictureError() {
 
 function getTextError({ name, label }) {
   const value = form.elements[name].value.trim();
-  const { minLength, maxLength } = MODEL_CONSTRAINT[name];
+  const { minLength, maxLength } = MODEL_CONSTRAINT.booth[name];
 
   if (value.length < minLength) {
     return `${label} must be at least ${minLength} characters`;
@@ -356,8 +356,6 @@ function getTextError({ name, label }) {
 function isFormValid() {
   return !getPictureError() && TEXT_FIELDS.every((f) => !getTextError(f));
 }
-
-// --- Affichage des erreurs (s'appuie sur les fonctions ci-dessus) ---
 
 function validatePicture() {
   const message = getPictureError();
@@ -388,8 +386,6 @@ function validateForm() {
 
   return results.every(Boolean);
 }
-
-// --- Bouton : utilise la même validation que la soumission ---
 
 function toggleCreateButtonDisabled() {
   createButton.disabled = isSubmitting || !isFormValid();
