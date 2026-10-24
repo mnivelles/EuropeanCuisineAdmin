@@ -62,6 +62,7 @@ function applyFilters() {
 function reset() {
   searchInput.value = "";
   sortSelect.value = defaultSort;
+  filterSelect.value = defaultFilter;
 
   applyFilters();
 }
@@ -123,7 +124,7 @@ function addUsersToTbody(users) {
 }
 
 const userColumns = [
-  TableUtils.emptyColumn(),
+  TableUtils.userStatusColumn(),
   TableUtils.pictureColumn(),
   TableUtils.textColumn("name"),
   TableUtils.textColumn("email"),

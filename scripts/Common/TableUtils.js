@@ -53,6 +53,10 @@ export class TableUtils {
       TableUtils.#createTdWithRole(item[roleProperty], item[nameProperty]);
   }
 
+  static userStatusColumn(statusProperty = "status") {
+    return (item) => TableUtils.#createTdWithUserStatus(item[statusProperty]);
+  }
+
   static actionsColumn() {
     return () => TableUtils.#createTdActions();
   }
@@ -203,6 +207,24 @@ export class TableUtils {
     chip.appendChild(label);
 
     td.appendChild(chip);
+
+    return td;
+  }
+
+  static #createTdWithUserStatus(status) {
+    const td = document.createElement("td");
+
+    if (status === "disabled") {
+      const disabledIndicator = document.createElement("div");
+      disabledIndicator.className = "disabledUserIndicator";
+
+      const span = document.createElement("span");
+      span.className = "es-icon es-icon-user-disabled";
+
+      disabledIndicator.appendChild(span);
+
+      td.appendChild(disabledIndicator);
+    }
 
     return td;
   }

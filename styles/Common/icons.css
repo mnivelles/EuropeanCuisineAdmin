@@ -1,8 +1,8 @@
 @font-face {
   font-family: "Escalade-Icon";
   src:
-    url("/fonts/Escalade-Icon.woff") format("woff"),
-    url("/fonts/Escalade-Icon.ttf") format("truetype");
+    url("/fonts/Escalade-Icon.woff?v=0.3") format("woff"),
+    url("/fonts/Escalade-Icon.ttf?v=0.3") format("truetype");
   font-weight: normal;
   font-style: normal;
   font-display: block;
@@ -21,6 +21,9 @@
   /* Better Font Rendering =========== */
   -webkit-font-smoothing: antialiased;
   -moz-osx-font-smoothing: grayscale;
+}
+.es-icon-user-disabled:before {
+  content: "\f367";
 }
 .es-icon-tile:before {
   content: "\f520";
