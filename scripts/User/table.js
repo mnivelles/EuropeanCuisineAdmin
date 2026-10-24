@@ -1,6 +1,6 @@
 import { Header } from "/scripts/Common/Header.js";
 import { Components } from "/scripts/Common/Components.js";
-import { SEGMENTS } from "/scripts/Common/Routes.js";
+import Routes, { SEGMENTS } from "/scripts/Common/Routes.js";
 import { UserAPIClient } from "/scripts/APIClient/UserAPIClient.js";
 import { TableUtils } from "/scripts/Common/TableUtils.js";
 
@@ -72,7 +72,10 @@ function setLoading(isLoading) {
   applyButton.classList.toggle("bulma-is-loading", isLoading);
 }
 
+let currentPage = 1;
+
 async function fillTable(page = 1) {
+  currentPage = page;
   setLoading(true);
 
   try {
@@ -131,7 +134,7 @@ const userColumns = [
   TableUtils.textColumn("email"),
   TableUtils.roleColumn("role"),
   TableUtils.textColumn("creationDate"),
-  TableUtils.actionsColumn(),
+  TableUtils.actionsColumn(getUserActions),
 ];
 
 function createTrFromUser(user) {
@@ -171,4 +174,42 @@ function createSelectOption(value, label) {
   option.textContent = label;
 
   return option;
+}
+
+function getUserActions(user) {
+  if (user.status === "disabled") {
+    return [{ type: "reset", onClick: enableUser }];
+  }
+
+  return [
+    {
+      type: "edit",
+      onClick: (user) => {
+        window.location.href = Routes.users.edit(user.id);
+      },
+    },
+    { type: "delete", onClick: disableUser },
+  ];
+}
+
+async function enableUser(user) {
+  try {
+    await new UserAPIClient().enableUser(user.id);
+    await fillTable(currentPage);
+  } catch (error) {
+    console.error(error);
+  }
+}
+
+async function disableUser(user) {
+  if (!confirm("Disable this user?")) {
+    return;
+  }
+
+  try {
+    await new UserAPIClient().disableUser(user.id);
+    await fillTable(currentPage);
+  } catch (error) {
+    console.error(error);
+  }
 }

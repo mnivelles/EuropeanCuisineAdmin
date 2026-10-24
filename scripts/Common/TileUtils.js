@@ -3,9 +3,9 @@ import Routes from "/scripts/Common/Routes.js";
 export class TileUtils {
   constructor() {}
 
-  static createUserTile(user) {
+  static createUserTile(user, onReset) {
     if (user.status === "disabled") {
-      return TileUtils.createUserResetTile(user, () => {});
+      return TileUtils.createUserResetTile(user, onReset);
     } else {
       return TileUtils.createUserRoleTile(user);
     }

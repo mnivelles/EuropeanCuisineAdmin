@@ -60,7 +60,10 @@ function setLoading(isLoading) {
   applyButton.classList.toggle("bulma-is-loading", isLoading);
 }
 
+let currentPage = 1;
+
 async function fillTable(page = 1) {
+  currentPage = page;
   setLoading(true);
 
   try {
@@ -102,7 +105,7 @@ function addUsersToTiles(users) {
 }
 
 function createTileFromUser(user) {
-  return TileUtils.createUserTile(user);
+  return TileUtils.createUserTile(user, enableUser);
 }
 
 function clearTableFooter() {
@@ -138,4 +141,13 @@ function createSelectOption(value, label) {
   option.textContent = label;
 
   return option;
+}
+
+async function enableUser(user) {
+  try {
+    await new UserAPIClient().enableUser(user.id);
+    await fillTable(currentPage);
+  } catch (error) {
+    console.error(error);
+  }
 }

@@ -57,8 +57,13 @@ export class TableUtils {
     return (item) => TableUtils.#createTdWithUserStatus(item[statusProperty]);
   }
 
-  static actionsColumn() {
-    return () => TableUtils.#createTdActions();
+  static actionsColumn(actions = [{ type: "edit" }, { type: "delete" }]) {
+    return (item) => {
+      const resolvedActions =
+        typeof actions === "function" ? actions(item) : actions;
+
+      return TableUtils.#createTdActions(item, resolvedActions);
+    };
   }
 
   static createTh(content) {
@@ -229,39 +234,46 @@ export class TableUtils {
     return td;
   }
 
-  static #createTdActions() {
+  static #ACTION_BUTTONS = {
+    edit: { className: "bulma-is-primary", icon: "es-icon-edit" },
+    delete: { className: "bulma-is-danger", icon: "es-icon-delete" },
+    reset: { className: "bulma-is-success", icon: "es-icon-reset" },
+    reservations: { className: "bulma-is-info", icon: "es-icon-reset" },
+  };
+
+  static #createTdActions(item, actions) {
     const td = document.createElement("td");
 
     const p = document.createElement("p");
     p.className = "bulma-buttons";
-    p.appendChild(TableUtils.#createEditButton());
-    p.appendChild(TableUtils.#createDeleteButton());
+
+    for (const action of actions) {
+      p.appendChild(TableUtils.#createActionButton(action, item));
+    }
 
     td.appendChild(p);
 
     return td;
   }
 
-  static #createEditButton() {
+  static #createActionButton({ type, onClick }, item) {
+    const definition = TableUtils.#ACTION_BUTTONS[type];
+
+    if (!definition) {
+      throw new Error(`Unknown action type: ${type}`);
+    }
+
     const button = document.createElement("button");
-    button.className = "bulma-button bulma-is-primary";
+    button.type = "button";
+    button.className = `bulma-button ${definition.className}`;
 
     const span = document.createElement("span");
-    span.className = "es-icon es-icon-edit bulma-icon";
-
+    span.className = `es-icon ${definition.icon} bulma-icon`;
     button.appendChild(span);
 
-    return button;
-  }
-
-  static #createDeleteButton() {
-    const button = document.createElement("button");
-    button.className = "bulma-button bulma-is-danger";
-
-    const span = document.createElement("span");
-    span.className = "es-icon es-icon-delete bulma-icon";
-
-    button.appendChild(span);
+    if (onClick) {
+      button.addEventListener("click", (event) => onClick(item, event));
+    }
 
     return button;
   }

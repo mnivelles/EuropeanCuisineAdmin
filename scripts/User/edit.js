@@ -1,6 +1,7 @@
 import { Header } from "/scripts/Common/Header.js";
 import { UserAPIClient } from "/scripts/APIClient/UserAPIClient.js";
 import { MODEL_CONSTRAINT } from "/scripts/Common/Constraints.js";
+import Routes from "/scripts/Common/Routes.js";
 
 Header.render();
 
@@ -345,3 +346,37 @@ function setupFormValidation() {
 }
 
 setupFormValidation();
+
+// Disable Button
+
+deleteButton.addEventListener("click", disableUser);
+
+async function disableUser(event) {
+  event.preventDefault();
+
+  if (isSubmitting) {
+    return;
+  }
+
+  if (!confirm("Disable this user?")) {
+    return;
+  }
+
+  isSubmitting = true;
+  deleteButton.classList.add("bulma-is-loading");
+  deleteButton.disabled = true;
+  toggleUpdateButtonDisabled();
+
+  try {
+    await new UserAPIClient().disableUser(id);
+
+    window.location.href = Routes.users.tiles;
+  } catch (error) {
+    showFormError(error.message);
+
+    isSubmitting = false;
+    deleteButton.classList.remove("bulma-is-loading");
+    deleteButton.disabled = false;
+    toggleUpdateButtonDisabled();
+  }
+}
