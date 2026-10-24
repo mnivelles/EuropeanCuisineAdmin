@@ -85,6 +85,10 @@
   }
 }
 
-.userTile:hover {
+.userTile:not(.isDisabled):hover {
   background-color: var(--bulma-scheme-main-bis);
+}
+
+.userTile.isDisabled {
+  cursor: default;
 }

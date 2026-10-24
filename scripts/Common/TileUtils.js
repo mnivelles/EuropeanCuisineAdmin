@@ -23,9 +23,16 @@ export class TileUtils {
   }
 
   static createBaseUserTile(user, rightContent) {
+    const isDisabled = user.status === "disabled";
+
     const tile = document.createElement("a");
     tile.className = "userTile";
-    tile.href = Routes.users.edit(user.id);
+
+    if (isDisabled) {
+      tile.classList.add("isDisabled");
+    } else {
+      tile.href = Routes.users.edit(user.id);
+    }
 
     const left = document.createElement("div");
     left.className = "left";
