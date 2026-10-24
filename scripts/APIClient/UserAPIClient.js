@@ -8,6 +8,7 @@ export class UserAPIClient {
     query = "",
     sort = "name",
     role = "all",
+    status = "all",
     page = 1,
     per = 10,
   }) {
@@ -16,8 +17,9 @@ export class UserAPIClient {
     }
 
     const updatedRole = role == "all" ? "" : role;
+    const updatedStatus = status == "all" ? "" : status;
     const token = TokenCookie.get();
-    const path = `admin/users?query=${query}&sort=${sort}&role=${updatedRole}&page=${page}&per=${per}`;
+    const path = `admin/users?query=${query}&sort=${sort}&role=${updatedRole}&status=${updatedStatus}&page=${page}&per=${per}`;
 
     const client = new BaseAPIClient();
 

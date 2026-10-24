@@ -19,17 +19,24 @@ const applyButton = toolbar.querySelector(".bulma-button.apply");
 const resetButton = toolbar.querySelector(".bulma-button.reset");
 const searchInput = toolbar.querySelector(".bulma-input.search");
 const sortSelect = toolbar.querySelector(".sortSelect");
-const filterSelect = toolbar.querySelector(".filterSelect");
+const roleFilterSelect = toolbar.querySelector(".roleFilterSelect");
+const statusFilterSelect = toolbar.querySelector(".statusFilterSelect");
 const tilesSection = section.querySelector("#tilesSection");
 const footerSummary = section.querySelector(".table_footer .footer_summary");
 const pagination = section.querySelector(".table_footer .bulma-pagination");
 
 const defaultSort = sortSelect.value;
-const defaultFilter = "all";
+const defaultRoleFilter = "all";
+const defaultStatusFilter = "all";
 
-createFilterSelect();
+createRoleFilterSelect();
 
-let appliedFilters = { query: "", sort: defaultSort, role: defaultFilter };
+let appliedFilters = {
+  query: "",
+  sort: defaultSort,
+  role: defaultRoleFilter,
+  status: defaultStatusFilter,
+};
 
 applyButton.addEventListener("click", applyFilters);
 resetButton.addEventListener("click", reset);
@@ -43,7 +50,8 @@ function applyFilters() {
   appliedFilters = {
     query: searchInput.value.trim(),
     sort: sortSelect.value,
-    role: filterSelect.value,
+    role: roleFilterSelect.value,
+    status: statusFilterSelect.value,
   };
   fillTable();
 }
@@ -51,7 +59,8 @@ function applyFilters() {
 function reset() {
   searchInput.value = "";
   sortSelect.value = defaultSort;
-  filterSelect.value = defaultFilter;
+  roleFilterSelect.value = defaultRoleFilter;
+  statusFilterSelect.value = defaultStatusFilter;
 
   applyFilters();
 }
@@ -113,12 +122,12 @@ function clearTableFooter() {
   pagination.replaceChildren();
 }
 
-async function createFilterSelect() {
-  filterSelect.innerHTML = "";
+async function createRoleFilterSelect() {
+  roleFilterSelect.innerHTML = "";
 
-  const allOption = createSelectOption(defaultFilter, "All roles");
+  const allOption = createSelectOption(defaultRoleFilter, "All roles");
 
-  filterSelect.appendChild(allOption);
+  roleFilterSelect.appendChild(allOption);
 
   try {
     let options = await new UserAPIClient().fetchUserRoleOptionList();
@@ -128,7 +137,7 @@ async function createFilterSelect() {
 
       const optionElement = createSelectOption(option.value, option.label);
 
-      filterSelect.appendChild(optionElement);
+      roleFilterSelect.appendChild(optionElement);
     }
   } catch (error) {
     console.error(error);
