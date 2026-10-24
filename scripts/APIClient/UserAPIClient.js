@@ -45,4 +45,23 @@ export class UserAPIClient {
     };
     return result;
   }
+
+  async fetchUserRoleOptionList() {
+    if (!TokenCookie.has()) {
+      throw Error("User is not authenticated");
+    }
+
+    const token = TokenCookie.get();
+    const path = "admin/users/roles/options";
+
+    const client = new BaseAPIClient();
+
+    const data = await client.perform({
+      path,
+      method: HTTPMethod.GET,
+      authenticationToken: token,
+    });
+
+    return data;
+  }
 }

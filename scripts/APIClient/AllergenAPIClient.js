@@ -8,16 +8,11 @@ export class AllergenAPIClient {
 
     const client = new BaseAPIClient();
 
-    try {
-      const data = await client.perform({
-        path,
-        method: HTTPMethod.GET,
-      });
+    const data = await client.perform({
+      path,
+      method: HTTPMethod.GET,
+    });
 
-      return data;
-    } catch (error) {
-      console.error(error);
-      return [];
-    }
+    return data;
   }
 }
