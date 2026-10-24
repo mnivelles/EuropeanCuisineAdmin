@@ -127,7 +127,7 @@ const userColumns = [
   TableUtils.pictureColumn(),
   TableUtils.textColumn("name"),
   TableUtils.textColumn("email"),
-  TableUtils.textColumn("role"),
+  TableUtils.roleColumn("role"),
   TableUtils.textColumn("creationDate"),
   TableUtils.actionsColumn(),
 ];

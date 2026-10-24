@@ -52,37 +52,6 @@
 }
 
 .userTile {
-  .roleChip {
-    border-radius: 99px;
-    border: 1px solid var(--bulma-grey-lighter);
-
-    padding: 3px 9px;
-
-    font-size: 13px;
-    font-weight: 500;
-
-    .indicator {
-      display: inline-block;
-      width: 10px;
-      height: 10px;
-      border-radius: 4px;
-
-      &.goer {
-        background-color: var(--bulma-success);
-      }
-
-      &.staff {
-        background-color: var(--bulma-info-35);
-      }
-
-      &.admin {
-        background-color: var(--bulma-warning-50);
-      }
-    }
-  }
-}
-
-.userTile {
   .resetButton {
     display: flex;
     align-items: center;

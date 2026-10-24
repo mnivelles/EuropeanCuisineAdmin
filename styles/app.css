@@ -354,3 +354,37 @@ body {
     background-color: var(--bulma-danger-95);
   }
 }
+
+.roleChip {
+  display: inline-flex;
+  flex-direction: row;
+  align-items: center;
+  gap: 0.25rem;
+
+  border-radius: 99px;
+  border: 1px solid var(--bulma-grey-lighter);
+
+  padding: 3px 9px;
+
+  font-size: 13px;
+  font-weight: 500;
+
+  .indicator {
+    display: inline-block;
+    width: 10px;
+    height: 10px;
+    border-radius: 4px;
+  }
+
+  &.festival_goer .indicator {
+    background-color: var(--bulma-success);
+  }
+
+  &.staff .indicator {
+    background-color: var(--bulma-info-35);
+  }
+
+  &.admin .indicator {
+    background-color: var(--bulma-warning-50);
+  }
+}

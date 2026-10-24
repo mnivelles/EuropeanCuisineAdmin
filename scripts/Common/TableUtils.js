@@ -48,6 +48,11 @@ export class TableUtils {
     return (item) => TableUtils.#createTdWithStatus(item[statusProperty]);
   }
 
+  static roleColumn(roleProperty = "role", nameProperty = "roleName") {
+    return (item) =>
+      TableUtils.#createTdWithRole(item[roleProperty], item[nameProperty]);
+  }
+
   static actionsColumn() {
     return () => TableUtils.#createTdActions();
   }
@@ -175,6 +180,27 @@ export class TableUtils {
     const elementContent = document.createTextNode(content);
 
     chip.appendChild(elementContent);
+
+    td.appendChild(chip);
+
+    return td;
+  }
+
+  static #createTdWithRole(role, name) {
+    const td = document.createElement("td");
+
+    const chip = document.createElement("div");
+    chip.className = "roleChip";
+    chip.classList.add(role);
+
+    const indicator = document.createElement("span");
+    indicator.className = "indicator";
+    chip.appendChild(indicator);
+
+    const label = document.createElement("span");
+    label.className = "label";
+    label.textContent = name;
+    chip.appendChild(label);
 
     td.appendChild(chip);
 
