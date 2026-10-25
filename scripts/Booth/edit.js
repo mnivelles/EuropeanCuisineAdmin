@@ -278,6 +278,8 @@ function splitReason(reason) {
 }
 
 function showFormError(message) {
+  clearFormSuccess();
+
   const box = document.getElementById("formError");
   const container = box.querySelector(".messages");
 
@@ -322,6 +324,7 @@ async function submitForm(event) {
   }
 
   isSubmitting = true;
+  clearFormSuccess();
   updateButton.classList.add("bulma-is-loading");
   updateButton.disabled = true;
 
@@ -332,6 +335,7 @@ async function submitForm(event) {
 
     clearFormError();
     fillForm(updatedBooth);
+    showFormSuccess("Booth updated successfully");
   } catch (error) {
     showFormError(error.message);
   } finally {
@@ -517,3 +521,24 @@ async function disableBooth(event) {
     toggleUpdateButtonDisabled();
   }
 }
+
+function showFormSuccess(message) {
+  const box = document.getElementById("formSuccess");
+  const container = box.querySelector(".messages");
+
+  container.textContent = message;
+  box.hidden = false;
+
+  box.scrollIntoView({ behavior: "smooth", block: "start" });
+
+  setTimeout(clearFormSuccess, 5000);
+}
+
+function clearFormSuccess() {
+  document.getElementById("formSuccess").hidden = true;
+}
+
+document
+  .getElementById("formSuccess")
+  .querySelector(".bulma-delete")
+  .addEventListener("click", clearFormSuccess);
