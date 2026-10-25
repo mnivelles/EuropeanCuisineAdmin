@@ -64,27 +64,42 @@ export class Header {
     userMenuContainer.id = "userMenuContainer";
 
     userMenuContainer.append(
-      Header.#createUserMenuButton(),
+      Header.#createUserMenuButton(user),
       Header.#createUserSettingsModal(user),
     );
 
     Header.#container.appendChild(userMenuContainer);
   }
 
-  static #createUserMenuButton() {
+  static #createUserMenuButton(user) {
+    const pictureURL = user.pictureURL;
+
     const button = Header.#createElement("button", "userMenu");
     button.type = "button";
     button.setAttribute("popovertarget", "userSettingsModal");
 
-    const photo = Header.#createElement("img", "userMenu_photo");
-    photo.src = "https://picsum.photos/seed/neko-mimi/600/300";
-    photo.alt = "User Picture";
+    if (!!pictureURL) {
+      const photo = Header.#createElement("img", "userMenu_photo");
+      photo.src = pictureURL;
+      photo.alt = "User Picture";
 
-    const indicator = Header.#createIcon(
-      "userMenu_indicator es-icon-chevron-down",
-    );
+      const indicator = Header.#createIcon(
+        "userMenu_indicator es-icon-chevron-down",
+      );
 
-    button.append(photo, indicator);
+      button.append(photo, indicator);
+    } else {
+      const initals = Header.#getUserInitials(user.name) ?? "😺";
+
+      const initialsElement = Header.#createElement("div", "userMenu_initials");
+      initialsElement.textContent = initals;
+
+      const indicator = Header.#createIcon(
+        "userMenu_indicator es-icon-chevron-down",
+      );
+
+      button.append(initialsElement, indicator);
+    }
 
     return button;
   }
@@ -166,5 +181,25 @@ export class Header {
     const icon = Header.#createElement("span", `es-icon ${className}`);
 
     return icon;
+  }
+
+  static #getUserInitials(name) {
+    const splitted = name.split(/\s+/).filter(Boolean);
+
+    if (splitted.length === 0) {
+      return null;
+    }
+
+    if (splitted.length === 1) {
+      const letters = Array.from(splitted[0]).slice(0, 2).join("");
+
+      // Équivalent de `capitalized` : 1re lettre en majuscule, le reste en minuscule
+      return letters.charAt(0).toUpperCase() + letters.slice(1).toLowerCase();
+    }
+
+    return splitted
+      .slice(0, 2)
+      .map((word) => (Array.from(word)[0] ?? "-").toUpperCase())
+      .join("");
   }
 }

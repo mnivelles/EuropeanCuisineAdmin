@@ -20,7 +20,11 @@ export class AuthAPIClient {
     const token = data.token;
 
     TokenCookie.set(token);
-    UserCookie.set({ name: data.name, email: data.email });
+    UserCookie.set({
+      name: data.name,
+      email: data.email,
+      pictureURL: data.pictureURL,
+    });
 
     window.location.href = Routes.home;
   }
