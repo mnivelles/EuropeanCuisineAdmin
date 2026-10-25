@@ -4,13 +4,20 @@ import { TokenCookie } from "/scripts/Auth/TokenCookie.js";
 export class BoothAPIClient {
   constructor() {}
 
-  async fetchBoothList({ query = "", sort = "name", page = 1, per = 10 }) {
+  async fetchBoothList({
+    query = "",
+    sort = "name",
+    status = "all",
+    page = 1,
+    per = 10,
+  }) {
     if (!TokenCookie.has()) {
       throw Error("User is not authenticated");
     }
 
+    const updatedStatus = status == "all" ? "" : status;
     const token = TokenCookie.get();
-    const path = `admin/booths?query=${query.trim()}&sort=${sort}&page=${page}&per=${per}`;
+    const path = `admin/booths?query=${query.trim()}&sort=${sort}&status=${updatedStatus}&page=${page}&per=${per}`;
 
     const client = new BaseAPIClient();
     const data = await client.perform({
@@ -69,5 +76,78 @@ export class BoothAPIClient {
     });
 
     return data;
+  }
+
+  async fetchBoothToEdit(id) {
+    if (!TokenCookie.has()) {
+      throw Error("User is not authenticated");
+    }
+
+    const token = TokenCookie.get();
+    const path = `admin/booths/${id}`;
+
+    const client = new BaseAPIClient();
+
+    const data = await client.perform({
+      path,
+      method: HTTPMethod.GET,
+      authenticationToken: token,
+    });
+
+    return data;
+  }
+
+  async updateBooth(id, body) {
+    if (!TokenCookie.has()) {
+      throw Error("User is not authenticated");
+    }
+
+    const token = TokenCookie.get();
+    const path = `admin/booths/${id}`;
+
+    const client = new BaseAPIClient();
+
+    const data = await client.perform({
+      path,
+      method: HTTPMethod.PUT,
+      body,
+      authenticationToken: token,
+    });
+
+    return data;
+  }
+
+  async enableBooth(id) {
+    if (!TokenCookie.has()) {
+      throw Error("User is not authenticated");
+    }
+
+    const token = TokenCookie.get();
+    const path = `admin/booths/${id}/enable`;
+
+    const client = new BaseAPIClient();
+
+    await client.perform({
+      path,
+      method: HTTPMethod.PATCH,
+      authenticationToken: token,
+    });
+  }
+
+  async disableBooth(id) {
+    if (!TokenCookie.has()) {
+      throw Error("User is not authenticated");
+    }
+
+    const token = TokenCookie.get();
+    const path = `admin/booths/${id}/disable`;
+
+    const client = new BaseAPIClient();
+
+    await client.perform({
+      path,
+      method: HTTPMethod.PATCH,
+      authenticationToken: token,
+    });
   }
 }

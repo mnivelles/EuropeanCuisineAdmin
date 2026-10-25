@@ -18,7 +18,7 @@ const TEXT_FIELDS = [
   { name: "email", label: "Email" },
 ];
 let isSubmitting = false;
-const MAX_PICTURE_SIZE = 1.5 * 1024 * 1024; // 1.5 MB
+const MAX_PICTURE_SIZE = MODEL_CONSTRAINT.image.maxSize;
 const ACCEPTED_PICTURE_TYPES = form.elements.picture.accept
   .split(",")
   .map((type) => type.trim());

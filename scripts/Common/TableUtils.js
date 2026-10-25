@@ -57,6 +57,10 @@ export class TableUtils {
     return (item) => TableUtils.#createTdWithUserStatus(item[statusProperty]);
   }
 
+  static boothStatusColumn(statusProperty = "status") {
+    return (item) => TableUtils.#createTdWithBoothStatus(item[statusProperty]);
+  }
+
   static actionsColumn(actions = [{ type: "edit" }, { type: "delete" }]) {
     return (item) => {
       const resolvedActions =
@@ -225,6 +229,24 @@ export class TableUtils {
 
       const span = document.createElement("span");
       span.className = "es-icon es-icon-user-disabled";
+
+      disabledIndicator.appendChild(span);
+
+      td.appendChild(disabledIndicator);
+    }
+
+    return td;
+  }
+
+  static #createTdWithBoothStatus(status) {
+    const td = document.createElement("td");
+
+    if (status === "disabled") {
+      const disabledIndicator = document.createElement("div");
+      disabledIndicator.className = "disabledIndicator";
+
+      const span = document.createElement("span");
+      span.className = "es-icon es-icon-disabled";
 
       disabledIndicator.appendChild(span);
 
