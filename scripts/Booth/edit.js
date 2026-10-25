@@ -6,8 +6,18 @@ import { BoothForm } from "/scripts/Booth/BoothForm.js";
 import { TimeForm } from "/scripts/Common/TimeForm.js";
 import { MODEL_CONSTRAINT } from "/scripts/Common/Constraints.js";
 import Routes from "/scripts/Common/Routes.js";
+import { Components } from "/scripts/Common/Components.js";
 
 Header.render();
+
+Components.addBreadcrumbIn(document.getElementById("mainBreadcrumb"), [
+  {
+    label: "Booths",
+    iconClass: "es-icon-booth",
+    href: Routes.booths.list,
+  },
+  { label: "Edit" },
+]);
 
 const form = document.getElementById("editForm");
 const updateButton = document.getElementById("updateButton");

@@ -6,6 +6,17 @@ import { Components } from "/scripts/Common/Components.js";
 
 Header.render();
 
+Components.addBreadcrumbIn(document.getElementById("mainBreadcrumb"), [
+  {
+    label: "Workshops",
+    iconClass: "es-icon-workshop",
+    href: Routes.workshops.list,
+  },
+  {
+    label: "Categories",
+  },
+]);
+
 const mainTabView = document.getElementById("mainTabView");
 const selectedSegment = "categories";
 Components.addSegmentedControlIn(

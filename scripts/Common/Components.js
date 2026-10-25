@@ -1,6 +1,7 @@
 export class Components {
   constructor() {}
 
+  // Segmented Control
   static addSegmentedControlIn(container, items, selectedValue) {
     container.innerHTML = "";
 
@@ -51,6 +52,58 @@ export class Components {
     if (text !== undefined) {
       element.textContent = text;
     }
+
+    return element;
+  }
+
+  // Breadcrumb
+
+  static addBreadcrumbIn(container, items) {
+    container.innerHTML = "";
+
+    container.appendChild(Components.#createBreadcrumb(items));
+  }
+
+  static #createBreadcrumb(items) {
+    const container = Components.#createElement("div", "breadcrumb");
+    const lastIndex = items.length - 1;
+
+    items.forEach((item, index) => {
+      const isCurrent = index === lastIndex;
+
+      if (index > 0) {
+        container.appendChild(
+          Components.#createElement(
+            "span",
+            "breadcrumb_separator es-icon es-icon-chevron-right",
+          ),
+        );
+      }
+
+      container.appendChild(Components.#createBreadcrumbItem(item, isCurrent));
+    });
+
+    return container;
+  }
+
+  static #createBreadcrumbItem({ label, iconClass, href }, isCurrent) {
+    const isLink = !isCurrent && href;
+    const element = Components.#createElement(
+      isLink ? "a" : "div",
+      isCurrent ? "breadcrumb_item isCurrent" : "breadcrumb_item",
+    );
+
+    if (isLink) {
+      element.href = href;
+    }
+
+    if (iconClass) {
+      element.appendChild(
+        Components.#createElement("span", `es-icon ${iconClass}`),
+      );
+    }
+
+    element.appendChild(Components.#createElement("span", "label", label));
 
     return element;
   }

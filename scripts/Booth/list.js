@@ -2,8 +2,16 @@ import { Header } from "/scripts/Common/Header.js";
 import Routes from "/scripts/Common/Routes.js";
 import { BoothAPIClient } from "/scripts/APIClient/BoothAPIClient.js";
 import { TableUtils } from "/scripts/Common/TableUtils.js";
+import { Components } from "/scripts/Common/Components.js";
 
 Header.render();
+
+Components.addBreadcrumbIn(document.getElementById("mainBreadcrumb"), [
+  {
+    label: "Booths",
+    iconClass: "es-icon-booth",
+  },
+]);
 
 const tableHeaders = [
   "",

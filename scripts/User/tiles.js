@@ -5,9 +5,16 @@ import { TableUtils } from "/scripts/Common/TableUtils.js";
 import { TileUtils } from "/scripts/Common/TileUtils.js";
 import { UserAPIClient } from "/scripts/APIClient/UserAPIClient.js";
 
-const itemsPerPage = 3;
-
 Header.render();
+
+Components.addBreadcrumbIn(document.getElementById("mainBreadcrumb"), [
+  {
+    label: "Users",
+    iconClass: "es-icon-user",
+  },
+]);
+
+const itemsPerPage = 3;
 
 const mainTabView = document.getElementById("mainTabView");
 const selectedSegment = "tiles";

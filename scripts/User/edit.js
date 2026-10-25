@@ -2,8 +2,18 @@ import { Header } from "/scripts/Common/Header.js";
 import { UserAPIClient } from "/scripts/APIClient/UserAPIClient.js";
 import { MODEL_CONSTRAINT } from "/scripts/Common/Constraints.js";
 import Routes from "/scripts/Common/Routes.js";
+import { Components } from "/scripts/Common/Components.js";
 
 Header.render();
+
+Components.addBreadcrumbIn(document.getElementById("mainBreadcrumb"), [
+  {
+    label: "Users",
+    iconClass: "es-icon-user",
+    href: Routes.users.tiles,
+  },
+  { label: "Edit" },
+]);
 
 const form = document.getElementById("editForm");
 const updateButton = document.getElementById("updateButton");

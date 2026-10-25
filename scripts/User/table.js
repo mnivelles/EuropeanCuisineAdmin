@@ -6,6 +6,13 @@ import { TableUtils } from "/scripts/Common/TableUtils.js";
 
 Header.render();
 
+Components.addBreadcrumbIn(document.getElementById("mainBreadcrumb"), [
+  {
+    label: "Users",
+    iconClass: "es-icon-user",
+  },
+]);
+
 const tableHeaders = [
   "",
   "",
