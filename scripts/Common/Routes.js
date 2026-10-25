@@ -19,7 +19,12 @@ const ROUTES = Object.freeze({
     create: "/workshops/create.html",
     edit: (id) => `/workshops/edit.html?id=${encodeURIComponent(id)}`,
     calendar: "/workshops/calendar.html",
-    categories: "/workshops/categories/index.html",
+    categories: {
+      list: "/workshops/categories/index.html",
+      create: "/workshops/categories/create.html",
+      edit: (id) =>
+        `/workshops/categories/edit.html?id=${encodeURIComponent(id)}`,
+    },
   },
 });
 
@@ -76,7 +81,7 @@ export const SEGMENTS = Object.freeze({
       value: "categories",
       label: "Categories",
       iconClass: "es-icon-category",
-      href: ROUTES.workshops.categories,
+      href: ROUTES.workshops.categories.list,
     },
   ],
   users: [
