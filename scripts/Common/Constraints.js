@@ -26,4 +26,12 @@ export const MODEL_CONSTRAINT = Object.freeze({
       maxLength: 254,
     },
   },
+  workshop: {
+    category: {
+      name: {
+        minLength: 1,
+        maxLength: 100,
+      },
+    },
+  },
 });

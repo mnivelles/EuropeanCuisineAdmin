@@ -153,10 +153,14 @@ async function deleteCategory(category) {
     return;
   }
 
-  // try {
-  //   await new BoothAPIClient().disableBooth(booth.id);
-  //   await fillTable(currentPage);
-  // } catch (error) {
-  //   console.error(error);
-  // }
+  try {
+    await new WorkshopCategoryAPIClient().deleteCategory(category.id);
+    await fillTable(currentPage);
+  } catch (error) {
+    console.error(error);
+
+    alert(
+      "Category can not be deleted. Check to see if there are any workshops in this category.",
+    );
+  }
 }

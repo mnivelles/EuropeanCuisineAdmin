@@ -37,4 +37,80 @@ export class WorkshopCategoryAPIClient {
     };
     return result;
   }
+
+  async createCategory(body) {
+    if (!TokenCookie.has()) {
+      throw Error("User is not authenticated");
+    }
+
+    const token = TokenCookie.get();
+    const path = "admin/categories";
+
+    const client = new BaseAPIClient();
+
+    let data = await client.perform({
+      path,
+      method: HTTPMethod.POST,
+      body,
+      authenticationToken: token,
+    });
+
+    return data;
+  }
+
+  async fetchCategoryToEdit(id) {
+    if (!TokenCookie.has()) {
+      throw Error("User is not authenticated");
+    }
+
+    const token = TokenCookie.get();
+    const path = `admin/categories/${id}`;
+
+    const client = new BaseAPIClient();
+
+    const data = await client.perform({
+      path,
+      method: HTTPMethod.GET,
+      authenticationToken: token,
+    });
+
+    return data;
+  }
+
+  async updateCategory(id, body) {
+    if (!TokenCookie.has()) {
+      throw Error("User is not authenticated");
+    }
+
+    const token = TokenCookie.get();
+    const path = `admin/categories/${id}`;
+
+    const client = new BaseAPIClient();
+
+    const data = await client.perform({
+      path,
+      method: HTTPMethod.PUT,
+      body,
+      authenticationToken: token,
+    });
+
+    return data;
+  }
+
+  async deleteCategory(id) {
+    if (!TokenCookie.has()) {
+      throw Error("User is not authenticated");
+    }
+
+    const token = TokenCookie.get();
+    const path = `admin/categories/${id}`;
+
+    const client = new BaseAPIClient();
+
+    await client.perform({
+      path,
+      method: HTTPMethod.DELETE,
+      authenticationToken: token,
+    });
+  }
 }
