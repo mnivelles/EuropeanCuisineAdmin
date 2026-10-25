@@ -127,6 +127,21 @@ body {
     border-radius: 50%;
   }
 
+  .userMenu_initials {
+    display: inline-flex;
+    align-items: center;
+    justify-content: center;
+
+    width: 3.75rem;
+    height: 3.75rem;
+    border-radius: 99px;
+    background-color: var(--bulma-primary-15);
+
+    color: white;
+    font-weight: 700;
+    font-size: 1.75rem;
+  }
+
   .userMenu_indicator {
     display: flex;
     align-items: center;
