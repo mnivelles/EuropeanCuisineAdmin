@@ -5,6 +5,8 @@
 }
 
 .userTile {
+  position: relative;
+
   border-radius: 1.25rem;
   border: 1px solid var(--bulma-grey-lighter);
   overflow: hidden;
@@ -91,4 +93,25 @@
 
 .userTile.isDisabled {
   cursor: default;
+}
+
+.userTile .disabledIcon {
+  position: absolute;
+  bottom: 0;
+  left: 0;
+
+  width: 2rem;
+  height: 2rem;
+  background-color: var(--bulma-danger-40);
+
+  border-top-right-radius: 0.75rem;
+  border-top: 1px solid white;
+  border-right: 1px solid white;
+
+  display: inline-flex;
+  align-items: center;
+  justify-content: center;
+
+  font-size: 1.125rem;
+  color: white;
 }

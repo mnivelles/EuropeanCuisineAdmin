@@ -67,6 +67,12 @@ export class TileUtils {
     tile.appendChild(left);
     tile.appendChild(right);
 
+    if (isDisabled) {
+      const disabledIcon = document.createElement("span");
+      disabledIcon.className = "es-icon es-icon-user-disabled disabledIcon";
+      tile.appendChild(disabledIcon);
+    }
+
     return tile;
   }
 
