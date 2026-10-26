@@ -5,8 +5,18 @@ import { TimeAPIClient } from "/scripts/APIClient/TimeAPIClient.js";
 import { TimeForm } from "/scripts/Common/TimeForm.js";
 import { MODEL_CONSTRAINT } from "/scripts/Common/Constraints.js";
 import Routes from "/scripts/Common/Routes.js";
+import { Components } from "/scripts/Common/Components.js";
 
 Header.render();
+
+Components.addBreadcrumbIn(document.getElementById("mainBreadcrumb"), [
+  {
+    label: "Workshops",
+    iconClass: "es-icon-workshop",
+    href: Routes.workshops.list,
+  },
+  { label: "Creation" },
+]);
 
 const form = document.getElementById("createForm");
 const createButton = document.getElementById("createButton");
