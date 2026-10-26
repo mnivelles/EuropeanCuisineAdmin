@@ -142,107 +142,49 @@ const workshopColumns = [
   TableUtils.textColumn("date"),
   TableUtils.timeColumn(),
   TableUtils.textColumn("capacity"),
-  workshopActionsColumn(),
+  TableUtils.actionsColumn(getWorkshopActions),
 ];
 
 function createTrFromWorkshop(workshop) {
   return TableUtils.createTrFromColumns(workshop, workshopColumns);
 }
 
-function workshopActionsColumn() {
-  return (workshop) => {
-    const td = document.createElement("td");
-    const buttons = document.createElement("p");
-    buttons.className = "bulma-buttons";
+function getWorkshopActions(workshop) {
+  if (workshop.status === "cancelled") {
+    return [{ type: "reset", onClick: publishWorkshop }];
+  }
 
-    if (workshop.status === "cancelled") {
-      const reactivateButton = document.createElement("button");
-      reactivateButton.type = "button";
-      reactivateButton.className = "bulma-button bulma-is-success";
+  return [
+    {
+      type: "edit",
+      onClick: (workshop) => {
+        window.location.href = Routes.workshops.edit(workshop.id);
+      },
+    },
+    { type: "delete", onClick: cancelWorkshop },
+  ];
+}
 
-      const reactivateIcon = document.createElement("span");
-      reactivateIcon.className = "es-icon bulma-icon";
-      reactivateIcon.textContent = "↻";
+async function publishWorkshop(workshop) {
+  try {
+    await new WorkshopAPIClient().publishWorkshop(workshop.id);
+    await fillTable(currentPage);
+  } catch (error) {
+    console.error(error);
+  }
+}
 
-      reactivateButton.appendChild(reactivateIcon);
+async function cancelWorkshop(workshop) {
+  if (!confirm("Cancel this workshop?")) {
+    return;
+  }
 
-      reactivateButton.addEventListener("click", async () => {
-        const confirmed = window.confirm(
-          `Do you want to reactivate the workshop "${workshop.name}"?`,
-        );
-
-        if (!confirmed) {
-          return;
-        }
-
-        reactivateButton.disabled = true;
-
-        try {
-          await new WorkshopAPIClient().reactivateWorkshop(workshop.id);
-          await fillTable(currentPage);
-        } catch (error) {
-          console.error("Failed to reactivate workshop:", error);
-          window.alert("Failed to reactivate workshop.");
-          reactivateButton.disabled = false;
-        }
-      });
-
-      buttons.appendChild(reactivateButton);
-      td.appendChild(buttons);
-      return td;
-    }
-
-    const editButton = document.createElement("button");
-    editButton.type = "button";
-    editButton.className = "bulma-button bulma-is-primary";
-
-    const editIcon = document.createElement("span");
-    editIcon.className = "es-icon es-icon-edit bulma-icon";
-    editButton.appendChild(editIcon);
-
-    editButton.addEventListener("click", () => {
-      window.location.href = Routes.workshops.edit(workshop.id);
-    });
-
-    const deleteButton = document.createElement("button");
-    deleteButton.type = "button";
-    deleteButton.className = "bulma-button bulma-is-danger";
-
-    const deleteIcon = document.createElement("span");
-    deleteIcon.className = "es-icon es-icon-delete bulma-icon";
-    deleteButton.appendChild(deleteIcon);
-
-    deleteButton.addEventListener("click", async () => {
-      if (workshop.status === "cancelled") {
-        return;
-      }
-
-      const confirmed = window.confirm(
-        `Do you really want to delete the workshop "${workshop.name}"?`,
-      );
-
-      if (!confirmed) {
-        return;
-      }
-
-      deleteButton.disabled = true;
-
-      try {
-        await new WorkshopAPIClient().cancelWorkshop(workshop.id);
-        await fillTable(currentPage);
-      } catch (error) {
-        console.error(error);
-        window.alert("Failed to cancel workshop.");
-        deleteButton.disabled = false;
-      }
-    });
-
-    buttons.appendChild(editButton);
-    buttons.appendChild(deleteButton);
-    td.appendChild(buttons);
-
-    return td;
-  };
+  try {
+    await new WorkshopAPIClient().cancelWorkshop(workshop.id);
+    await fillTable(currentPage);
+  } catch (error) {
+    console.error(error);
+  }
 }
 
 function clearTableFooter() {

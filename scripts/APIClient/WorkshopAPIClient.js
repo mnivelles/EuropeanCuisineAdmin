@@ -54,13 +54,13 @@ export class WorkshopAPIClient {
   const client = new BaseAPIClient();
 
   return await client.perform({
-    path: `admin/workshops/${encodeURIComponent(id)}`,
-    method: HTTPMethod.DELETE,
+    path: `admin/workshops/${encodeURIComponent(id)}/cancel`,
+    method: HTTPMethod.PATCH,
     authenticationToken: token,
   });
 }
 
-async reactivateWorkshop(id) {
+async publishWorkshop(id) {
   if (!TokenCookie.has()) {
     throw new Error("No authentication token found");
   }
@@ -69,8 +69,8 @@ async reactivateWorkshop(id) {
   const client = new BaseAPIClient();
 
   return await client.perform({
-    path: `admin/workshops/${encodeURIComponent(id)}/reactivate`,
-    method: HTTPMethod.POST,
+    path: `admin/workshops/${encodeURIComponent(id)}/publish`,
+    method: HTTPMethod.PATCH,
     authenticationToken: token,
   });
 }
