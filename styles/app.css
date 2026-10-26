@@ -127,6 +127,21 @@ body {
     border-radius: 50%;
   }
 
+  .userMenu_initials {
+    display: inline-flex;
+    align-items: center;
+    justify-content: center;
+
+    width: 3.75rem;
+    height: 3.75rem;
+    border-radius: 99px;
+    background-color: var(--bulma-primary-15);
+
+    color: white;
+    font-weight: 700;
+    font-size: 1.75rem;
+  }
+
   .userMenu_indicator {
     display: flex;
     align-items: center;
@@ -246,8 +261,7 @@ body {
   }
 }
 
-.page .page_main .main_header .breadcrumb,
-.page .page_island .island_header .breadcrumb {
+.breadcrumb {
   display: inline-flex;
   flex-direction: row;
   align-items: center;
@@ -352,5 +366,45 @@ body {
   &.cancelled {
     color: var(--bulma-danger-35);
     background-color: var(--bulma-danger-95);
+  }
+}
+
+.roleChip {
+  display: inline-flex;
+  flex-direction: row;
+  align-items: center;
+  gap: 0.25rem;
+
+  border-radius: 99px;
+  border: 1px solid var(--bulma-grey-lighter);
+
+  padding: 3px 9px;
+
+  font-size: 13px;
+  font-weight: 500;
+
+  .indicator {
+    display: inline-block;
+    width: 10px;
+    height: 10px;
+    border-radius: 4px;
+  }
+
+  &.festival_goer .indicator {
+    background-color: var(--bulma-success);
+  }
+
+  &.staff .indicator {
+    background-color: var(--bulma-info-35);
+  }
+
+  &.admin .indicator {
+    background-color: var(--bulma-warning-50);
+  }
+}
+
+.bulma-buttons {
+  .bulma-button.is-maxwidth {
+    flex: 1;
   }
 }

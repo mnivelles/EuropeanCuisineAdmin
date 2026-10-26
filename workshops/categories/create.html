@@ -1,0 +1,57 @@
+<!doctype html>
+<html lang="en">
+  <head>
+    <meta charset="UTF-8" />
+    <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+    <link rel="stylesheet" href="/styles/Common/icons.css" />
+    <link rel="stylesheet" href="/styles/app.css" />
+    <link rel="stylesheet" href="/styles/Common/form.css" />
+    <title>Create Workshop Category | Admin - Escale Europe</title>
+  </head>
+  <body>
+    <div class="page bulma-container bulma-is-widescreen">
+      <div id="pageHeader" class="page_header"></div>
+
+      <div class="page_island">
+        <div class="island_header">
+          <div id="mainBreadcrumb"></div>
+        </div>
+
+        <div
+          id="formError"
+          class="bulma-notification bulma-is-danger bulma-is-light"
+          hidden
+        >
+          <button class="bulma-delete" type="button"></button>
+          <div class="messages"></div>
+        </div>
+
+        <form action="" id="createForm" class="island_form">
+          <div class="bulma-field name">
+            <label class="bulma-label" for="field_name">Name</label>
+            <p class="bulma-control">
+              <input
+                id="field_name"
+                class="bulma-input"
+                name="name"
+                type="text"
+                placeholder="Beverage Tasting"
+              />
+            </p>
+            <div id="fieldError_name" class="fieldError" hidden></div>
+          </div>
+
+          <button
+            id="createButton"
+            class="bulma-button bulma-is-primary"
+            type="button"
+          >
+            Create
+          </button>
+        </form>
+      </div>
+    </div>
+
+    <script type="module" src="/scripts/Workshop/Category/create.js"></script>
+  </body>
+</html>

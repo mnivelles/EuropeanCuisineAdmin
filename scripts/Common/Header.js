@@ -1,6 +1,7 @@
 import Routes, { NAV_ITEMS } from "/scripts/Common/Routes.js";
 import { AuthAPIClient } from "/scripts/APIClient/AuthAPIClient.js";
 import { UserCookie } from "/scripts/Auth/UserCookie.js";
+import { StringUtils } from "/scripts/Common/StringUtils.js";
 
 export class Header {
   constructor() {}
@@ -64,27 +65,42 @@ export class Header {
     userMenuContainer.id = "userMenuContainer";
 
     userMenuContainer.append(
-      Header.#createUserMenuButton(),
+      Header.#createUserMenuButton(user),
       Header.#createUserSettingsModal(user),
     );
 
     Header.#container.appendChild(userMenuContainer);
   }
 
-  static #createUserMenuButton() {
+  static #createUserMenuButton(user) {
+    const pictureURL = user.pictureURL;
+
     const button = Header.#createElement("button", "userMenu");
     button.type = "button";
     button.setAttribute("popovertarget", "userSettingsModal");
 
-    const photo = Header.#createElement("img", "userMenu_photo");
-    photo.src = "https://picsum.photos/seed/neko-mimi/600/300";
-    photo.alt = "User Picture";
+    if (!!pictureURL) {
+      const photo = Header.#createElement("img", "userMenu_photo");
+      photo.src = pictureURL;
+      photo.alt = "User Picture";
 
-    const indicator = Header.#createIcon(
-      "userMenu_indicator es-icon-chevron-down",
-    );
+      const indicator = Header.#createIcon(
+        "userMenu_indicator es-icon-chevron-down",
+      );
 
-    button.append(photo, indicator);
+      button.append(photo, indicator);
+    } else {
+      const initals = StringUtils.getUserInitials(user.name) ?? "😺";
+
+      const initialsElement = Header.#createElement("div", "userMenu_initials");
+      initialsElement.textContent = initals;
+
+      const indicator = Header.#createIcon(
+        "userMenu_indicator es-icon-chevron-down",
+      );
+
+      button.append(initialsElement, indicator);
+    }
 
     return button;
   }

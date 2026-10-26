@@ -6,6 +6,13 @@ import Routes, { SEGMENTS } from "/scripts/Common/Routes.js";
 
 Header.render();
 
+Components.addBreadcrumbIn(document.getElementById("mainBreadcrumb"), [
+  {
+    label: "Workshops",
+    iconClass: "es-icon-workshop",
+  },
+]);
+
 const tableHeaders = [
   "",
   "Name",

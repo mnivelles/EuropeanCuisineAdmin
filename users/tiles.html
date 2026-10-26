@@ -15,12 +15,7 @@
 
       <div class="page_main">
         <div class="main_header">
-          <div class="breadcrumb">
-            <div class="breadcrumb_item isCurrent">
-              <span class="es-icon es-icon-user"></span>
-              <span class="label">Users</span>
-            </div>
-          </div>
+          <div id="mainBreadcrumb"></div>
 
           <div id="mainTabView"></div>
 
@@ -48,231 +43,22 @@
               </select>
             </div>
             <div class="bulma-select">
-              <select class="filterSelect">
-                <option value="all">All roles</option>
-                <option value="festival_goer">Festival Goer</option>
-                <option value="staff">Staff</option>
-                <option value="admin">Admin</option>
+              <select class="roleFilterSelect"></select>
+            </div>
+            <div class="bulma-select">
+              <select class="statusFilterSelect">
+                <option value="all">All status</option>
+                <option value="enabled">Enabled</option>
+                <option value="disabled">Disabled</option>
               </select>
             </div>
             <button class="bulma-button apply">Apply</button>
             <button class="bulma-button bulma-is-ghost reset">Reset</button>
           </div>
-          <div id="tilesSection"></div>
+          <div id="tilesSection" class="userTiles"></div>
           <div class="table_footer">
             <div class="footer_summary"></div>
             <nav class="bulma-pagination bulma-is-small bulma-is-rounded"></nav>
-          </div>
-        </div>
-
-        <div class="userTiles">
-          <div class="userTile">
-            <div class="left">
-              <img
-                class="picture"
-                src="https://picsum.photos/seed/user/900/500"
-                alt="User XX Picture"
-              />
-              <div class="labels">
-                <div class="name">Camille Durand</div>
-                <div class="email">camille@durand.fr</div>
-              </div>
-            </div>
-            <div class="right">
-              <div class="roleChip">
-                <span class="indicator goer"></span> Goer
-              </div>
-            </div>
-          </div>
-
-          <div class="userTile">
-            <div class="left">
-              <img
-                class="picture"
-                src="https://picsum.photos/seed/user/500"
-                alt="User XX Picture"
-              />
-              <div class="labels">
-                <div class="name">Camille Durand</div>
-                <div class="email">camille@durand.fr</div>
-              </div>
-            </div>
-            <div class="right">
-              <button class="resetButton">
-                <span class="es-icon es-icon-reset"></span>
-              </button>
-            </div>
-          </div>
-
-          <div class="userTile">
-            <div class="left">
-              <img
-                class="picture"
-                src="https://picsum.photos/seed/user/900/500"
-                alt="User XX Picture"
-              />
-              <div class="labels">
-                <div class="name">Camille Durand</div>
-                <div class="email">camille@durand.fr</div>
-              </div>
-            </div>
-            <div class="right">
-              <div class="roleChip">
-                <span class="indicator goer"></span> Goer
-              </div>
-            </div>
-          </div>
-
-          <div class="userTile">
-            <div class="left">
-              <img
-                class="picture"
-                src="https://picsum.photos/seed/user/500"
-                alt="User XX Picture"
-              />
-              <div class="labels">
-                <div class="name">Camille Durand</div>
-                <div class="email">camille@durand.fr</div>
-              </div>
-            </div>
-            <div class="right">
-              <button class="resetButton">
-                <span class="es-icon es-icon-reset"></span>
-              </button>
-            </div>
-          </div>
-
-          <div class="userTile">
-            <div class="left">
-              <img
-                class="picture"
-                src="https://picsum.photos/seed/user/900/500"
-                alt="User XX Picture"
-              />
-              <div class="labels">
-                <div class="name">Camille Durand</div>
-                <div class="email">camille@durand.fr</div>
-              </div>
-            </div>
-            <div class="right">
-              <div class="roleChip">
-                <span class="indicator goer"></span> Goer
-              </div>
-            </div>
-          </div>
-
-          <div class="userTile">
-            <div class="left">
-              <img
-                class="picture"
-                src="https://picsum.photos/seed/user/500"
-                alt="User XX Picture"
-              />
-              <div class="labels">
-                <div class="name">Camille Durand</div>
-                <div class="email">camille@durand.fr</div>
-              </div>
-            </div>
-            <div class="right">
-              <button class="resetButton">
-                <span class="es-icon es-icon-reset"></span>
-              </button>
-            </div>
-          </div>
-
-          <div class="userTile">
-            <div class="left">
-              <img
-                class="picture"
-                src="https://picsum.photos/seed/user/900/500"
-                alt="User XX Picture"
-              />
-              <div class="labels">
-                <div class="name">Camille Durand</div>
-                <div class="email">camille@durand.fr</div>
-              </div>
-            </div>
-            <div class="right">
-              <div class="roleChip">
-                <span class="indicator goer"></span> Goer
-              </div>
-            </div>
-          </div>
-
-          <div class="userTile">
-            <div class="left">
-              <img
-                class="picture"
-                src="https://picsum.photos/seed/user/500"
-                alt="User XX Picture"
-              />
-              <div class="labels">
-                <div class="name">Camille Durand</div>
-                <div class="email">camille@durand.fr</div>
-              </div>
-            </div>
-            <div class="right">
-              <button class="resetButton">
-                <span class="es-icon es-icon-reset"></span>
-              </button>
-            </div>
-          </div>
-
-          <div class="userTile">
-            <div class="left">
-              <img
-                class="picture"
-                src="https://picsum.photos/seed/user/900/500"
-                alt="User XX Picture"
-              />
-              <div class="labels">
-                <div class="name">Camille Durand</div>
-                <div class="email">camille@durand.fr</div>
-              </div>
-            </div>
-            <div class="right">
-              <div class="roleChip">
-                <span class="indicator goer"></span> Goer
-              </div>
-            </div>
-          </div>
-
-          <div class="userTile">
-            <div class="left">
-              <img
-                class="picture"
-                src="https://picsum.photos/seed/user/500"
-                alt="User XX Picture"
-              />
-              <div class="labels">
-                <div class="name">Camille Durand</div>
-                <div class="email">camille@durand.fr</div>
-              </div>
-            </div>
-            <div class="right">
-              <button class="resetButton">
-                <span class="es-icon es-icon-reset"></span>
-              </button>
-            </div>
-          </div>
-
-          <div class="userTile">
-            <div class="left">
-              <img
-                class="picture"
-                src="https://picsum.photos/seed/user/900/500"
-                alt="User XX Picture"
-              />
-              <div class="labels">
-                <div class="name">Camille Durand</div>
-                <div class="email">camille@durand.fr</div>
-              </div>
-            </div>
-            <div class="right">
-              <div class="roleChip">
-                <span class="indicator goer"></span> Goer
-              </div>
-            </div>
           </div>
         </div>
       </div>

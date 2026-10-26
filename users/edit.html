@@ -1,0 +1,121 @@
+<!doctype html>
+<html lang="en">
+  <head>
+    <meta charset="UTF-8" />
+    <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+    <link rel="stylesheet" href="/styles/Common/icons.css" />
+    <link rel="stylesheet" href="/styles/app.css" />
+    <link rel="stylesheet" href="/styles/Common/form.css" />
+    <title>Edit User | Admin - Escale Europe</title>
+  </head>
+  <body>
+    <div class="page bulma-container bulma-is-widescreen">
+      <div id="pageHeader" class="page_header"></div>
+
+      <div class="page_island">
+        <div class="island_header">
+          <div id="mainBreadcrumb"></div>
+        </div>
+
+        <div
+          id="formError"
+          class="bulma-notification bulma-is-danger bulma-is-light"
+          hidden
+        >
+          <button class="bulma-delete" type="button"></button>
+          <div class="messages"></div>
+        </div>
+
+        <div
+          id="formSuccess"
+          class="bulma-notification bulma-is-success bulma-is-light"
+          hidden
+        >
+          <button class="bulma-delete" type="button"></button>
+          <div class="messages"></div>
+        </div>
+
+        <form action="" id="editForm" class="island_form">
+          <div class="pictureWrapper">
+            <img id="picturePreview" alt="Preview" />
+            <button
+              id="removePictureButton"
+              class="bulma-delete bulma-is-medium"
+              type="button"
+              hidden
+            ></button>
+          </div>
+
+          <div class="bulma-field picture">
+            <label class="bulma-label" for="field_picture">Add Picture</label>
+            <input
+              type="file"
+              id="field_picture"
+              name="picture"
+              accept="image/png,image/jpeg,image/avif,image/webp"
+            />
+            <div id="fieldError_picture" class="fieldError" hidden></div>
+          </div>
+
+          <div class="bulma-field name">
+            <label class="bulma-label" for="field_name">Name</label>
+            <p class="bulma-control">
+              <input
+                id="field_name"
+                class="bulma-input"
+                name="name"
+                type="text"
+                placeholder="Yukisuke Natsuno"
+              />
+            </p>
+            <div id="fieldError_name" class="fieldError" hidden></div>
+          </div>
+
+          <div class="bulma-field email">
+            <label class="bulma-label" for="field_email">Email</label>
+            <p class="bulma-control">
+              <input
+                id="field_email"
+                class="bulma-input"
+                name="email"
+                type="email"
+                placeholder="yukisuke@natsuno.jp"
+              />
+            </p>
+            <div id="fieldError_email" class="fieldError" hidden></div>
+          </div>
+
+          <div class="bulma-field role">
+            <label class="bulma-label">Role</label>
+            <div class="bulma-control">
+              <div class="bulma-select">
+                <select name="role" id="field_role"></select>
+              </div>
+            </div>
+            <div id="fieldError_role" class="fieldError" hidden></div>
+          </div>
+
+          <div class="bulma-buttons">
+            <button
+              id="updateButton"
+              class="bulma-button bulma-is-primary is-maxwidth"
+              type="button"
+            >
+              Update
+            </button>
+
+            <button
+              id="deleteButton"
+              class="bulma-button bulma-is-danger"
+              type="button"
+            >
+              <span class="es-icon es-icon-delete bulma-icon"> </span>
+            </button>
+          </div>
+        </form>
+      </div>
+    </div>
+
+    <script type="module" src="/scripts/User/edit.js"></script>
+  </body>
+</html>

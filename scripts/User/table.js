@@ -1,10 +1,17 @@
 import { Header } from "/scripts/Common/Header.js";
 import { Components } from "/scripts/Common/Components.js";
-import { SEGMENTS } from "/scripts/Common/Routes.js";
+import Routes, { SEGMENTS } from "/scripts/Common/Routes.js";
 import { UserAPIClient } from "/scripts/APIClient/UserAPIClient.js";
 import { TableUtils } from "/scripts/Common/TableUtils.js";
 
 Header.render();
+
+Components.addBreadcrumbIn(document.getElementById("mainBreadcrumb"), [
+  {
+    label: "Users",
+    iconClass: "es-icon-user",
+  },
+]);
 
 const tableHeaders = [
   "",
@@ -29,18 +36,26 @@ const applyButton = toolbar.querySelector(".bulma-button.apply");
 const resetButton = toolbar.querySelector(".bulma-button.reset");
 const searchInput = toolbar.querySelector(".bulma-input.search");
 const sortSelect = toolbar.querySelector(".sortSelect");
-const filterSelect = toolbar.querySelector(".filterSelect");
+const roleFilterSelect = toolbar.querySelector(".roleFilterSelect");
+const statusFilterSelect = toolbar.querySelector(".statusFilterSelect");
 const thead = document.querySelector("#mainDataTable thead");
 const tbody = document.querySelector("#mainDataTable tbody");
 const footerSummary = section.querySelector(".table_footer .footer_summary");
 const pagination = section.querySelector(".table_footer .bulma-pagination");
 
 const defaultSort = sortSelect.value;
-const defaultFilter = filterSelect.value;
+const defaultRoleFilter = "all";
+const defaultStatusFilter = "all";
 
 addThead(tableHeaders);
+createRoleFilterSelect();
 
-let appliedFilters = { query: "", sort: defaultSort, role: defaultFilter };
+let appliedFilters = {
+  query: "",
+  sort: defaultSort,
+  role: defaultRoleFilter,
+  status: defaultStatusFilter,
+};
 
 applyButton.addEventListener("click", applyFilters);
 resetButton.addEventListener("click", reset);
@@ -54,7 +69,8 @@ function applyFilters() {
   appliedFilters = {
     query: searchInput.value.trim(),
     sort: sortSelect.value,
-    role: filterSelect.value,
+    role: roleFilterSelect.value,
+    status: statusFilterSelect.value,
   };
   fillTable();
 }
@@ -62,6 +78,8 @@ function applyFilters() {
 function reset() {
   searchInput.value = "";
   sortSelect.value = defaultSort;
+  roleFilterSelect.value = defaultRoleFilter;
+  statusFilterSelect.value = defaultStatusFilter;
 
   applyFilters();
 }
@@ -70,7 +88,10 @@ function setLoading(isLoading) {
   applyButton.classList.toggle("bulma-is-loading", isLoading);
 }
 
+let currentPage = 1;
+
 async function fillTable(page = 1) {
+  currentPage = page;
   setLoading(true);
 
   try {
@@ -123,13 +144,13 @@ function addUsersToTbody(users) {
 }
 
 const userColumns = [
-  TableUtils.emptyColumn(),
-  TableUtils.pictureColumn(),
+  TableUtils.userStatusColumn(),
+  TableUtils.userPictureColumn(),
   TableUtils.textColumn("name"),
   TableUtils.textColumn("email"),
-  TableUtils.textColumn("role"),
+  TableUtils.roleColumn("role"),
   TableUtils.textColumn("creationDate"),
-  TableUtils.actionsColumn(),
+  TableUtils.actionsColumn(getUserActions),
 ];
 
 function createTrFromUser(user) {
@@ -139,4 +160,72 @@ function createTrFromUser(user) {
 function clearTableFooter() {
   footerSummary.textContent = "";
   pagination.replaceChildren();
+}
+
+async function createRoleFilterSelect() {
+  roleFilterSelect.innerHTML = "";
+
+  const allOption = createSelectOption(defaultRoleFilter, "All roles");
+
+  roleFilterSelect.appendChild(allOption);
+
+  try {
+    let options = await new UserAPIClient().fetchUserRoleOptionList();
+
+    for (let index = 0; index < options.length; index++) {
+      const option = options[index];
+
+      const optionElement = createSelectOption(option.value, option.label);
+
+      roleFilterSelect.appendChild(optionElement);
+    }
+  } catch (error) {
+    console.error(error);
+  }
+}
+
+function createSelectOption(value, label) {
+  const option = document.createElement("option");
+  option.value = value;
+  option.textContent = label;
+
+  return option;
+}
+
+function getUserActions(user) {
+  if (user.status === "disabled") {
+    return [{ type: "reset", onClick: enableUser }];
+  }
+
+  return [
+    {
+      type: "edit",
+      onClick: (user) => {
+        window.location.href = Routes.users.edit(user.id);
+      },
+    },
+    { type: "delete", onClick: disableUser },
+  ];
+}
+
+async function enableUser(user) {
+  try {
+    await new UserAPIClient().enableUser(user.id);
+    await fillTable(currentPage);
+  } catch (error) {
+    console.error(error);
+  }
+}
+
+async function disableUser(user) {
+  if (!confirm("Disable this user?")) {
+    return;
+  }
+
+  try {
+    await new UserAPIClient().disableUser(user.id);
+    await fillTable(currentPage);
+  } catch (error) {
+    console.error(error);
+  }
 }

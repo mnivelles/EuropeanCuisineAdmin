@@ -1,8 +1,16 @@
 import { Header } from "/scripts/Common/Header.js";
 import { ReservationAPIClient } from "/scripts/APIClient/ReservationAPIClient.js";
 import { TableUtils } from "/scripts/Common/TableUtils.js";
+import { Components } from "/scripts/Common/Components.js";
 
 Header.render();
+
+Components.addBreadcrumbIn(document.getElementById("mainBreadcrumb"), [
+  {
+    label: "Reservations",
+    iconClass: "es-icon-reservation",
+  },
+]);
 
 const tableHeaders = [
   "Workshop",

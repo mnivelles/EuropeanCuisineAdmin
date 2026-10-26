@@ -1,10 +1,20 @@
 import { Header } from "/scripts/Common/Header.js";
+import Routes from "/scripts/Common/Routes.js";
 import { BoothAPIClient } from "/scripts/APIClient/BoothAPIClient.js";
 import { TableUtils } from "/scripts/Common/TableUtils.js";
+import { Components } from "/scripts/Common/Components.js";
 
 Header.render();
 
+Components.addBreadcrumbIn(document.getElementById("mainBreadcrumb"), [
+  {
+    label: "Booths",
+    iconClass: "es-icon-booth",
+  },
+]);
+
 const tableHeaders = [
+  "",
   "",
   "Name",
   "Location",
@@ -22,16 +32,22 @@ const applyButton = toolbar.querySelector(".bulma-button.apply");
 const resetButton = toolbar.querySelector(".bulma-button.reset");
 const searchInput = toolbar.querySelector(".bulma-input.search");
 const sortSelect = toolbar.querySelector(".sortSelect");
+const statusFilterSelect = toolbar.querySelector(".statusFilterSelect");
 const thead = document.querySelector("#mainDataTable thead");
 const tbody = document.querySelector("#mainDataTable tbody");
 const footerSummary = section.querySelector(".table_footer .footer_summary");
 const pagination = section.querySelector(".table_footer .bulma-pagination");
 
 const defaultSort = sortSelect.value;
+const defaultStatusFilter = "all";
 
 addThead(tableHeaders);
 
-let appliedFilters = { query: "", sort: defaultSort };
+let appliedFilters = {
+  query: "",
+  sort: defaultSort,
+  status: defaultStatusFilter,
+};
 
 applyButton.addEventListener("click", applyFilters);
 resetButton.addEventListener("click", reset);
@@ -42,13 +58,18 @@ searchInput.addEventListener("keydown", (event) => {
 });
 
 function applyFilters() {
-  appliedFilters = { query: searchInput.value.trim(), sort: sortSelect.value };
+  appliedFilters = {
+    query: searchInput.value.trim(),
+    sort: sortSelect.value,
+    status: statusFilterSelect.value,
+  };
   fillTable();
 }
 
 function reset() {
   searchInput.value = "";
   sortSelect.value = defaultSort;
+  statusFilterSelect.value = defaultStatusFilter;
 
   applyFilters();
 }
@@ -57,7 +78,10 @@ function setLoading(isLoading) {
   applyButton.classList.toggle("bulma-is-loading", isLoading);
 }
 
+let currentPage = 1;
+
 async function fillTable(page = 1) {
+  currentPage = page;
   setLoading(true);
 
   try {
@@ -110,12 +134,13 @@ function addBoothsToTbody(booths) {
 }
 
 const boothColumns = [
+  TableUtils.boothStatusColumn(),
   TableUtils.pictureColumn(),
   TableUtils.textColumn("name"),
   TableUtils.textColumn("location"),
   TableUtils.countryColumn(),
   TableUtils.timeColumn(),
-  TableUtils.actionsColumn(),
+  TableUtils.actionsColumn(getBoothActions),
 ];
 
 function createTrFromBooth(booth) {
@@ -125,4 +150,42 @@ function createTrFromBooth(booth) {
 function clearTableFooter() {
   footerSummary.textContent = "";
   pagination.replaceChildren();
+}
+
+function getBoothActions(booth) {
+  if (booth.status === "disabled") {
+    return [{ type: "reset", onClick: enableBooth }];
+  }
+
+  return [
+    {
+      type: "edit",
+      onClick: (booth) => {
+        window.location.href = Routes.booths.edit(booth.id);
+      },
+    },
+    { type: "delete", onClick: disableBooth },
+  ];
+}
+
+async function enableBooth(booth) {
+  try {
+    await new BoothAPIClient().enableBooth(booth.id);
+    await fillTable(currentPage);
+  } catch (error) {
+    console.error(error);
+  }
+}
+
+async function disableBooth(booth) {
+  if (!confirm("Disable this booth?")) {
+    return;
+  }
+
+  try {
+    await new BoothAPIClient().disableBooth(booth.id);
+    await fillTable(currentPage);
+  } catch (error) {
+    console.error(error);
+  }
 }

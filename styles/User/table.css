@@ -1,0 +1,13 @@
+.disabledUserIndicator {
+  display: inline-flex;
+  align-items: center;
+  justify-content: center;
+
+  width: 2rem;
+  height: 2rem;
+  border-radius: 0.75rem;
+  background-color: var(--bulma-danger-95);
+
+  color: var(--bulma-danger-35);
+  font-size: 1.125rem;
+}
