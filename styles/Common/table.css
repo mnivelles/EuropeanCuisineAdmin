@@ -28,6 +28,23 @@
       border-radius: 0.75rem;
     }
 
+    .initials {
+      display: inline-flex;
+      align-items: center;
+      justify-content: center;
+
+      width: 2.5rem;
+      height: 2.5rem;
+
+      background-color: var(--bulma-info-15);
+
+      border-radius: 0.75rem;
+
+      color: white;
+      font-weight: 700;
+      font-size: 1.25rem;
+    }
+
     .country {
       display: inline-flex;
       flex-direction: row;

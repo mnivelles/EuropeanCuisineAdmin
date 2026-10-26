@@ -145,7 +145,7 @@ function addUsersToTbody(users) {
 
 const userColumns = [
   TableUtils.userStatusColumn(),
-  TableUtils.pictureColumn(),
+  TableUtils.userPictureColumn(),
   TableUtils.textColumn("name"),
   TableUtils.textColumn("email"),
   TableUtils.roleColumn("role"),

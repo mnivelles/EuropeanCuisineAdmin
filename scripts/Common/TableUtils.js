@@ -1,3 +1,5 @@
+import { StringUtils } from "/scripts/Common/StringUtils.js";
+
 export class TableUtils {
   constructor() {}
 
@@ -29,6 +31,19 @@ export class TableUtils {
         item[urlProperty],
         `${item[nameProperty]} photo`,
       );
+  }
+
+  static userPictureColumn(urlProperty = "pictureURL", nameProperty = "name") {
+    return (item) => {
+      const name = item[nameProperty];
+      const pictureURL = item[urlProperty];
+
+      if (!!pictureURL) {
+        return TableUtils.#createTdWithPicture(pictureURL, `${name} photo`);
+      } else {
+        return TableUtils.#createTdWithInitials(name);
+      }
+    };
   }
 
   static countryColumn(
@@ -147,6 +162,20 @@ export class TableUtils {
     img.setAttributeNode(altAttribute);
 
     td.appendChild(img);
+
+    return td;
+  }
+
+  static #createTdWithInitials(name) {
+    const td = document.createElement("td");
+
+    const initials = StringUtils.getUserInitials(name) ?? "😺";
+
+    const element = document.createElement("div");
+    element.className = "initials";
+    element.textContent = initials;
+
+    td.appendChild(element);
 
     return td;
   }
