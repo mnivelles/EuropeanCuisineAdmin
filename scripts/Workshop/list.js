@@ -15,6 +15,7 @@ Components.addBreadcrumbIn(document.getElementById("mainBreadcrumb"), [
 
 const tableHeaders = [
   "",
+  "",
   "Name",
   "Category",
   "Location",
@@ -133,7 +134,8 @@ function addWorkshopsToTbody(workshops) {
 }
 
 const workshopColumns = [
-  workshopPictureColumn(),
+  TableUtils.workshopStatusColumn(),
+  TableUtils.pictureColumn(),
   TableUtils.textColumn("name"),
   TableUtils.textColumn("category"),
   TableUtils.textColumn("location"),
@@ -142,26 +144,6 @@ const workshopColumns = [
   TableUtils.textColumn("capacity"),
   workshopActionsColumn(),
 ];
-
-function workshopPictureColumn() {
-  return (workshop) => {
-    const td = TableUtils.pictureColumn()(workshop);
-
-    if (workshop.status === "cancelled") {
-      td.replaceChildren();
-
-      const cross = document.createElement("span");
-      cross.className = "bulma-icon has-text-danger";
-      cross.textContent = "X"
-      cross.title = "Workshop annulé";
-      cross.setAttribute("aria-label", "Workshop cancelled");
-
-      td.appendChild(cross);
-    }
-
-    return td;
-  };
-}
 
 function createTrFromWorkshop(workshop) {
   return TableUtils.createTrFromColumns(workshop, workshopColumns);
