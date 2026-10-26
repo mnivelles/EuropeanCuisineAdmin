@@ -12,6 +12,7 @@ const ROUTES = Object.freeze({
   users: {
     tiles: "/users/tiles.html",
     table: "/users/table.html",
+    create: "/users/create.html",
     edit: (id) => `/users/edit.html?id=${encodeURIComponent(id)}`,
   },
   workshops: {

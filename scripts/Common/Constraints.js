@@ -25,6 +25,10 @@ export const MODEL_CONSTRAINT = Object.freeze({
       minLength: 1,
       maxLength: 254,
     },
+    password: {
+      minLength: 12,
+      maxLength: 100,
+    },
   },
   workshop: {
     name: {
