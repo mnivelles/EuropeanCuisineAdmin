@@ -45,6 +45,26 @@ export class WorkshopAPIClient {
     }
   }
 
+async createWorkshop(body) {
+    if (!TokenCookie.has()) {
+      throw Error("User is not authenticated");
+    }
+
+    const token = TokenCookie.get();
+    const path = "admin/workshops";
+
+    const client = new BaseAPIClient();
+
+    let data = await client.perform({
+      path,
+      method: HTTPMethod.POST,
+      body,
+      authenticationToken: token,
+    });
+
+    return data;
+  }
+
   async cancelWorkshop(id) {
   if (!TokenCookie.has()) {
     throw new Error("No authentication cookie found");
