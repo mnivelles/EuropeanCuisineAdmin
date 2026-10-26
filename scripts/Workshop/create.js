@@ -23,11 +23,10 @@ const createButton = document.getElementById("createButton");
 const TEXT_FIELDS = [
   { name: "name", label: "Name" },
   { name: "location", label: "Location" },
-  { name: "maximum-capacity", label: "Maximum Capacity" },
   { name: "about", label: "About" },
 ];
 let isSubmitting = false;
-const MAX_PICTURE_SIZE = 1.5 * 1024 * 1024; // 1.5 MB
+const MAX_PICTURE_SIZE = MODEL_CONSTRAINT.image.maxSize;
 const ACCEPTED_PICTURE_TYPES = form.elements.picture.accept
   .split(",")
   .map((type) => type.trim());
@@ -337,7 +336,7 @@ function getPictureError() {
 
 function getTextError({ name, label }) {
   const value = form.elements[name].value.trim();
-  const { minLength, maxLength } = MODEL_CONSTRAINT[name];
+  const { minLength, maxLength } = MODEL_CONSTRAINT.workshop[name];
 
   if (value.length < minLength) {
     return `${label} must be at least ${minLength} characters`;
@@ -378,20 +377,60 @@ function validateText(field) {
 
 function validateDate() {
   const dateInput = form.elements.date;
+  let isValid = true;
 
   if (!dateInput.value) {
     showFieldError("date", "Date is required");
-    results.push(false);
+    isValid = false;
   } else {
     hideFieldError("date");
-    results.push(true);
   }
 
-  return results.every(Boolean);
+  return isValid;
+}
+
+function validateCategory() {
+  const category = form.elements.category;
+  let isValid = true;
+
+  if (!category.value) {
+    showFieldError("category", "Category is required");
+    isValid = false;
+  } else {
+    hideFieldError("category");
+  }
+
+  return isValid;
+}
+
+function validateCapacityMax() {
+  const capacityMax = form.elements.capacityMax;
+  let isValid = true;
+
+  if (!capacityMax.value) {
+    showFieldError("capacityMax", "Maximum capacity is required");
+    isValid = false
+  } else if (capacityMax.value < 1) {
+    showFieldError("capacityMax", "Maximum capacity must be at least 1");
+    isValid = false
+  } else if (capacityMax.value > 60000) {
+    showFieldError("capacityMax", "Maximum capacity must be 60000 or less");
+    isValid = false
+  } else {
+    hideFieldError("capacityMax");
+  }
+
+  return isValid;
 }
 
 function validateForm() {
-  const results = [validatePicture(), ...TEXT_FIELDS.map(validateText), validateDate()];
+  const results = [
+    validatePicture(),
+    ...TEXT_FIELDS.map(validateText),
+    validateDate(),
+    validateCategory(),
+    validateCapacityMax(),
+  ];
 
   return results.every(Boolean);
 }

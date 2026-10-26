@@ -124,12 +124,14 @@
               <input
                 id="field_capacityMax"
                 class="bulma-input"
-                name="maximum-capacity"
-                type="text"
+                name="capacityMax"
+                type="number"
+                min="1"
+                max="60000"
                 placeholder="45"
               />
             </p>
-            <div id="fieldError_name" class="fieldError" hidden></div>
+            <div id="fieldError_capacityMax" class="fieldError" hidden></div>
           </div>
 
           <div class="bulma-field location">
