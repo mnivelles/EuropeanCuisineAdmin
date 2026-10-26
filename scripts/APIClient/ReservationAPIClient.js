@@ -7,6 +7,7 @@ export class ReservationAPIClient {
   async fetchReservationList({
     query = "",
     sort = "name",
+    filter = "all",
     page = 1,
     per = 10,
   }) {
@@ -16,7 +17,7 @@ export class ReservationAPIClient {
       return [];
     }
     const token = TokenCookie.get();
-    const path = `admin/reservations?query=${query.trim()}&sort=${sort}&page=${page}&per=${per}`;
+    const path = `admin/reservations?query=${query.trim()}&sort=${sort}&filter=${filter}&page=${page}&per=${per}`;
 
     const client = new BaseAPIClient();
 

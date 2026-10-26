@@ -23,16 +23,18 @@ const applyButton = toolbar.querySelector(".bulma-button.apply");
 const resetButton = toolbar.querySelector(".bulma-button.reset");
 const searchInput = toolbar.querySelector(".bulma-input.search");
 const sortSelect = toolbar.querySelector(".sortSelect");
+const filterSelect = toolbar.querySelector(".filterSelect");
 const thead = document.querySelector("#mainDataTable thead");
 const tbody = document.querySelector("#mainDataTable tbody");
 const footerSummary = section.querySelector(".table_footer .footer_summary");
 const pagination = section.querySelector(".table_footer .bulma-pagination");
 
 const defaultSort = sortSelect.value;
+const defaultFilter = filterSelect.value;
 
 addThead(tableHeaders);
 
-let appliedFilters = { query: "", sort: defaultSort };
+let appliedFilters = { query: "", sort: defaultSort, filter: defaultFilter };
 
 applyButton.addEventListener("click", applyFilters);
 resetButton.addEventListener("click", reset);
@@ -43,13 +45,14 @@ searchInput.addEventListener("keydown", (event) => {
 });
 
 function applyFilters() {
-  appliedFilters = { query: searchInput.value.trim(), sort: sortSelect.value };
+  appliedFilters = { query: searchInput.value.trim(), sort: sortSelect.value, filter: filterSelect.value };
   fillTable();
 }
 
 function reset() {
   searchInput.value = "";
   sortSelect.value = defaultSort;
+  filterSelect.value = defaultFilter;
 
   applyFilters();
 }
@@ -117,12 +120,42 @@ const reservationColumns = [
   TableUtils.timeColumn(),
   TableUtils.textColumn("userName"),
   TableUtils.statusColumn("status"),
-  TableUtils.actionsColumn(),
+  reservationActionsColumn(),
 ];
 
 function createTrFromReservation(reservation) {
   return TableUtils.createTrFromColumns(reservation, reservationColumns);
 }
+
+
+function reservationActionsColumn() {
+  return (reservation) => {
+    const td = document.createElement("td");
+
+    const buttons = document.createElement("p");
+    buttons.className = "bulma-buttons";
+
+    const editButton = document.createElement("button");
+    editButton.type = "button";
+    editButton.className =
+      "bulma-button bulma-is-primary";
+
+    const editIcon = document.createElement("span");
+    editIcon.className = "es-icon es-icon-edit bulma-icon";
+
+    editButton.appendChild(editIcon);
+
+    editButton.addEventListener("click", () => {
+      console.log("Modifier la réservation :", reservation);
+    });
+
+    buttons.appendChild(editButton);
+    td.appendChild(buttons);
+
+    return td;
+  };
+}
+
 
 function clearTableFooter() {
   footerSummary.textContent = "";

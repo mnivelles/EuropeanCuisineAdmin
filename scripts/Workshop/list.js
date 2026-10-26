@@ -2,7 +2,7 @@ import { Header } from "/scripts/Common/Header.js";
 import { WorkshopAPIClient } from "/scripts/APIClient/WorkshopAPIClient.js";
 import { TableUtils } from "/scripts/Common/TableUtils.js";
 import { Components } from "/scripts/Common/Components.js";
-import { SEGMENTS } from "/scripts/Common/Routes.js";
+import Routes, { SEGMENTS } from "/scripts/Common/Routes.js";
 
 Header.render();
 
@@ -24,6 +24,8 @@ Components.addSegmentedControlIn(
   SEGMENTS.workshops,
   selectedSegment,
 );
+
+let currentPage = 1;
 
 const itemsPerPage = 5;
 const COLUMN_COUNT = tableHeaders.length;
@@ -70,6 +72,8 @@ function setLoading(isLoading) {
 }
 
 async function fillTable(page = 1) {
+  currentPage = page;
+
   setLoading(true);
 
   try {
@@ -122,18 +126,134 @@ function addWorkshopsToTbody(workshops) {
 }
 
 const workshopColumns = [
-  TableUtils.pictureColumn(),
+  workshopPictureColumn(),
   TableUtils.textColumn("name"),
   TableUtils.textColumn("category"),
   TableUtils.textColumn("location"),
   TableUtils.textColumn("date"),
   TableUtils.timeColumn(),
   TableUtils.textColumn("capacity"),
-  TableUtils.actionsColumn(),
+  workshopActionsColumn(),
 ];
+
+function workshopPictureColumn() {
+  return (workshop) => {
+    const td = TableUtils.pictureColumn()(workshop);
+
+    if (workshop.status === "cancelled") {
+      td.replaceChildren();
+
+      const cross = document.createElement("span");
+      cross.className = "bulma-icon has-text-danger";
+      cross.textContent = "X"
+      cross.title = "Workshop annulé";
+      cross.setAttribute("aria-label", "Workshop cancelled");
+
+      td.appendChild(cross);
+    }
+
+    return td;
+  };
+}
 
 function createTrFromWorkshop(workshop) {
   return TableUtils.createTrFromColumns(workshop, workshopColumns);
+}
+
+function workshopActionsColumn() {
+  return (workshop) => {
+    const td = document.createElement("td");
+    const buttons = document.createElement("p");
+    buttons.className = "bulma-buttons";
+
+    if (workshop.status === "cancelled") {
+      const reactivateButton = document.createElement("button");
+      reactivateButton.type = "button";
+      reactivateButton.className = "bulma-button bulma-is-success";
+
+      const reactivateIcon = document.createElement("span");
+      reactivateIcon.className = "es-icon bulma-icon";
+      reactivateIcon.textContent = "↻";
+
+      reactivateButton.appendChild(reactivateIcon);
+
+      reactivateButton.addEventListener("click", async () => {
+        const confirmed = window.confirm(
+          `Do you want to reactivate the workshop "${workshop.name}"?`,
+        );
+
+        if (!confirmed) {
+          return;
+        }
+
+        reactivateButton.disabled = true;
+
+        try {
+          await new WorkshopAPIClient().reactivateWorkshop(workshop.id);
+          await fillTable(currentPage);
+        } catch (error) {
+          console.error("Failed to reactivate workshop:", error);
+          window.alert("Failed to reactivate workshop.");
+          reactivateButton.disabled = false;
+        }
+      });
+
+      buttons.appendChild(reactivateButton);
+      td.appendChild(buttons);
+      return td;
+    }
+
+    const editButton = document.createElement("button");
+    editButton.type = "button";
+    editButton.className = "bulma-button bulma-is-primary";
+
+    const editIcon = document.createElement("span");
+    editIcon.className = "es-icon es-icon-edit bulma-icon";
+    editButton.appendChild(editIcon);
+
+    editButton.addEventListener("click", () => {
+      window.location.href = Routes.workshops.edit(workshop.id);
+    });
+
+    const deleteButton = document.createElement("button");
+    deleteButton.type = "button";
+    deleteButton.className = "bulma-button bulma-is-danger";
+
+    const deleteIcon = document.createElement("span");
+    deleteIcon.className = "es-icon es-icon-delete bulma-icon";
+    deleteButton.appendChild(deleteIcon);
+
+    deleteButton.addEventListener("click", async () => {
+      if (workshop.status === "cancelled") {
+        return;
+      }
+
+      const confirmed = window.confirm(
+        `Do you really want to delete the workshop "${workshop.name}"?`,
+      );
+
+      if (!confirmed) {
+        return;
+      }
+
+      deleteButton.disabled = true;
+
+      try {
+        await new WorkshopAPIClient().cancelWorkshop(workshop.id);
+        await fillTable(currentPage);
+      } catch (error) {
+        console.error(error);
+        window.alert("Failed to cancel workshop.");
+        deleteButton.disabled = false;
+      }
+    });
+
+    buttons.appendChild(editButton);
+    buttons.appendChild(deleteButton);
+    td.appendChild(buttons);
+
+    return td;
+  };
 }
 
 function clearTableFooter() {

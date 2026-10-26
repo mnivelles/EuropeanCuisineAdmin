@@ -44,4 +44,35 @@ export class WorkshopAPIClient {
       return [];
     }
   }
+
+  async cancelWorkshop(id) {
+  if (!TokenCookie.has()) {
+    throw new Error("No authentication cookie found");
+  }
+
+  const token = TokenCookie.get();
+  const client = new BaseAPIClient();
+
+  return await client.perform({
+    path: `admin/workshops/${encodeURIComponent(id)}`,
+    method: HTTPMethod.DELETE,
+    authenticationToken: token,
+  });
+}
+
+async reactivateWorkshop(id) {
+  if (!TokenCookie.has()) {
+    throw new Error("No authentication token found");
+  }
+
+  const token = TokenCookie.get();
+  const client = new BaseAPIClient();
+
+  return await client.perform({
+    path: `admin/workshops/${encodeURIComponent(id)}/reactivate`,
+    method: HTTPMethod.POST,
+    authenticationToken: token,
+  });
+}
+
 }
