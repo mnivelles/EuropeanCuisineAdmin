@@ -1,4 +1,5 @@
 import Routes from "/scripts/Common/Routes.js";
+import { StringUtils } from "/scripts/Common/StringUtils.js";
 
 export class TileUtils {
   constructor() {}
@@ -43,6 +44,12 @@ export class TileUtils {
       img.src = user.pictureURL;
       img.alt = `${user.name} photo`;
       left.appendChild(img);
+    } else {
+      const initialsElement = document.createElement("div");
+      initialsElement.className = "initials";
+      initialsElement.textContent =
+        StringUtils.getUserInitials(user.name) ?? "😺";
+      left.appendChild(initialsElement);
     }
 
     const labels = document.createElement("div");

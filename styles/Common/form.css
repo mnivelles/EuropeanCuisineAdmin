@@ -96,3 +96,20 @@
   font-size: 0.875rem;
   color: var(--bulma-danger-40);
 }
+
+.pictureWrapper {
+  position: relative;
+  width: fit-content;
+  max-width: 100%;
+  align-self: center;
+}
+
+.pictureWrapper .bulma-delete {
+  position: absolute;
+  top: 0.5rem;
+  right: 0.5rem;
+}
+
+.pictureWrapper .bulma-delete[hidden] {
+  display: none;
+}

@@ -23,6 +23,11 @@ const pictureLabel = document.querySelector(
   ".bulma-field.picture .bulma-label",
 );
 
+const removePictureButton = document.getElementById("removePictureButton");
+
+let savedPictureURL = null;
+let hasNoPicture = false;
+
 const TEXT_FIELDS = [
   { name: "name", label: "Name" },
   { name: "email", label: "Email" },
@@ -96,9 +101,13 @@ function fillForm(user) {
   emailElement.value = user.email;
   roleElement.value = user.role;
 
-  // Le fichier choisi a été envoyé : on vide l'input
+  savedPictureURL = user.pictureURL ?? null;
+  hasNoPicture = false;
+
   pictureElement.value = "";
   hideFieldError("picture", false);
+
+  renderPicture(savedPictureURL);
 
   if (user.pictureURL) {
     picturePreview.src = user.pictureURL;
@@ -132,22 +141,41 @@ function setupPicture() {
     releasePreviewUrl();
 
     if (!file) {
-      picturePreview.removeAttribute("src");
-      picturePreview.style.display = "none";
-      pictureLabel.textContent = "Add Picture";
-      pictureLabel.classList.remove("hasPicture");
+      renderPicture(hasNoPicture ? null : savedPictureURL);
       return;
     }
 
+    hasNoPicture = false;
     currentObjectUrl = URL.createObjectURL(file);
-    picturePreview.src = currentObjectUrl;
-    picturePreview.style.display = "block";
+    renderPicture(currentObjectUrl);
+  });
 
-    pictureLabel.textContent = "Update Picture";
-    pictureLabel.classList.add("hasPicture");
+  removePictureButton.addEventListener("click", () => {
+    releasePreviewUrl();
+    input.value = "";
+    hasNoPicture = savedPictureURL !== null;
+    hideFieldError("picture", false);
+    renderPicture(null);
+    toggleUpdateButtonDisabled();
   });
 
   window.addEventListener("pagehide", releasePreviewUrl);
+}
+
+function renderPicture(url) {
+  if (url) {
+    picturePreview.src = url;
+    picturePreview.style.display = "block";
+    pictureLabel.textContent = "Update Picture";
+    pictureLabel.classList.add("hasPicture");
+    removePictureButton.hidden = false;
+  } else {
+    picturePreview.removeAttribute("src");
+    picturePreview.style.display = "none";
+    pictureLabel.textContent = "Add Picture";
+    pictureLabel.classList.remove("hasPicture");
+    removePictureButton.hidden = true;
+  }
 }
 
 // Submit
@@ -234,6 +262,7 @@ function buildFormData() {
     body.append("picture", pictureElement.files[0]);
   }
 
+  body.append("hasNoPicture", hasNoPicture);
   body.append("name", nameElement.value);
   body.append("email", emailElement.value);
   body.append("role", roleElement.value);
