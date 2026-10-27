@@ -64,13 +64,13 @@ searchInput.addEventListener("keydown", (event) => {
 });
 
 function applyFilters() {
-  appliedFilters = { query: searchInput.value.trim(), sort: sortSelect.value };
-  fillTable();
+  appliedFilters = { sort: sortSelect.value, filter: filterSelect.value };
+  fillTable(1);
 }
 
 function reset() {
-  searchInput.value = "";
   sortSelect.value = defaultSort;
+  filterSelect.value = defaultFilter;
 
   applyFilters();
 }
@@ -159,6 +159,12 @@ function getWorkshopActions(workshop) {
       type: "edit",
       onClick: (workshop) => {
         window.location.href = Routes.workshops.edit(workshop.id);
+      },
+    },
+    {
+      type: "reservations",
+      onClick: (workshop) => {
+        window.location.href = Routes.workshops.reservations(workshop.id);
       },
     },
     { type: "delete", onClick: cancelWorkshop },
