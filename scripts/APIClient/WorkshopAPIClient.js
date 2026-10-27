@@ -80,22 +80,21 @@ export class WorkshopAPIClient {
     return data;
   }
 
-async updateWorkshop(id, body) {
-  if (!TokenCookie.has()) {
-    throw new Error("User is not authenticated");
+  async updateWorkshop(id, body) {
+    if (!TokenCookie.has()) {
+      throw new Error("User is not authenticated");
+    }
+
+    const token = TokenCookie.get();
+    const client = new BaseAPIClient();
+
+    return await client.perform({
+      path: `admin/workshops/${encodeURIComponent(id)}`,
+      method: HTTPMethod.PUT,
+      body,
+      authenticationToken: token,
+    });
   }
-
-  const token = TokenCookie.get();
-  const client = new BaseAPIClient();
-
-  return await client.perform({
-    path: `admin/workshops/${encodeURIComponent(id)}`,
-    method: HTTPMethod.PUT,
-    body,
-    authenticationToken: token,
-  });
-}
-
 
   async cancelWorkshop(id) {
     if (!TokenCookie.has()) {
@@ -125,5 +124,24 @@ async updateWorkshop(id, body) {
       method: HTTPMethod.PATCH,
       authenticationToken: token,
     });
+  }
+
+  async getWorkshopCalendar() {
+    if (!TokenCookie.has()) {
+      throw new Error("No authentication token found");
+    }
+
+    const token = TokenCookie.get();
+    const path = "admin/workshops/calendar";
+
+    const client = new BaseAPIClient();
+
+    const data = await client.perform({
+      path,
+      method: HTTPMethod.GET,
+      authenticationToken: token,
+    });
+
+    return data;
   }
 }
