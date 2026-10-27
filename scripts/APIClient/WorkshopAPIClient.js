@@ -45,7 +45,7 @@ export class WorkshopAPIClient {
     }
   }
 
-async createWorkshop(body) {
+  async createWorkshop(body) {
     if (!TokenCookie.has()) {
       throw Error("User is not authenticated");
     }
@@ -66,33 +66,51 @@ async createWorkshop(body) {
   }
 
   async cancelWorkshop(id) {
-  if (!TokenCookie.has()) {
-    throw new Error("No authentication cookie found");
+    if (!TokenCookie.has()) {
+      throw new Error("No authentication cookie found");
+    }
+
+    const token = TokenCookie.get();
+    const client = new BaseAPIClient();
+
+    return await client.perform({
+      path: `admin/workshops/${encodeURIComponent(id)}/cancel`,
+      method: HTTPMethod.PATCH,
+      authenticationToken: token,
+    });
   }
 
-  const token = TokenCookie.get();
-  const client = new BaseAPIClient();
+  async publishWorkshop(id) {
+    if (!TokenCookie.has()) {
+      throw new Error("No authentication token found");
+    }
 
-  return await client.perform({
-    path: `admin/workshops/${encodeURIComponent(id)}/cancel`,
-    method: HTTPMethod.PATCH,
-    authenticationToken: token,
-  });
-}
+    const token = TokenCookie.get();
+    const client = new BaseAPIClient();
 
-async publishWorkshop(id) {
-  if (!TokenCookie.has()) {
-    throw new Error("No authentication token found");
+    return await client.perform({
+      path: `admin/workshops/${encodeURIComponent(id)}/publish`,
+      method: HTTPMethod.PATCH,
+      authenticationToken: token,
+    });
   }
 
-  const token = TokenCookie.get();
-  const client = new BaseAPIClient();
+  async getWorkshopCalendar() {
+    if (!TokenCookie.has()) {
+      throw new Error("No authentication token found");
+    }
 
-  return await client.perform({
-    path: `admin/workshops/${encodeURIComponent(id)}/publish`,
-    method: HTTPMethod.PATCH,
-    authenticationToken: token,
-  });
-}
+    const token = TokenCookie.get();
+    const path = "admin/workshops/calendar";
 
+    const client = new BaseAPIClient();
+
+    const data = await client.perform({
+      path,
+      method: HTTPMethod.GET,
+      authenticationToken: token,
+    });
+
+    return data;
+  }
 }
