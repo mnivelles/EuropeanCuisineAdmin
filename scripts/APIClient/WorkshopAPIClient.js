@@ -45,7 +45,22 @@ export class WorkshopAPIClient {
     }
   }
 
-async createWorkshop(body) {
+  async fetchWorkshop(id) {
+    if (!TokenCookie.has()) {
+      throw new Error("User is not authenticated");
+    }
+
+    const token = TokenCookie.get();
+    const client = new BaseAPIClient();
+
+    return await client.perform({
+      path: `workshops/${encodeURIComponent(id)}`,
+      method: HTTPMethod.GET,
+      authenticationToken: token,
+    });
+  }
+
+  async createWorkshop(body) {
     if (!TokenCookie.has()) {
       throw Error("User is not authenticated");
     }
@@ -65,34 +80,50 @@ async createWorkshop(body) {
     return data;
   }
 
+async updateWorkshop(id, body) {
+  if (!TokenCookie.has()) {
+    throw new Error("User is not authenticated");
+  }
+
+  const token = TokenCookie.get();
+  const client = new BaseAPIClient();
+
+  return await client.perform({
+    path: `admin/workshops/${encodeURIComponent(id)}`,
+    method: HTTPMethod.PUT,
+    body,
+    authenticationToken: token,
+  });
+}
+
+
   async cancelWorkshop(id) {
-  if (!TokenCookie.has()) {
-    throw new Error("No authentication cookie found");
+    if (!TokenCookie.has()) {
+      throw new Error("No authentication cookie found");
+    }
+
+    const token = TokenCookie.get();
+    const client = new BaseAPIClient();
+
+    return await client.perform({
+      path: `admin/workshops/${encodeURIComponent(id)}/cancel`,
+      method: HTTPMethod.PATCH,
+      authenticationToken: token,
+    });
   }
 
-  const token = TokenCookie.get();
-  const client = new BaseAPIClient();
+  async publishWorkshop(id) {
+    if (!TokenCookie.has()) {
+      throw new Error("No authentication token found");
+    }
 
-  return await client.perform({
-    path: `admin/workshops/${encodeURIComponent(id)}/cancel`,
-    method: HTTPMethod.PATCH,
-    authenticationToken: token,
-  });
-}
+    const token = TokenCookie.get();
+    const client = new BaseAPIClient();
 
-async publishWorkshop(id) {
-  if (!TokenCookie.has()) {
-    throw new Error("No authentication token found");
+    return await client.perform({
+      path: `admin/workshops/${encodeURIComponent(id)}/publish`,
+      method: HTTPMethod.PATCH,
+      authenticationToken: token,
+    });
   }
-
-  const token = TokenCookie.get();
-  const client = new BaseAPIClient();
-
-  return await client.perform({
-    path: `admin/workshops/${encodeURIComponent(id)}/publish`,
-    method: HTTPMethod.PATCH,
-    authenticationToken: token,
-  });
-}
-
 }
