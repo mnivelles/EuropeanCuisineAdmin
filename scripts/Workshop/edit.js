@@ -1,3 +1,4 @@
+
 import { Header } from "/scripts/Common/Header.js";
 import { WorkshopAPIClient } from "/scripts/APIClient/WorkshopAPIClient.js";
 import { CategoryAPIClient } from "/scripts/APIClient/CategoryAPIClient.js";
@@ -18,56 +19,70 @@ Components.addBreadcrumbIn(document.getElementById("mainBreadcrumb"), [
   { label: "Edit" },
 ]);
 
-const form = document.getElementById("createForm");
-const createButton = document.getElementById("createButton");
+const form = document.getElementById("editForm");
+const editButton = document.getElementById("editButton");
+const pictureInput = form.elements.picture;
+const picturePreview = document.getElementById("picturePreview");
+const pictureLabel = document.querySelector(
+  ".bulma-field.picture .bulma-label",
+);
+const params = new URLSearchParams(window.location.search);
+const workshopID = params.get("id");
+
 const TEXT_FIELDS = [
   { name: "name", label: "Name" },
   { name: "location", label: "Location" },
-  { name: "maximum-capacity", label: "Maximum Capacity" },
   { name: "about", label: "About" },
 ];
+
 let isSubmitting = false;
-const MAX_PICTURE_SIZE = 1.5 * 1024 * 1024; // 1.5 MB
-const ACCEPTED_PICTURE_TYPES = form.elements.picture.accept
+let originalPictureURL = "";
+let currentObjectURL = null;
+
+const MAX_PICTURE_SIZE = MODEL_CONSTRAINT.image.maxSize;
+const ACCEPTED_PICTURE_TYPES = pictureInput.accept
   .split(",")
   .map((type) => type.trim());
 
 function setupPicture() {
-  const input = document.getElementById("field_picture");
-  const preview = document.getElementById("picturePreview");
-  const label = document.querySelector(".bulma-field.picture .bulma-label");
+  pictureInput.addEventListener("change", () => {
+    const file = pictureInput.files[0];
 
-  let currentObjectUrl = null;
-
-  function releasePreviewUrl() {
-    if (currentObjectUrl) {
-      URL.revokeObjectURL(currentObjectUrl);
-      currentObjectUrl = null;
-    }
-  }
-
-  input.addEventListener("change", () => {
-    const file = input.files[0];
-
-    releasePreviewUrl();
+    releaseObjectURL();
 
     if (!file) {
-      preview.removeAttribute("src");
-      preview.style.display = "none";
-      label.textContent = "Add Picture";
-      label.classList.remove("hasPicture");
+      if (originalPictureURL) {
+        picturePreview.src = originalPictureURL;
+        picturePreview.hidden = false;
+        picturePreview.style.display = "block";
+        pictureLabel.textContent = "Update Picture";
+        pictureLabel.classList.add("hasPicture");
+      } else {
+        picturePreview.removeAttribute("src");
+        picturePreview.hidden = true;
+        picturePreview.style.display = "none";
+        pictureLabel.textContent = "Add Picture";
+        pictureLabel.classList.remove("hasPicture");
+      }
+
+      hideFieldError("picture", false);
+      toggleEditButtonDisabled();
       return;
     }
 
-    currentObjectUrl = URL.createObjectURL(file);
-    preview.src = currentObjectUrl;
-    preview.style.display = "block";
+    currentObjectURL = URL.createObjectURL(file);
+    picturePreview.src = currentObjectURL;
+    picturePreview.hidden = false;
+    picturePreview.style.display = "block";
 
-    label.textContent = "Update Picture";
-    label.classList.add("hasPicture");
+    pictureLabel.textContent = "Update Picture";
+    pictureLabel.classList.add("hasPicture");
+
+    validatePicture();
+    toggleEditButtonDisabled();
   });
 
-  window.addEventListener("pagehide", releasePreviewUrl);
+  window.addEventListener("pagehide", releaseObjectURL);
 }
 
 setupPicture();
@@ -103,19 +118,17 @@ async function fillCategoriesOptions() {
   }
 }
 
-fillCategoriesOptions();
-
 function setupDateField() {
   const dateInput = form.elements.date;
 
   dateInput.addEventListener("input", () => {
     hideFieldError("date");
-    toggleCreateButtonDisabled();
+    toggleEditButtonDisabled();
   });
 
   dateInput.addEventListener("change", () => {
-    hideFieldError("date");
-    toggleCreateButtonDisabled();
+    validateDate();
+    toggleEditButtonDisabled();
   });
 }
 
@@ -131,40 +144,49 @@ async function fillTimesOptions() {
     const times = await client.fetchTimeOptionList();
 
     const startTimeOptionBulmaSelect = document.querySelector(
-      "#createForm .bulma-field.startTime .bulma-select",
+      "#editForm .bulma-field.startTime .bulma-select",
     );
-    startTimeOptionBulmaSelect.innerHTML = "";
+
+    const endTimeOptionBulmaSelect = document.querySelector(
+      "#editForm .bulma-field.endTime .bulma-select",
+    );
+
+    if (!startTimeOptionBulmaSelect || !endTimeOptionBulmaSelect) {
+      throw new Error("Time select containers not found");
+    }
 
     const startTimeOptionSelect = TimeForm.getTimeOptionSelect(times);
     startTimeOptionSelect.setAttribute("name", "startTime");
+    startTimeOptionSelect.setAttribute("id", "field_startTime");
 
-    startTimeOptionSelect.addEventListener("input", adjustEndTime);
+    startTimeOptionSelect.addEventListener("change", adjustEndTime);
+    startTimeOptionSelect.addEventListener("change", () => {
+      validateTimes();
+      toggleEditButtonDisabled();
+    });
 
-    startTimeOptionBulmaSelect.appendChild(startTimeOptionSelect);
-
-    const endTimeOptionBulmaSelect = document.querySelector(
-      "#createForm .bulma-field.endTime .bulma-select",
-    );
-    endTimeOptionBulmaSelect.innerHTML = "";
+    startTimeOptionBulmaSelect.replaceChildren(startTimeOptionSelect);
 
     const endTimeOptionSelect = TimeForm.getTimeOptionSelect(times);
     endTimeOptionSelect.setAttribute("name", "endTime");
+    endTimeOptionSelect.setAttribute("id", "field_endTime");
 
-    endTimeOptionSelect.addEventListener("input", adjustStartTime);
+    endTimeOptionSelect.addEventListener("change", adjustStartTime);
+    endTimeOptionSelect.addEventListener("change", () => {
+      validateTimes();
+      toggleEditButtonDisabled();
+    });
 
-    endTimeOptionBulmaSelect.appendChild(endTimeOptionSelect);
+    endTimeOptionBulmaSelect.replaceChildren(endTimeOptionSelect);
   } catch (error) {
-    showFieldError("startTime", `Failed to load time options`, false);
-    showFieldError("endTime", `Failed to load time options`, false);
+    showFieldError("startTime", "Failed to load time options", false);
+    showFieldError("endTime", "Failed to load time options", false);
+    throw error;
   }
 }
 
-fillTimesOptions();
-
 function adjustStartTime(e) {
-  const startTimeOptionSelect = document.querySelector(
-    "#createForm .bulma-field.startTime .bulma-select select",
-  );
+  const startTimeOptionSelect = form.elements.startTime;
 
   if (startTimeOptionSelect.value > e.target.value) {
     startTimeOptionSelect.value = e.target.value;
@@ -172,12 +194,21 @@ function adjustStartTime(e) {
 }
 
 function adjustEndTime(e) {
-  const endTimeOptionSelect = document.querySelector(
-    "#createForm .bulma-field.endTime .bulma-select select",
-  );
+  const startTimeOptionSelect = form.elements.startTime;
+  const endTimeOptionSelect = form.elements.endTime;
 
-  if (endTimeOptionSelect.value < e.target.value) {
-    endTimeOptionSelect.value = e.target.value;
+  if (
+    startTimeOptionSelect.value &&
+    endTimeOptionSelect.value &&
+    endTimeOptionSelect.value <= startTimeOptionSelect.value
+  ) {
+    const nextOption = [...endTimeOptionSelect.options].find(
+      (option) => option.value > startTimeOptionSelect.value,
+    );
+
+    if (nextOption) {
+      endTimeOptionSelect.value = nextOption.value;
+    }
   }
 }
 
@@ -204,11 +235,15 @@ function splitReason(reason) {
 
 function showFormError(message) {
   const box = document.getElementById("formError");
-  const container = box.querySelector(".messages");
+  const container = box?.querySelector(".messages");
+
+  if (!box || !container) {
+    console.error(message);
+    return;
+  }
 
   if (!message || message.trim().length < 1) {
     container.textContent = "";
-
     box.hidden = true;
     return;
   }
@@ -224,7 +259,6 @@ function showFormError(message) {
   );
 
   box.hidden = false;
-
   box.scrollIntoView({ behavior: "smooth", block: "start" });
 }
 
@@ -237,7 +271,7 @@ document
   .querySelector(".bulma-delete")
   .addEventListener("click", clearFormError);
 
-createButton.addEventListener("click", submitForm);
+editButton.addEventListener("click", submitForm);
 
 async function submitForm(event) {
   event.preventDefault();
@@ -245,21 +279,22 @@ async function submitForm(event) {
   if (isSubmitting || !validateForm()) return;
 
   isSubmitting = true;
-  createButton.classList.add("bulma-is-loading");
-  createButton.disabled = true;
+  editButton.classList.add("bulma-is-loading");
+  toggleEditButtonDisabled();
 
   try {
     const body = buildFormData();
+    const client = new WorkshopAPIClient();
 
-    await new WorkshopAPIClient().createWorkshop(body);
+    await client.updateWorkshop(workshopID, body);
 
     window.location.href = Routes.workshops.list;
   } catch (error) {
     showFormError(error.message);
 
     isSubmitting = false;
-    createButton.classList.remove("bulma-is-loading");
-    toggleCreateButtonDisabled();
+    editButton.classList.remove("bulma-is-loading");
+    toggleEditButtonDisabled();
   }
 }
 
@@ -280,7 +315,11 @@ function buildFormData() {
   } = form.elements;
 
   const body = new FormData();
-  body.append("picture", picture.files[0]);
+
+  if (picture.files[0]) {
+    body.append("picture", picture.files[0]);
+  }
+
   body.append("name", name.value);
   body.append("category", category.value);
   body.append("date", date.value);
@@ -289,9 +328,9 @@ function buildFormData() {
   body.append("about", about.value);
   body.append("capacityMax", capacityMax.value);
   body.append("location", location.value);
-  body.append("isVegan", isVegan.checked);
-  body.append("isPRM", isPRM.checked);
-  body.append("isFamilyFriendly", isFamilyFriendly.checked);
+  body.append("isVegan", String(isVegan.checked));
+  body.append("isPRM", String(isPRM.checked));
+  body.append("isFamilyFriendly", String(isFamilyFriendly.checked));
 
   return body;
 }
@@ -299,57 +338,48 @@ function buildFormData() {
 function showFieldError(name, message, withInput = true) {
   const errorElement = document.getElementById(`fieldError_${name}`);
 
-  errorElement.textContent = message;
-  errorElement.hidden = false;
+  if (errorElement) {
+    errorElement.textContent = message;
+    errorElement.hidden = false;
+  }
 
   if (withInput) {
     const inputElement = document.getElementById(`field_${name}`);
-    inputElement.classList.add("bulma-is-danger");
+    inputElement?.classList.add("bulma-is-danger");
   }
 }
 
 function hideFieldError(name, withInput = true) {
   const errorElement = document.getElementById(`fieldError_${name}`);
-  errorElement.innerHTML = "";
-  errorElement.hidden = true;
+
+  if (errorElement) {
+    errorElement.textContent = "";
+    errorElement.hidden = true;
+  }
 
   if (withInput) {
     const inputElement = document.getElementById(`field_${name}`);
-    inputElement.classList.remove("bulma-is-danger");
+    inputElement?.classList.remove("bulma-is-danger");
   }
 }
 
 function getPictureError() {
-  const file = form.elements.picture.files[0];
+  const file = pictureInput.files[0];
 
   if (!file) {
-    return "Picture file is missing";
+    return originalPictureURL ? null : "Picture file is missing";
   }
+
   if (!ACCEPTED_PICTURE_TYPES.includes(file.type)) {
     return "Picture must be a PNG, JPEG, AVIF or WebP image";
   }
+
   if (file.size > MAX_PICTURE_SIZE) {
     const sizeInMB = (file.size / (1024 * 1024)).toFixed(2);
     return `Picture must be 1.5 MB max (current: ${sizeInMB} MB)`;
   }
+
   return null;
-}
-
-function getTextError({ name, label }) {
-  const value = form.elements[name].value.trim();
-  const { minLength, maxLength } = MODEL_CONSTRAINT[name];
-
-  if (value.length < minLength) {
-    return `${label} must be at least ${minLength} characters`;
-  }
-  if (value.length > maxLength) {
-    return `${label} must be ${maxLength} characters max`;
-  }
-  return null;
-}
-
-function isFormValid() {
-  return !getPictureError() && TEXT_FIELDS.every((f) => !getTextError(f));
 }
 
 function validatePicture() {
@@ -362,6 +392,47 @@ function validatePicture() {
   }
 
   return !message;
+}
+
+
+function getTextError({ name, label }) {
+  const value = form.elements[name].value.trim();
+  const constraints = MODEL_CONSTRAINT.workshop[name];
+
+  if (!constraints) {
+    return value ? null : `${label} is required`;
+  }
+
+  const { minLength, maxLength } = constraints;
+
+  if (minLength != null && value.length < minLength) {
+    return `${label} must be at least ${minLength} characters`;
+  }
+
+  if (maxLength != null && value.length > maxLength) {
+    return `${label} must be ${maxLength} characters max`;
+  }
+
+  return null;
+}
+
+function isFormValid() {
+  const capacityMax = Number(form.elements.capacityMax.value);
+  const startTime = form.elements.startTime?.value;
+  const endTime = form.elements.endTime?.value;
+
+  return (
+    !getPictureError() &&
+    TEXT_FIELDS.every((field) => !getTextError(field)) &&
+    Boolean(form.elements.date.value) &&
+    Boolean(form.elements.category.value) &&
+    Number.isInteger(capacityMax) &&
+    capacityMax >= 1 &&
+    capacityMax <= 60000 &&
+    Boolean(startTime) &&
+    Boolean(endTime) &&
+    endTime > startTime
+  );
 }
 
 function validateText(field) {
@@ -381,33 +452,97 @@ function validateDate() {
 
   if (!dateInput.value) {
     showFieldError("date", "Date is required");
-    results.push(false);
-  } else {
-    hideFieldError("date");
-    results.push(true);
+    return false;
   }
 
-  return results.every(Boolean);
+  hideFieldError("date");
+  return true;
+}
+
+function validateCategory() {
+  const category = form.elements.category;
+
+  if (!category.value) {
+    showFieldError("category", "Category is required");
+    return false;
+  }
+
+  hideFieldError("category");
+  return true;
+}
+
+function validateCapacityMax() {
+  const capacityMax = form.elements.capacityMax;
+  const value = Number(capacityMax.value);
+
+  if (!capacityMax.value) {
+    showFieldError("capacityMax", "Maximum capacity is required");
+    return false;
+  } else if (!Number.isInteger(value) || value < 1) {
+    showFieldError("capacityMax", "Maximum capacity must be at least 1");
+    return false;
+  } else if (value > 60000) {
+    showFieldError("capacityMax", "Maximum capacity must be 60000 or less");
+    return false;
+  }
+
+  hideFieldError("capacityMax");
+  return true;
+}
+
+function validateTimes() {
+  const start = form.elements.startTime;
+  const end = form.elements.endTime;
+
+  if (!start.value) {
+    showFieldError("startTime", "Start time is required");
+    hideFieldError("endTime");
+    return false;
+  }
+
+  if (!end.value) {
+    showFieldError("endTime", "End time is required");
+    hideFieldError("startTime");
+    return false;
+  }
+
+  if (end.value <= start.value) {
+    showFieldError("endTime", "End time must be after start time");
+    hideFieldError("startTime");
+    return false;
+  }
+
+  hideFieldError("startTime");
+  hideFieldError("endTime");
+  return true;
 }
 
 function validateForm() {
-  const results = [validatePicture(), ...TEXT_FIELDS.map(validateText), validateDate()];
+  const results = [
+    validatePicture(),
+    ...TEXT_FIELDS.map(validateText),
+    validateDate(),
+    validateCategory(),
+    validateCapacityMax(),
+    validateTimes(),
+  ];
 
   return results.every(Boolean);
 }
 
-function toggleCreateButtonDisabled() {
-  createButton.disabled = isSubmitting || !isFormValid();
+function toggleEditButtonDisabled() {
+  editButton.disabled = isSubmitting || !isFormValid();
 }
 
 function setupFormValidation() {
-  form.elements.picture.addEventListener("change", () => {
-    if (form.elements.picture.files[0]) {
+  pictureInput.addEventListener("change", () => {
+    if (pictureInput.files[0]) {
       validatePicture();
     } else {
       hideFieldError("picture", false);
     }
-    toggleCreateButtonDisabled();
+
+    toggleEditButtonDisabled();
   });
 
   for (const field of TEXT_FIELDS) {
@@ -415,17 +550,109 @@ function setupFormValidation() {
 
     element.addEventListener("input", () => {
       hideFieldError(field.name);
-      toggleCreateButtonDisabled();
+      toggleEditButtonDisabled();
     });
 
     element.addEventListener("blur", () => {
-      if (element.value.trim() !== "") {
-        validateText(field);
-      }
+      validateText(field);
+      toggleEditButtonDisabled();
     });
   }
 
-  toggleCreateButtonDisabled();
+  form.elements.category.addEventListener("change", () => {
+    validateCategory();
+    toggleEditButtonDisabled();
+  });
+
+  form.elements.capacityMax.addEventListener("input", () => {
+    hideFieldError("capacityMax");
+    toggleEditButtonDisabled();
+  });
+
+  for (const name of ["isVegan", "isPRM", "isFamilyFriendly"]) {
+    form.elements[name].addEventListener("change", toggleEditButtonDisabled);
+  }
+
+  toggleEditButtonDisabled();
 }
 
 setupFormValidation();
+
+function releaseObjectURL() {
+  if (currentObjectURL) {
+    URL.revokeObjectURL(currentObjectURL);
+    currentObjectURL = null;
+  }
+}
+
+function getDatePart(value) {
+  return value ? value.slice(0, 10) : "";
+}
+
+function getTimePart(value) {
+  const date = new Date(value);
+
+  if (Number.isNaN(date.getTime())) {
+    return "";
+  }
+
+  return `1970-01-01T${String(date.getUTCHours()).padStart(2, "0")}:${String(
+    date.getUTCMinutes(),
+  ).padStart(2, "0")}:00Z`;
+}
+
+function fillForm(workshop) {
+  form.elements.name.value = workshop.name ?? "";
+  form.elements.location.value = workshop.location ?? "";
+  form.elements.category.value =
+    workshop.categoryName ?? workshop.category ?? "";
+  form.elements.about.value = workshop.description ?? "";
+
+  form.elements.date.value = getDatePart(workshop.startTime);
+  form.elements.capacityMax.value = workshop.capacityMax ?? "";
+
+  form.elements.isVegan.checked = Boolean(workshop.isVegan);
+  form.elements.isPRM.checked = Boolean(workshop.isPRM);
+  form.elements.isFamilyFriendly.checked = Boolean(workshop.isFamilyFriendly);
+
+  const startTime = getTimePart(workshop.startTime);
+  const endTime = getTimePart(workshop.endTime);
+
+  form.elements.startTime.value = startTime;
+  form.elements.endTime.value = endTime;
+
+  originalPictureURL = workshop.pictureURL ?? "";
+
+  if (originalPictureURL) {
+    picturePreview.src = originalPictureURL;
+    picturePreview.hidden = false;
+    picturePreview.style.display = "block";
+    pictureLabel.textContent = "Update Picture";
+    pictureLabel.classList.add("hasPicture");
+  } else {
+    picturePreview.hidden = true;
+    picturePreview.style.display = "none";
+    pictureLabel.textContent = "Add Picture";
+    pictureLabel.classList.remove("hasPicture");
+  }
+}
+
+async function loadWorkshop() {
+  if (!workshopID) {
+    throw new Error("Workshop ID is missing from the URL.");
+  }
+
+  await Promise.all([fillCategoriesOptions(), fillTimesOptions()]);
+
+  const client = new WorkshopAPIClient();
+  const workshop = await client.fetchWorkshop(workshopID);
+
+  fillForm(workshop);
+  toggleEditButtonDisabled();
+}
+
+loadWorkshop().catch((error) => {
+  console.error("Failed to load workshop:", error);
+  showFormError(error.message || "Unable to load workshop information.");
+  editButton.disabled = true;
+});
