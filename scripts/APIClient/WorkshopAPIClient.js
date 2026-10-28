@@ -126,13 +126,13 @@ export class WorkshopAPIClient {
     });
   }
 
-  async getWorkshopCalendar() {
+  async getWorkshopCalendar({ page = 1, per = 5 }) {
     if (!TokenCookie.has()) {
       throw new Error("No authentication token found");
     }
 
     const token = TokenCookie.get();
-    const path = "admin/workshops/calendar";
+    const path = `admin/workshops/calendar?page=${page}&per=${per}`;
 
     const client = new BaseAPIClient();
 
