@@ -86,21 +86,6 @@
   .right {
     flex-shrink: 0;
   }
-
-  .resetButton {
-    width: 2.5rem;
-    height: 2.5rem;
-
-    display: inline-flex;
-    align-items: center;
-    justify-content: center;
-
-    background-color: var(--bulma-success);
-    border-radius: 0.75rem;
-
-    color: white;
-    font-size: 1.5rem;
-  }
 }
 
 .userTile:not(.isDisabled):hover {

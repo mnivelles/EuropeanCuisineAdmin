@@ -102,11 +102,11 @@ export class TileUtils {
 
   static createResetButton(onClick) {
     const button = document.createElement("button");
-    button.className = "resetButton";
+    button.className = "bulma-button bulma-is-success";
     button.type = "button";
 
     const icon = document.createElement("span");
-    icon.className = "es-icon es-icon-reset";
+    icon.className = "es-icon es-icon-reset bulma-icon";
     button.appendChild(icon);
 
     button.addEventListener("click", (event) => {
