@@ -13,8 +13,7 @@ const reservationID = new URLSearchParams(window.location.search).get("id");
 const workshopName = document.getElementById("workshopName");
 const workshopCategory = document.getElementById("workshopCategory");
 const workshopDate = document.getElementById("workshopDate");
-const workshopStartTime = document.getElementById("workshopStartTime");
-const workshopEndTime = document.getElementById("workshopEndTime");
+const workshopTime = document.getElementById("workshopTime");
 const userName = document.getElementById("userName");
 const userEmail = document.getElementById("userEmail");
 
@@ -63,8 +62,7 @@ async function loadReservation() {
     workshopName.textContent = reservation.workshop.name;
     workshopCategory.textContent = reservation.workshop.category;
     workshopDate.textContent = reservation.workshop.date;
-    workshopStartTime.textContent = reservation.workshop.startTime;
-    workshopEndTime.textContent = reservation.workshop.endTime;
+    workshopTime.textContent = `${reservation.workshop.startTime} - ${reservation.workshop.endTime}`
     userName.textContent = reservation.user.name;
     userEmail.textContent = reservation.user.email;
   } catch (error) {

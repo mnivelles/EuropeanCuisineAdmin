@@ -6,93 +6,86 @@
     <link rel="icon" href="/images/favicon.svg" type="image/svg+xml" />
     <link rel="stylesheet" href="/styles/Common/icons.css" />
     <link rel="stylesheet" href="/styles/app.css" />
+    <link rel="stylesheet" href="/styles/Common/form.css" />
+    <link rel="stylesheet" href="/styles/Reservation/form.css" />
     <title>Edit Reservation | Admin - Escale Europe</title>
   </head>
   <body>
     <div class="page bulma-container bulma-is-widescreen">
       <div id="pageHeader" class="page_header"></div>
 
-      <div class="page_main">
-        <div class="main_header">
+      <div class="page_island">
+        <div class="island_header">
           <div id="mainBreadcrumb"></div>
         </div>
+        <div id="formError" class="bulma-notification bulma-is-danger" hidden>
+          <button class="bulma-delete" type="button"></button>
+          <div class="messages"></div>
+        </div>
 
-        <section class="bulma-box">
-          <div id="formError" class="bulma-notification bulma-is-danger" hidden>
-            <button class="bulma-delete" type="button"></button>
-            <div class="messages"></div>
+        <form id="editForm">
+          <div class="bulma-field">
+            <label class="bulma-label" for="field_status">Status</label>
+            <div class="bulma-control bulma-select bulma-is-fullwidth">
+              <select id="field_status" name="status" required>
+                <option value="confirmed">Confirmed</option>
+                <option value="pending">Pending</option>
+                <option value="cancelled">Cancelled</option>
+              </select>
+            </div>
           </div>
 
-          <form id="editForm">
-            <div class="bulma-field">
-              <label class="bulma-label" for="field_status">Status</label>
-              <div class="bulma-control bulma-select bulma-is-fullwidth">
-                <select id="field_status" name="status" required>
-                  <option value="confirmed">Confirmed</option>
-                  <option value="pending">Pending</option>
-                  <option value="cancelled">Cancelled</option>
-                </select>
-              </div>
-            </div>
+          <div class="formInfos">
+            <div class="reservationDetails">
+              <h3 class="reservationDetails_label">Workshop</h3>
 
-            <div class="reservation-details">
-              <h3 class="reservation-detail-label">Workshop</h3>
-
-              <div class="reservation-detail-row">
-                <span class="reservation-detail-label">Name</span>
-                <span id="workshopName" class="reservation-detail-value"></span>
+              <div class="reservationDetails_row">
+                <div class="row_label">Name</div>
+                <div id="workshopName" class="row_content"></div>
               </div>
 
-              <div class="reservation-detail-row">
-                <span class="reservation-detail-label">Category</span>
-                <span
-                  id="workshopCategory"
-                  class="reservation-detail-value"
-                ></span>
+              <div class="reservationDetails_row">
+                <div class="row_label">Category</div>
+                <div id="workshopCategory" class="row_content"></div>
               </div>
 
-              <div class="reservation-detail-row reservation-time-row">
-                <span class="reservation-detail-label">Time</span>
-                <div class="reservation-detail-value reservation-time-value">
+              <div class="reservationDetails_row">
+                <div class="row_label">Time</div>
+                <div class="row_content">
                   <span id="workshopDate"></span>
-                  <div class="reservation-time-range">
-                    <span id="workshopStartTime"></span>
-                    <span class="reservation-time-separator">–</span>
-                    <span id="workshopEndTime"></span>
-                  </div>
+                  <br />
+                  <span id="workshopTime">X</span>
                 </div>
               </div>
             </div>
 
-            <br />
+            <div class="reservationDetails">
+              <h3 class="reservationDetails_label">User</h3>
 
-            <div class="reservation-details">
-              <h3 class="reservation-detail-label">User</h3>
-
-              <div class="reservation-detail-row">
-                <span class="reservation-detail-label">Name</span>
-                <span id="userName" class="reservation-detail-value"></span>
+              <div class="reservationDetails_row">
+                <div class="row_label">Name</div>
+                <div id="userName" class="row_content"></div>
               </div>
 
-              <div class="reservation-detail-row">
-                <span class="reservation-detail-label">Email</span>
-                <span id="userEmail" class="reservation-detail-value"></span>
+              <div class="reservationDetails_row">
+                <div class="row_label">Email</div>
+                <div id="userEmail" class="row_content"></div>
               </div>
             </div>
+          </div>
 
-            <div class="bulma-field">
-              <div class="bulma-control">
-                <button
-                  id="updateButton"
-                  class="bulma-button bulma-is-primary bulma-is-fullwidth"
-                  type="submit"
-                >
-                  Update
-                </button>
-              </div>
+          <div class="bulma-field">
+            <div class="bulma-control">
+              <button
+                id="updateButton"
+                class="bulma-button bulma-is-primary bulma-is-fullwidth"
+                type="submit"
+              >
+                Update
+              </button>
             </div>
-          </form>
-        </section>
+          </div>
+        </form>
       </div>
     </div>
 
