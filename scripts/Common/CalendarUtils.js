@@ -1,3 +1,5 @@
+import Routes from "/scripts/Common/Routes.js";
+
 export class CalendarUtils {
   constructor() {}
 
@@ -104,7 +106,8 @@ export class CalendarUtils {
   }
 
   static #createEventElement(event) {
-    const container = document.createElement("div");
+    const container = document.createElement("a");
+    container.href = Routes.workshops.edit(event.id);
     container.classList.add("event");
     container.classList.add(event.themeClass);
     container.classList.add(event.startClass);
