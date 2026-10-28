@@ -7,10 +7,9 @@ const ROUTES = Object.freeze({
     edit: (id) => `/booths/edit.html?id=${encodeURIComponent(id)}`,
   },
   reservations: {
-  list: "/reservations/index.html",
-  edit: (id) =>
-    `/reservations/edit.html?id=${encodeURIComponent(id)}`,
-},
+    list: "/reservations/index.html",
+    edit: (id) => `/reservations/edit.html?id=${encodeURIComponent(id)}`,
+  },
   users: {
     tiles: "/users/tiles.html",
     table: "/users/table.html",
@@ -21,7 +20,8 @@ const ROUTES = Object.freeze({
     list: "/workshops/index.html",
     create: "/workshops/create.html",
     edit: (id) => `/workshops/edit.html?id=${encodeURIComponent(id)}`,
-    reservations: (id) => `/workshops/reservationList.html?id=${encodeURIComponent(id)}`,
+    reservations: (id) =>
+      `/workshops/reservationList.html?id=${encodeURIComponent(id)}`,
     calendar: "/workshops/calendar.html",
     categories: {
       list: "/workshops/categories/index.html",

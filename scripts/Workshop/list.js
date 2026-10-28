@@ -190,6 +190,7 @@ async function cancelWorkshop(workshop) {
     await new WorkshopAPIClient().cancelWorkshop(workshop.id);
     await fillTable(currentPage);
   } catch (error) {
+    alert("Error cancelling workshop. Checked if workshop has reservations.")
     console.error(error);
   }
 }

@@ -1,35 +1,13 @@
 import { Header } from "/scripts/Common/Header.js";
 import Routes, { SEGMENTS } from "/scripts/Common/Routes.js";
 import { ReservationAPIClient } from "/scripts/APIClient/ReservationAPIClient.js";
+import { WorkshopAPIClient } from "/scripts/APIClient/WorkshopAPIClient.js";
 import { TableUtils } from "/scripts/Common/TableUtils.js";
 import { Components } from "/scripts/Common/Components.js";
 
 Header.render();
 
-Components.addBreadcrumbIn(document.getElementById("mainBreadcrumb"), [
-  {
-    label: "Reservations",
-    iconClass: "es-icon-reservation",
-  },
-  {
-    label: "Reservations List",
-  },
-]);
-
-const mainTabView = document.getElementById("mainTabView");
-const selectedSegment = "categories";
-Components.addSegmentedControlIn(
-  mainTabView,
-  SEGMENTS.workshops,
-  selectedSegment,
-);
-
-const tableHeaders = [
-  "",
-  "User Name",
-  "Status",
-  "Actions",
-];
+const tableHeaders = ["", "User Name", "Status", "Actions"];
 
 let currentPage = 1;
 
@@ -80,7 +58,7 @@ function applyFilters() {
     filter: filterSelect.value,
   };
 
-  fillTable(1)
+  fillTable(1);
 }
 
 function reset() {
@@ -99,6 +77,8 @@ async function fillTable(page = 1) {
   setLoading(true);
 
   try {
+    const workshop = await new WorkshopAPIClient().fetchWorkshop(workshopID);
+    createBreadcrumb(workshop.name);
     const result =
       await new ReservationAPIClient().fetchWorkshopReservationList({
         workshopID,
@@ -112,12 +92,7 @@ async function fillTable(page = 1) {
     if (result.items.length === 0) {
       clearTableFooter();
     } else {
-      TableUtils.fillPagination(
-        result,
-        footerSummary,
-        pagination,
-        fillTable,
-      );
+      TableUtils.fillPagination(result, footerSummary, pagination, fillTable);
     }
   } catch (error) {
     console.error(error);
@@ -155,7 +130,7 @@ function addReservationsToTbody(reservations) {
 const reservationColumns = [
   TableUtils.pictureColumn("userPictureURL"),
   TableUtils.textColumn("userName"),
-  TableUtils.textColumn("status"),
+  TableUtils.statusColumn("status"),
   TableUtils.actionsColumn(getEditActions),
 ];
 
@@ -171,10 +146,7 @@ function getEditActions(reservation) {
 }
 
 function createTrFromReservation(reservation) {
-  return TableUtils.createTrFromColumns(
-    reservation,
-    reservationColumns,
-  );
+  return TableUtils.createTrFromColumns(reservation, reservationColumns);
 }
 
 function clearTableFooter() {
@@ -183,3 +155,19 @@ function clearTableFooter() {
 }
 
 fillTable();
+
+function createBreadcrumb(name) {
+  Components.addBreadcrumbIn(document.getElementById("mainBreadcrumb"), [
+    {
+      label: "Workshops",
+      iconClass: "es-icon-workshop",
+      href: Routes.workshops.list,
+    },
+    {
+      label: name,
+    },
+    {
+      label: "Reservations",
+    },
+  ]);
+}
