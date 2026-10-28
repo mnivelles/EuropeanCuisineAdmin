@@ -3,6 +3,7 @@ import { UserAPIClient } from "/scripts/APIClient/UserAPIClient.js";
 import { MODEL_CONSTRAINT } from "/scripts/Common/Constraints.js";
 import Routes from "/scripts/Common/Routes.js";
 import { Components } from "/scripts/Common/Components.js";
+import { ModalUtils } from "/scripts/Common/ModalUtils.js";
 
 Header.render();
 
@@ -401,7 +402,15 @@ async function disableUser(event) {
     return;
   }
 
-  if (!confirm("Disable this user?")) {
+  const confirmed = await ModalUtils.confirm({
+    title: "Disable user",
+    message: `Do you really want to disable this user?`,
+    confirmLabel: "Disable",
+    cancelLabel: "Cancel",
+    isDanger: true,
+  });
+
+  if (!confirmed) {
     return;
   }
 
