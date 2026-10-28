@@ -1,15 +1,15 @@
 :root {
   --numberOfDays: 5;
-  --numberOfHour: 12;
+  --numberOfHour: 11;
   --numberOfQuaterOfHour: calc(var(--numberOfHour) * 4);
   --hourHeight: calc(var(--quarterHourHeight) * 4);
   --quarterHourHeight: 16px;
   --headerHeight: 32px;
-  --timeWidth: 72px;
+  --timeWidth: 64px;
+  --gridLineColor: var(--bulma-grey-lighter);
 }
 
 #mainCalendar {
-  padding: 1rem;
 }
 
 .calendar {
@@ -18,12 +18,13 @@
 }
 
 .calendar .timeline {
+  position: relative;
   display: grid;
   grid-template-rows: var(--headerHeight) repeat(
       var(--numberOfHour),
       var(--hourHeight)
     );
-  border-right: 1px solid red;
+  border-right: 1px solid var(--gridLineColor);
 }
 
 .calendar .timeline .time {
@@ -35,23 +36,29 @@
   top: -0.75rem;
 
   width: var(--timeWidth);
+
+  &:last-child {
+    position: absolute;
+    top: calc(var(--hourHeight) * var(--numberOfHour) + 1.125rem);
+    left: 0;
+  }
 }
 
 .calendar .days {
   display: grid;
   grid-column: 2;
-  grid-template-columns: repeat(auto-fit, minmax(150px, 1fr));
+  grid-template-columns: repeat(var(--numberOfDays), 1fr);
 }
 
 .calendar .days .day {
-  border-right: 1px solid greenyellow;
+  border-right: 1px solid var(--gridLineColor);
 }
 
 .calendar .days .day .date {
   display: flex;
   gap: 0.25rem;
   justify-content: center;
-  border-bottom: 1px solid skyblue;
+  border-bottom: 1px solid var(--gridLineColor);
   height: var(--headerHeight);
 
   .weekday {
@@ -127,7 +134,7 @@
     }
 
     .name {
-      font-size: 0.875rem;
+      font-size: 0.75rem;
       font-weight: 600;
       color: var(--bulma-text);
 
@@ -135,26 +142,25 @@
       overflow: hidden;
       display: -webkit-box;
       -webkit-box-orient: vertical;
-      -webkit-line-clamp: 1;
-      line-clamp: 1;
+      --lines: 1;
+      -webkit-line-clamp: var(--lines);
+      line-clamp: var(--lines);
     }
 
-    @container (min-height: 4.5rem) {
+    @container (min-height: 32px) {
       .name {
-        -webkit-line-clamp: 2;
-        line-clamp: 2;
+        --lines: 2;
       }
     }
-    @container (min-height: 5.9rem) {
+    @container (min-height: 48px) {
       .name {
-        -webkit-line-clamp: 3;
-        line-clamp: 3;
+        --lines: 3;
       }
     }
-    @container (min-height: 7.2rem) {
+    @container (min-height: 64px) {
       .name {
-        -webkit-line-clamp: 4;
-        line-clamp: 4;
+        font-size: 0.825rem;
+        --lines: 3;
       }
     }
   }
@@ -164,10 +170,12 @@
   position: relative;
 
   .lineGrid {
+    --cols: var(--numberOfDays);
+
     position: absolute;
     top: calc(var(--hourHeight) / 2);
     left: var(--timeWidth);
-    width: calc(100% - var(--timeWidth));
+    width: calc((100% - var(--timeWidth)) * var(--cols) / var(--numberOfDays));
 
     z-index: 1;
 
@@ -175,322 +183,431 @@
     grid-template-rows: repeat(var(--numberOfHour), var(--hourHeight));
 
     .row {
-      border-bottom: 1px solid purple;
+      border-bottom: 1px solid var(--gridLineColor);
+    }
+
+    &.col1 {
+      --cols: 1;
+    }
+    &.col2 {
+      --cols: 2;
+    }
+    &.col3 {
+      --cols: 3;
+    }
+    &.col4 {
+      --cols: 4;
+    }
+    &.col5 {
+      --cols: 5;
     }
   }
 }
 
 .calendar {
-  .start_07-00 {
+  .start_08-00 {
     grid-row-start: 1;
   }
-  .start_07-15 {
+
+  .start_08-15 {
     grid-row-start: 2;
   }
-  .start_07-30 {
+
+  .start_08-30 {
     grid-row-start: 3;
   }
-  .start_07-45 {
+
+  .start_08-45 {
     grid-row-start: 4;
   }
 
-  .start_08-00 {
+  .start_09-00 {
     grid-row-start: 5;
   }
-  .start_08-15 {
+
+  .start_09-15 {
     grid-row-start: 6;
   }
-  .start_08-30 {
+
+  .start_09-30 {
     grid-row-start: 7;
   }
-  .start_08-45 {
+
+  .start_09-45 {
     grid-row-start: 8;
   }
 
-  .start_09-00 {
+  .start_10-00 {
     grid-row-start: 9;
   }
-  .start_09-15 {
+
+  .start_10-15 {
     grid-row-start: 10;
   }
-  .start_09-30 {
+
+  .start_10-30 {
     grid-row-start: 11;
   }
-  .start_09-45 {
+
+  .start_10-45 {
     grid-row-start: 12;
   }
 
-  .start_10-00 {
+  .start_11-00 {
     grid-row-start: 13;
   }
-  .start_10-15 {
+
+  .start_11-15 {
     grid-row-start: 14;
   }
-  .start_10-30 {
+
+  .start_11-30 {
     grid-row-start: 15;
   }
-  .start_10-45 {
+
+  .start_11-45 {
     grid-row-start: 16;
   }
 
-  .start_11-00 {
+  .start_12-00 {
     grid-row-start: 17;
   }
-  .start_11-15 {
+
+  .start_12-15 {
     grid-row-start: 18;
   }
-  .start_11-30 {
+
+  .start_12-30 {
     grid-row-start: 19;
   }
-  .start_11-45 {
+
+  .start_12-45 {
     grid-row-start: 20;
   }
 
-  .start_12-00 {
+  .start_13-00 {
     grid-row-start: 21;
   }
-  .start_12-15 {
+
+  .start_13-15 {
     grid-row-start: 22;
   }
-  .start_12-30 {
+
+  .start_13-30 {
     grid-row-start: 23;
   }
-  .start_12-45 {
+
+  .start_13-45 {
     grid-row-start: 24;
   }
 
-  .start_13-00 {
+  .start_14-00 {
     grid-row-start: 25;
   }
-  .start_13-15 {
+
+  .start_14-15 {
     grid-row-start: 26;
   }
-  .start_13-30 {
+
+  .start_14-30 {
     grid-row-start: 27;
   }
-  .start_13-45 {
+
+  .start_14-45 {
     grid-row-start: 28;
   }
 
-  .start_14-00 {
+  .start_15-00 {
     grid-row-start: 29;
   }
-  .start_14-15 {
+
+  .start_15-15 {
     grid-row-start: 30;
   }
-  .start_14-30 {
+
+  .start_15-30 {
     grid-row-start: 31;
   }
-  .start_14-45 {
+
+  .start_15-45 {
     grid-row-start: 32;
   }
 
-  .start_15-00 {
+  .start_16-00 {
     grid-row-start: 33;
   }
-  .start_15-15 {
+
+  .start_16-15 {
     grid-row-start: 34;
   }
-  .start_15-30 {
+
+  .start_16-30 {
     grid-row-start: 35;
   }
-  .start_15-45 {
+
+  .start_16-45 {
     grid-row-start: 36;
   }
 
-  .start_16-00 {
+  .start_17-00 {
     grid-row-start: 37;
   }
-  .start_16-15 {
+
+  .start_17-15 {
     grid-row-start: 38;
   }
-  .start_16-30 {
+
+  .start_17-30 {
     grid-row-start: 39;
   }
-  .start_16-45 {
+
+  .start_17-45 {
     grid-row-start: 40;
   }
 
-  .start_17-00 {
+  .start_18-00 {
     grid-row-start: 41;
   }
-  .start_17-15 {
+
+  .start_18-15 {
     grid-row-start: 42;
   }
-  .start_17-30 {
+
+  .start_18-30 {
     grid-row-start: 43;
   }
-  .start_17-45 {
+
+  .start_18-45 {
     grid-row-start: 44;
   }
 
-  .start_18-00 {
-    grid-row-start: 45;
-  }
-  .start_18-15 {
-    grid-row-start: 46;
-  }
-  .start_18-30 {
-    grid-row-start: 47;
-  }
-  .start_18-45 {
-    grid-row-start: 48;
-  }
-
-  .end_07-15 {
+  .end_08-15 {
     grid-row-end: 2;
   }
-  .end_07-30 {
+
+  .end_08-30 {
     grid-row-end: 3;
   }
-  .end_07-45 {
+
+  .end_08-45 {
     grid-row-end: 4;
   }
 
-  .end_08-00 {
+  .end_09-00 {
     grid-row-end: 5;
   }
-  .end_08-15 {
+
+  .end_09-15 {
     grid-row-end: 6;
   }
-  .end_08-30 {
+
+  .end_09-30 {
     grid-row-end: 7;
   }
-  .end_08-45 {
+
+  .end_09-45 {
     grid-row-end: 8;
   }
 
-  .end_09-00 {
+  .end_10-00 {
     grid-row-end: 9;
   }
-  .end_09-15 {
+
+  .end_10-15 {
     grid-row-end: 10;
   }
-  .end_09-30 {
+
+  .end_10-30 {
     grid-row-end: 11;
   }
-  .end_09-45 {
+
+  .end_10-45 {
     grid-row-end: 12;
   }
 
-  .end_10-00 {
+  .end_11-00 {
     grid-row-end: 13;
   }
-  .end_10-15 {
+
+  .end_11-15 {
     grid-row-end: 14;
   }
-  .end_10-30 {
+
+  .end_11-30 {
     grid-row-end: 15;
   }
-  .end_10-45 {
+
+  .end_11-45 {
     grid-row-end: 16;
   }
 
-  .end_11-00 {
+  .end_12-00 {
     grid-row-end: 17;
   }
-  .end_11-15 {
+
+  .end_12-15 {
     grid-row-end: 18;
   }
-  .end_11-30 {
+
+  .end_12-30 {
     grid-row-end: 19;
   }
-  .end_11-45 {
+
+  .end_12-45 {
     grid-row-end: 20;
   }
 
-  .end_12-00 {
+  .end_13-00 {
     grid-row-end: 21;
   }
-  .end_12-15 {
+
+  .end_13-15 {
     grid-row-end: 22;
   }
-  .end_12-30 {
+
+  .end_13-30 {
     grid-row-end: 23;
   }
-  .end_12-45 {
+
+  .end_13-45 {
     grid-row-end: 24;
   }
 
-  .end_13-00 {
+  .end_14-00 {
     grid-row-end: 25;
   }
-  .end_13-15 {
+
+  .end_14-15 {
     grid-row-end: 26;
   }
-  .end_13-30 {
+
+  .end_14-30 {
     grid-row-end: 27;
   }
-  .end_13-45 {
+
+  .end_14-45 {
     grid-row-end: 28;
   }
 
-  .end_14-00 {
+  .end_15-00 {
     grid-row-end: 29;
   }
-  .end_14-15 {
+
+  .end_15-15 {
     grid-row-end: 30;
   }
-  .end_14-30 {
+
+  .end_15-30 {
     grid-row-end: 31;
   }
-  .end_14-45 {
+
+  .end_15-45 {
     grid-row-end: 32;
   }
 
-  .end_15-00 {
+  .end_16-00 {
     grid-row-end: 33;
   }
-  .end_15-15 {
+
+  .end_16-15 {
     grid-row-end: 34;
   }
-  .end_15-30 {
+
+  .end_16-30 {
     grid-row-end: 35;
   }
-  .end_15-45 {
+
+  .end_16-45 {
     grid-row-end: 36;
   }
 
-  .end_16-00 {
+  .end_17-00 {
     grid-row-end: 37;
   }
-  .end_16-15 {
+
+  .end_17-15 {
     grid-row-end: 38;
   }
-  .end_16-30 {
+
+  .end_17-30 {
     grid-row-end: 39;
   }
-  .end_16-45 {
+
+  .end_17-45 {
     grid-row-end: 40;
   }
 
-  .end_17-00 {
+  .end_18-00 {
     grid-row-end: 41;
   }
-  .end_17-15 {
+
+  .end_18-15 {
     grid-row-end: 42;
   }
-  .end_17-30 {
+
+  .end_18-30 {
     grid-row-end: 43;
   }
-  .end_17-45 {
+
+  .end_18-45 {
     grid-row-end: 44;
   }
 
-  .end_18-00 {
+  .end_19-00 {
     grid-row-end: 45;
   }
-  .end_18-15 {
-    grid-row-end: 46;
-  }
-  .end_18-30 {
-    grid-row-end: 47;
-  }
-  .end_18-45 {
-    grid-row-end: 48;
+}
+
+#mainCalendarHeader {
+  padding-bottom: 1.5rem;
+}
+
+.calendarHeader {
+  display: inline-flex;
+  flex-direction: row;
+  align-items: center;
+  gap: 1rem;
+}
+
+.calendarRange {
+  font-size: 1.125rem;
+  font-weight: 600;
+}
+
+.calendarPreviousNext {
+  display: inline-flex;
+  flex-direction: row;
+  align-items: center;
+  gap: 0;
+
+  border: 1px solid var(--bulma-grey-lighter);
+  border-radius: var(--bulma-radius);
+  overflow: hidden;
+
+  button {
+    display: inline-flex;
+    align-items: center;
+    justify-content: center;
+
+    width: 2.5rem;
+    height: 2.5rem;
+
+    &:last-child {
+      border-left: 1px solid var(--bulma-grey-lighter);
+    }
+
+    &:disabled .es-icon {
+      color: var(--bulma-grey-lighter);
+    }
+
+    &:not(:disabled):hover {
+      background-color: var(--bulma-primary-95);
+    }
   }
 
-  .end_19-00 {
-    grid-row-end: 49;
+  .es-icon {
+    font-size: 2rem;
+    font-weight: 500;
+    color: var(--bulma-primary);
   }
 }

@@ -1,76 +1,72 @@
+import { Header } from "/scripts/Common/Header.js";
 import { WorkshopAPIClient } from "/scripts/APIClient/WorkshopAPIClient.js";
+import { CalendarUtils } from "/scripts/Common/CalendarUtils.js";
+import { Components } from "/scripts/Common/Components.js";
+import Routes, { SEGMENTS } from "/scripts/Common/Routes.js";
 
-function createEventElement(event) {
-  const container = document.createElement("div");
-  container.classList.add("event");
-  container.classList.add(event.themeClass);
-  container.classList.add(event.startClass);
-  container.classList.add(event.endClass);
+Header.render();
 
-  const time = document.createElement("div");
-  time.classList.add("time");
-  time.textContent = `${event.startTime} - ${event.endTime}`;
-  container.appendChild(time);
+Components.addBreadcrumbIn(document.getElementById("mainBreadcrumb"), [
+  {
+    label: "Workshops",
+    iconClass: "es-icon-workshop",
+  },
+]);
 
-  const name = document.createElement("div");
-  name.classList.add("name");
-  name.textContent = event.name;
-  container.appendChild(name);
+const mainTabView = document.getElementById("mainTabView");
+const selectedSegment = "calendar";
+Components.addSegmentedControlIn(
+  mainTabView,
+  SEGMENTS.workshops,
+  selectedSegment,
+);
 
-  return container;
-}
+let currentPage = 1;
+const itemsPerPage = 5;
 
-function createEventsElement(events) {
-  const container = document.createElement("div");
-  container.classList.add("events");
+const calendarRange = document.querySelector(
+  "#mainCalendarHeader .calendarRange",
+);
+const previousButton = document.querySelector(
+  "#mainCalendarHeader .calendarPreviousNext button.previous",
+);
+const nextButton = document.querySelector(
+  "#mainCalendarHeader .calendarPreviousNext button.next",
+);
 
-  const children = events.map(createEventElement);
+async function fillCalendar(page = 1) {
+  const container = document.getElementById("mainCalendar");
 
-  container.replaceChildren(...children);
-
-  return container;
-}
-
-function createDateElement(weekday, date) {
-  const container = document.createElement("div");
-  container.classList.add("date");
-
-  const weekdayElement = document.createElement("div");
-  weekdayElement.classList.add("weekday");
-  weekdayElement.textContent = weekday;
-  container.appendChild(weekdayElement);
-
-  const numberElement = document.createElement("div");
-  numberElement.classList.add("number");
-  numberElement.textContent = date;
-  container.appendChild(numberElement);
-
-  return container;
-}
-
-function createDayElement(weekday, date, events) {
-  const container = document.createElement("div");
-  container.classList.add("day");
-
-  const dateElement = createDateElement(weekday, date);
-  const eventsElement = createEventsElement(events);
-
-  container.appendChild(dateElement);
-  container.appendChild(eventsElement);
-
-  return container;
-}
-
-async function fillCalendar() {
-  const container = document.getElementById("calendarDays");
-
-  const list = await new WorkshopAPIClient().getWorkshopCalendar();
-
-  const days = list.map((item) => {
-    return createDayElement(item.weekday, item.date, item.events);
+  const calendar = await new WorkshopAPIClient().getWorkshopCalendar({
+    page,
+    per: itemsPerPage,
   });
 
-  container.replaceChildren(...days);
+  currentPage = calendar.metadata.page;
+
+  const fromHour = 8; // 8 AM
+  const toHour = 19; // 7 PM
+  CalendarUtils.createCalendarIn(container, fromHour, toHour, calendar.items);
+
+  updateRangeTitle(calendar);
+  updateButtonsState(calendar);
 }
 
-fillCalendar();
+function updateRangeTitle(calendar) {
+  calendarRange.textContent = calendar.rangeTitle;
+}
+
+function updateButtonsState(calendar) {
+  previousButton.disabled = calendar.metadata.isFirstPage;
+  nextButton.disabled = calendar.metadata.isLastPage;
+}
+
+fillCalendar(currentPage);
+
+previousButton.addEventListener("click", () => {
+  fillCalendar(currentPage - 1);
+});
+
+nextButton.addEventListener("click", () => {
+  fillCalendar(currentPage + 1);
+});
