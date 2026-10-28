@@ -311,7 +311,7 @@ export class TableUtils {
     edit: { className: "bulma-is-primary", icon: "es-icon-edit" },
     delete: { className: "bulma-is-danger", icon: "es-icon-delete" },
     reset: { className: "bulma-is-success", icon: "es-icon-reset" },
-    reservations: { className: "bulma-is-info", icon: "es-icon-reset" },
+    reservations: { className: "bulma-is-info", icon: "es-icon-reservation" },
   };
 
   static #createTdActions(item, actions) {

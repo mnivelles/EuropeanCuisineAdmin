@@ -20,7 +20,7 @@ Components.addBreadcrumbIn(document.getElementById("mainBreadcrumb"), [
 ]);
 
 const form = document.getElementById("editForm");
-const editButton = document.getElementById("editButton");
+const updateButton = document.getElementById("updateButton");
 const reservationListButton = document.getElementById("reservationListButton");
 const deleteButton = document.getElementById("deleteButton");
 const attendeesCount = document.getElementById("attendeesCount");
@@ -69,7 +69,7 @@ function setupPicture() {
       }
 
       hideFieldError("picture", false);
-      toggleEditButtonDisabled();
+      toggleUpdateButtonDisabled();
       return;
     }
 
@@ -82,7 +82,7 @@ function setupPicture() {
     pictureLabel.classList.add("hasPicture");
 
     validatePicture();
-    toggleEditButtonDisabled();
+    toggleUpdateButtonDisabled();
   });
 
   window.addEventListener("pagehide", releaseObjectURL);
@@ -126,12 +126,12 @@ function setupDateField() {
 
   dateInput.addEventListener("input", () => {
     hideFieldError("date");
-    toggleEditButtonDisabled();
+    toggleUpdateButtonDisabled();
   });
 
   dateInput.addEventListener("change", () => {
     validateDate();
-    toggleEditButtonDisabled();
+    toggleUpdateButtonDisabled();
   });
 }
 
@@ -165,7 +165,7 @@ async function fillTimesOptions() {
     startTimeOptionSelect.addEventListener("change", adjustEndTime);
     startTimeOptionSelect.addEventListener("change", () => {
       validateTimes();
-      toggleEditButtonDisabled();
+      toggleUpdateButtonDisabled();
     });
 
     startTimeOptionBulmaSelect.replaceChildren(startTimeOptionSelect);
@@ -177,7 +177,7 @@ async function fillTimesOptions() {
     endTimeOptionSelect.addEventListener("change", adjustStartTime);
     endTimeOptionSelect.addEventListener("change", () => {
       validateTimes();
-      toggleEditButtonDisabled();
+      toggleUpdateButtonDisabled();
     });
 
     endTimeOptionBulmaSelect.replaceChildren(endTimeOptionSelect);
@@ -274,7 +274,7 @@ document
   .querySelector(".bulma-delete")
   .addEventListener("click", clearFormError);
 
-editButton.addEventListener("click", submitForm);
+updateButton.addEventListener("click", submitForm);
 reservationListButton.addEventListener("click", () => {
   window.location.href = Routes.workshops.reservations(workshopID);
 });
@@ -300,8 +300,8 @@ async function submitForm(event) {
   if (isSubmitting || !validateForm()) return;
 
   isSubmitting = true;
-  editButton.classList.add("bulma-is-loading");
-  toggleEditButtonDisabled();
+  updateButton.classList.add("bulma-is-loading");
+  toggleUpdateButtonDisabled();
 
   try {
     const body = buildFormData();
@@ -314,8 +314,8 @@ async function submitForm(event) {
     showFormError(error.message);
 
     isSubmitting = false;
-    editButton.classList.remove("bulma-is-loading");
-    toggleEditButtonDisabled();
+    updateButton.classList.remove("bulma-is-loading");
+    toggleUpdateButtonDisabled();
   }
 }
 
@@ -551,8 +551,8 @@ function validateForm() {
   return results.every(Boolean);
 }
 
-function toggleEditButtonDisabled() {
-  editButton.disabled = isSubmitting || !isFormValid();
+function toggleUpdateButtonDisabled() {
+  updateButton.disabled = isSubmitting || !isFormValid();
 }
 
 function setupFormValidation() {
@@ -563,7 +563,7 @@ function setupFormValidation() {
       hideFieldError("picture", false);
     }
 
-    toggleEditButtonDisabled();
+    toggleUpdateButtonDisabled();
   });
 
   for (const field of TEXT_FIELDS) {
@@ -571,30 +571,30 @@ function setupFormValidation() {
 
     element.addEventListener("input", () => {
       hideFieldError(field.name);
-      toggleEditButtonDisabled();
+      toggleUpdateButtonDisabled();
     });
 
     element.addEventListener("blur", () => {
       validateText(field);
-      toggleEditButtonDisabled();
+      toggleUpdateButtonDisabled();
     });
   }
 
   form.elements.category.addEventListener("change", () => {
     validateCategory();
-    toggleEditButtonDisabled();
+    toggleUpdateButtonDisabled();
   });
 
   form.elements.capacityMax.addEventListener("input", () => {
     hideFieldError("capacityMax");
-    toggleEditButtonDisabled();
+    toggleUpdateButtonDisabled();
   });
 
   for (const name of ["isVegan", "isPRM", "isFamilyFriendly"]) {
-    form.elements[name].addEventListener("change", toggleEditButtonDisabled);
+    form.elements[name].addEventListener("change", toggleUpdateButtonDisabled);
   }
 
-  toggleEditButtonDisabled();
+  toggleUpdateButtonDisabled();
 }
 
 setupFormValidation();
@@ -671,11 +671,11 @@ async function loadWorkshop() {
   const workshop = await client.fetchWorkshop(workshopID);
 
   fillForm(workshop);
-  toggleEditButtonDisabled();
+  toggleUpdateButtonDisabled();
 }
 
 loadWorkshop().catch((error) => {
   console.error("Failed to load workshop:", error);
   showFormError(error.message || "Unable to load workshop information.");
-  editButton.disabled = true;
+  updateButton.disabled = true;
 });

@@ -71,7 +71,7 @@ async updateReservationStatus(id, status) {
     path: `admin/reservations/${encodeURIComponent(id)}`,
     method: HTTPMethod.PATCH,
     authenticationToken: TokenCookie.get(),
-    body: JSON.stringify({ status }),
+    body: { status },
     headers: {
       "Content-Type": "application/json",
     },

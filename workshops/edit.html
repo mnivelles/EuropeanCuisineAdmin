@@ -29,7 +29,9 @@
 
         <form action="" id="editForm" class="island_form">
           <div>
-            <p id="attendeesCount">Number of attendees:</p>
+            <p id="attendeesCount" class="bulma-has-text-weight-semibold">Number of attendees:</p>
+          </div>
+          <div>
             <img id="picturePreview" alt="Preview" />
           </div>
 
@@ -169,10 +171,10 @@
             </div>
           </div>
 
-          <div class="bulma-button">
+          <div class="bulma-buttons">
             <button
-              id="editButton"
-              class="bulma-button bulma-is-primary"
+              id="updateButton"
+              class="bulma-button bulma-is-primary is-maxwidth"
               type="button"
             >
               Update
@@ -182,14 +184,14 @@
               class="bulma-button bulma-is-info"
               type="button"
             >
-              <span class="es-icon es-icon-reservation"></span>
+              <span class="es-icon es-icon-reservation bulma-icon"></span>
             </button>
             <button
               id="deleteButton"
               class="bulma-button bulma-is-danger"
               type="button"
             >
-              <span class="es-icon es-icon-delete"></span>
+              <span class="es-icon es-icon-delete bulma-icon"></span>
             </button>
           </div>
         </form>

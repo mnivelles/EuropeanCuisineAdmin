@@ -1,4 +1,3 @@
-
 import { Header } from "/scripts/Common/Header.js";
 import { Components } from "/scripts/Common/Components.js";
 import Routes from "/scripts/Common/Routes.js";
@@ -14,7 +13,8 @@ const reservationID = new URLSearchParams(window.location.search).get("id");
 const workshopName = document.getElementById("workshopName");
 const workshopCategory = document.getElementById("workshopCategory");
 const workshopDate = document.getElementById("workshopDate");
-const workshopTime = document.getElementById("workshopTime");
+const workshopStartTime = document.getElementById("workshopStartTime");
+const workshopEndTime = document.getElementById("workshopEndTime");
 const userName = document.getElementById("userName");
 const userEmail = document.getElementById("userEmail");
 
@@ -54,17 +54,17 @@ async function loadReservation() {
   }
 
   try {
-    const reservation = await new ReservationAPIClient()
-      .fetchReservation(reservationID);
+    const reservation = await new ReservationAPIClient().fetchReservation(
+      reservationID,
+    );
 
     statusSelect.value = reservation.status;
 
     workshopName.textContent = reservation.workshop.name;
     workshopCategory.textContent = reservation.workshop.category;
     workshopDate.textContent = reservation.workshop.date;
-    workshopTime.textContent =
-      `${reservation.workshop.startTime} - ${reservation.workshop.endTime}`;
-
+    workshopStartTime.textContent = reservation.workshop.startTime;
+    workshopEndTime.textContent = reservation.workshop.endTime;
     userName.textContent = reservation.user.name;
     userEmail.textContent = reservation.user.email;
   } catch (error) {
