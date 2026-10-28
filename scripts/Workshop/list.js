@@ -143,7 +143,7 @@ const workshopColumns = [
   TableUtils.textColumn("location"),
   TableUtils.textColumn("date"),
   TableUtils.timeColumn(),
-  TableUtils.textColumn("capacity"),
+  TableUtils.workshopCapacityColumn(),
   TableUtils.actionsColumn(getWorkshopActions),
 ];
 

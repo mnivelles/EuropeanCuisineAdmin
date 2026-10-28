@@ -1,4 +1,5 @@
 import { StringUtils } from "/scripts/Common/StringUtils.js";
+import { Components } from "/scripts/Common/Components.js";
 
 export class TableUtils {
   constructor() {}
@@ -77,7 +78,19 @@ export class TableUtils {
   }
 
   static workshopStatusColumn(statusProperty = "status") {
-    return (item) => TableUtils.#createTdWithWorkshopStatus(item[statusProperty]);
+    return (item) =>
+      TableUtils.#createTdWithWorkshopStatus(item[statusProperty]);
+  }
+
+  static workshopCapacityColumn(
+    bookedProperty = "bookedCapacity",
+    totalProperty = "totalCapacity",
+  ) {
+    return (item) =>
+      TableUtils.#createTdWithWorkshopCapacity(
+        item[bookedProperty],
+        item[totalProperty],
+      );
   }
 
   static actionsColumn(actions = [{ type: "edit" }, { type: "delete" }]) {
@@ -303,6 +316,27 @@ export class TableUtils {
 
       td.appendChild(disabledIndicator);
     }
+
+    return td;
+  }
+
+  static #createTdWithWorkshopCapacity(bookedCapacity, totalCapacity) {
+    const td = document.createElement("td");
+
+    const container = document.createElement("div");
+    container.className = "capacityContainer";
+
+    const gauge = document.createElement("div");
+    gauge.className = "gaugeContainer";
+    Components.addGaugeIn(gauge, bookedCapacity, totalCapacity);
+
+    const label = document.createElement("div");
+    label.className = "label";
+    label.textContent = `${bookedCapacity}/${totalCapacity}`;
+
+    container.append(gauge, label);
+
+    td.appendChild(container);
 
     return td;
   }

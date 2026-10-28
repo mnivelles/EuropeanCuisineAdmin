@@ -498,3 +498,73 @@ body {
     }
   }
 }
+
+/* Gauge */
+
+.gauge {
+  --gauge-active: #4292d2;
+  --gauge-track: var(--bulma-grey-lighter);
+  --gauge-text: var(--bulma-text);
+
+  width: min(100%, 620px);
+  aspect-ratio: 616 / 594;
+  position: relative;
+  margin-inline: auto;
+
+  svg {
+    display: block;
+    width: 100%;
+    height: 100%;
+    overflow: visible;
+  }
+
+  .gauge_track,
+  .gauge_value {
+    fill: none;
+    stroke-width: 64;
+    stroke-linecap: round;
+  }
+
+  .gauge_track {
+    stroke: var(--gauge-track);
+  }
+
+  .gauge_value {
+    stroke: var(--gauge-active);
+    transition: stroke-dasharray 650ms ease;
+  }
+
+  .gauge_number {
+    position: absolute;
+    inset: 0;
+    display: grid;
+    place-items: center;
+    color: var(--gauge-text);
+    font-size: clamp(5rem, 25vw, 214px);
+    font-weight: 700;
+    line-height: 1;
+    transform: translateY(4%);
+    font-variant-numeric: tabular-nums;
+    pointer-events: none;
+  }
+
+  &.is-almost-full {
+    --gauge-active: #d64545;
+  }
+
+  &.is-filling-up {
+    --gauge-active: #e68132;
+  }
+
+  &.is-half-full {
+    --gauge-active: #e5ad32;
+  }
+
+  &.is-low-occupancy {
+    --gauge-active: #2e9d68;
+  }
+
+  &.is-nearly-empty {
+    --gauge-active: #4292d2;
+  }
+}
