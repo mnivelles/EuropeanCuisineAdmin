@@ -207,7 +207,11 @@ async function cancelWorkshop(workshop) {
       await fillTable(currentPage);
     }
   } catch (error) {
-    alert("Error cancelling workshop. Checked if workshop has reservations.");
+    ModalUtils.alert({
+      title: "Cancellation error",
+      message: `Workshop **${workshop.name}** can not be cancelled. Check if there are any reservations in this workshop.`,
+      isDanger: true,
+    });
     console.error(error);
   }
 }

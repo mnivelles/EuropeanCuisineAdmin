@@ -180,7 +180,7 @@ async function deleteCategory(category) {
     ModalUtils.alert({
       title: "Deletion error",
       message:
-        "Category can not be deleted. Check to see if there are any workshops in this category.",
+        "Category can not be deleted. Check if there are any workshops in this category.",
       isDanger: true,
     });
   }
