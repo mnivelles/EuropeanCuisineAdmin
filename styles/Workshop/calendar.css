@@ -589,8 +589,8 @@
     align-items: center;
     justify-content: center;
 
-    width: 2.5rem;
-    height: 2.5rem;
+    width: 2rem;
+    height: 2rem;
 
     &:last-child {
       border-left: 1px solid var(--bulma-grey-lighter);
@@ -606,7 +606,7 @@
   }
 
   .es-icon {
-    font-size: 2rem;
+    font-size: 1.75rem;
     font-weight: 500;
     color: var(--bulma-primary);
   }
