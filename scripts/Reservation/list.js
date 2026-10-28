@@ -128,40 +128,22 @@ const reservationColumns = [
   TableUtils.timeColumn(),
   TableUtils.textColumn("userName"),
   TableUtils.statusColumn("status"),
-  reservationActionsColumn(),
+  TableUtils.actionsColumn(getEditActions),
 ];
 
 function createTrFromReservation(reservation) {
   return TableUtils.createTrFromColumns(reservation, reservationColumns);
 }
 
-
-function reservationActionsColumn() {
-  return (reservation) => {
-    const td = document.createElement("td");
-
-    const buttons = document.createElement("p");
-    buttons.className = "bulma-buttons";
-
-    const editButton = document.createElement("button");
-    editButton.type = "button";
-    editButton.className =
-      "bulma-button bulma-is-primary";
-
-    const editIcon = document.createElement("span");
-    editIcon.className = "es-icon es-icon-edit bulma-icon";
-
-    editButton.appendChild(editIcon);
-
-    editButton.addEventListener("click", () => {
-      console.log("Modifier la réservation :", reservation);
-    });
-
-    buttons.appendChild(editButton);
-    td.appendChild(buttons);
-
-    return td;
-  };
+function getEditActions(reservation) {
+  return [
+    {
+      type: "edit",
+      onClick: (reservation) => {
+        window.location.href = Routes.reservations.edit(reservation.id);
+      },
+    },
+  ];
 }
 
 

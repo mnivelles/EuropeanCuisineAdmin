@@ -21,6 +21,9 @@ Components.addBreadcrumbIn(document.getElementById("mainBreadcrumb"), [
 
 const form = document.getElementById("editForm");
 const editButton = document.getElementById("editButton");
+const reservationListButton = document.getElementById("reservationListButton");
+const deleteButton = document.getElementById("deleteButton");
+const attendeesCount = document.getElementById("attendeesCount");
 const pictureInput = form.elements.picture;
 const picturePreview = document.getElementById("picturePreview");
 const pictureLabel = document.querySelector(
@@ -272,6 +275,24 @@ document
   .addEventListener("click", clearFormError);
 
 editButton.addEventListener("click", submitForm);
+reservationListButton.addEventListener("click", () => {
+  window.location.href = Routes.workshops.reservations(workshopID);
+});
+deleteButton.addEventListener("click", cancelWorkshop);
+
+async function cancelWorkshop() {
+  if (!confirm("Cancel this workshop?")) {
+    return;
+  }
+
+  try {
+    await new WorkshopAPIClient().cancelWorkshop(workshopID);
+    window.location.href = Routes.workshops.list;
+  } catch (error) {
+    console.error(error);
+    showFormError(error.message || "Failed to cancel workshop.");
+  }
+}
 
 async function submitForm(event) {
   event.preventDefault();
@@ -602,6 +623,8 @@ function getTimePart(value) {
 }
 
 function fillForm(workshop) {
+  attendeesCount.textContent = `Number of attendees: ${workshop.bookedCapacity ?? 0}`;
+
   form.elements.name.value = workshop.name ?? "";
   form.elements.location.value = workshop.location ?? "";
   form.elements.category.value =
