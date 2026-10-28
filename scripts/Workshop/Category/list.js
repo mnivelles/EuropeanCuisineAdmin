@@ -3,6 +3,7 @@ import Routes, { SEGMENTS } from "/scripts/Common/Routes.js";
 import { WorkshopCategoryAPIClient } from "/scripts/APIClient/WorkshopCategoryAPIClient.js";
 import { TableUtils } from "/scripts/Common/TableUtils.js";
 import { Components } from "/scripts/Common/Components.js";
+import { ModalUtils } from "/scripts/Common/ModalUtils.js";
 
 Header.render();
 
@@ -160,18 +161,27 @@ function getCategoryActions(category) {
 }
 
 async function deleteCategory(category) {
-  if (!confirm("Delete this category?")) {
-    return;
-  }
-
   try {
-    await new WorkshopCategoryAPIClient().deleteCategory(category.id);
-    await fillTable(currentPage);
+    const confirmed = await ModalUtils.confirm({
+      title: "Delete category",
+      message: `Do you really want to delete category: **${category.name}**?`,
+      confirmLabel: "Delete",
+      cancelLabel: "Cancel",
+      isDanger: true,
+    });
+
+    if (confirmed) {
+      await new WorkshopCategoryAPIClient().deleteCategory(category.id);
+      await fillTable(currentPage);
+    }
   } catch (error) {
     console.error(error);
 
-    alert(
-      "Category can not be deleted. Check to see if there are any workshops in this category.",
-    );
+    ModalUtils.alert({
+      title: "Deletion error",
+      message:
+        "Category can not be deleted. Check to see if there are any workshops in this category.",
+      isDanger: true,
+    });
   }
 }

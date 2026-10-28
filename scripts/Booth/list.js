@@ -3,6 +3,7 @@ import Routes from "/scripts/Common/Routes.js";
 import { BoothAPIClient } from "/scripts/APIClient/BoothAPIClient.js";
 import { TableUtils } from "/scripts/Common/TableUtils.js";
 import { Components } from "/scripts/Common/Components.js";
+import { ModalUtils } from "/scripts/Common/ModalUtils.js";
 
 Header.render();
 
@@ -170,21 +171,37 @@ function getBoothActions(booth) {
 
 async function enableBooth(booth) {
   try {
-    await new BoothAPIClient().enableBooth(booth.id);
-    await fillTable(currentPage);
+    const confirmed = await ModalUtils.confirm({
+      title: "Reactivate booth",
+      message: `Do you really want to enable booth: **${booth.name}**?`,
+      confirmLabel: "Yes",
+      cancelLabel: "No",
+      isDanger: false,
+    });
+
+    if (confirmed) {
+      await new BoothAPIClient().enableBooth(booth.id);
+      await fillTable(currentPage);
+    }
   } catch (error) {
     console.error(error);
   }
 }
 
 async function disableBooth(booth) {
-  if (!confirm("Disable this booth?")) {
-    return;
-  }
-
   try {
-    await new BoothAPIClient().disableBooth(booth.id);
-    await fillTable(currentPage);
+    const confirmed = await ModalUtils.confirm({
+      title: "Disable booth",
+      message: `Do you really want to disable booth: **${booth.name}**?`,
+      confirmLabel: "Disable",
+      cancelLabel: "Cancel",
+      isDanger: true,
+    });
+
+    if (confirmed) {
+      await new BoothAPIClient().disableBooth(booth.id);
+      await fillTable(currentPage);
+    }
   } catch (error) {
     console.error(error);
   }

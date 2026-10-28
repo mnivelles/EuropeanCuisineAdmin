@@ -1,4 +1,3 @@
-
 import { Header } from "/scripts/Common/Header.js";
 import { WorkshopAPIClient } from "/scripts/APIClient/WorkshopAPIClient.js";
 import { CategoryAPIClient } from "/scripts/APIClient/CategoryAPIClient.js";
@@ -7,6 +6,7 @@ import { TimeForm } from "/scripts/Common/TimeForm.js";
 import { MODEL_CONSTRAINT } from "/scripts/Common/Constraints.js";
 import Routes from "/scripts/Common/Routes.js";
 import { Components } from "/scripts/Common/Components.js";
+import { ModalUtils } from "/scripts/Common/ModalUtils.js";
 
 Header.render();
 
@@ -281,13 +281,19 @@ reservationListButton.addEventListener("click", () => {
 deleteButton.addEventListener("click", cancelWorkshop);
 
 async function cancelWorkshop() {
-  if (!confirm("Cancel this workshop?")) {
-    return;
-  }
-
   try {
-    await new WorkshopAPIClient().cancelWorkshop(workshopID);
-    window.location.href = Routes.workshops.list;
+    const confirmed = await ModalUtils.confirm({
+      title: "Cancel workshop",
+      message: `Do you really want to cancel this workshop?`,
+      confirmLabel: "Yes",
+      cancelLabel: "No",
+      isDanger: true,
+    });
+
+    if (confirmed) {
+      await new WorkshopAPIClient().cancelWorkshop(workshopID);
+      window.location.href = Routes.workshops.list;
+    }
   } catch (error) {
     console.error(error);
     showFormError(error.message || "Failed to cancel workshop.");
@@ -414,7 +420,6 @@ function validatePicture() {
 
   return !message;
 }
-
 
 function getTextError({ name, label }) {
   const value = form.elements[name].value.trim();

@@ -3,6 +3,7 @@ import { WorkshopAPIClient } from "/scripts/APIClient/WorkshopAPIClient.js";
 import { TableUtils } from "/scripts/Common/TableUtils.js";
 import { Components } from "/scripts/Common/Components.js";
 import Routes, { SEGMENTS } from "/scripts/Common/Routes.js";
+import { ModalUtils } from "/scripts/Common/ModalUtils.js";
 
 Header.render();
 
@@ -174,23 +175,39 @@ function getWorkshopActions(workshop) {
 
 async function publishWorkshop(workshop) {
   try {
-    await new WorkshopAPIClient().publishWorkshop(workshop.id);
-    await fillTable(currentPage);
+    const confirmed = await ModalUtils.confirm({
+      title: "Publish workshop",
+      message: `Do you really want to publish workshop: **${workshop.name}**?`,
+      confirmLabel: "Yes",
+      cancelLabel: "No",
+      isDanger: false,
+    });
+
+    if (confirmed) {
+      await new WorkshopAPIClient().publishWorkshop(workshop.id);
+      await fillTable(currentPage);
+    }
   } catch (error) {
     console.error(error);
   }
 }
 
 async function cancelWorkshop(workshop) {
-  if (!confirm("Cancel this workshop?")) {
-    return;
-  }
-
   try {
-    await new WorkshopAPIClient().cancelWorkshop(workshop.id);
-    await fillTable(currentPage);
+    const confirmed = await ModalUtils.confirm({
+      title: "Cancel workshop",
+      message: `Do you really want to cancel workshop: **${workshop.name}**?`,
+      confirmLabel: "Yes",
+      cancelLabel: "No",
+      isDanger: true,
+    });
+
+    if (confirmed) {
+      await new WorkshopAPIClient().cancelWorkshop(workshop.id);
+      await fillTable(currentPage);
+    }
   } catch (error) {
-    alert("Error cancelling workshop. Checked if workshop has reservations.")
+    alert("Error cancelling workshop. Checked if workshop has reservations.");
     console.error(error);
   }
 }

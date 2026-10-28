@@ -7,6 +7,7 @@ import { TimeForm } from "/scripts/Common/TimeForm.js";
 import { MODEL_CONSTRAINT } from "/scripts/Common/Constraints.js";
 import Routes from "/scripts/Common/Routes.js";
 import { Components } from "/scripts/Common/Components.js";
+import { ModalUtils } from "/scripts/Common/ModalUtils.js";
 
 Header.render();
 
@@ -509,7 +510,15 @@ async function disableBooth(event) {
     return;
   }
 
-  if (!confirm("Disable this booth?")) {
+  const confirmed = await ModalUtils.confirm({
+    title: "Disable booth",
+    message: `Do you really want to disable this booth?`,
+    confirmLabel: "Disable",
+    cancelLabel: "Cancel",
+    isDanger: true,
+  });
+
+  if (!confirmed) {
     return;
   }
 

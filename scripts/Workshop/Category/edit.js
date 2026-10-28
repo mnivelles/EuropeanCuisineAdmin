@@ -3,6 +3,7 @@ import { WorkshopCategoryAPIClient } from "/scripts/APIClient/WorkshopCategoryAP
 import { MODEL_CONSTRAINT } from "/scripts/Common/Constraints.js";
 import Routes from "/scripts/Common/Routes.js";
 import { Components } from "/scripts/Common/Components.js";
+import { ModalUtils } from "/scripts/Common/ModalUtils.js";
 
 Header.render();
 
@@ -233,7 +234,15 @@ async function deleteCategory(event) {
     return;
   }
 
-  if (!confirm("Delete this category?")) {
+  const confirmed = await ModalUtils.confirm({
+    title: "Delete category",
+    message: `Do you really want to delete this category? This operation can't be undone.`,
+    confirmLabel: "Delete",
+    cancelLabel: "Cancel",
+    isDanger: true,
+  });
+
+  if (!confirmed) {
     return;
   }
 
