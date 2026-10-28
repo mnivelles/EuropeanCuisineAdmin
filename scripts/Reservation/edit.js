@@ -1,4 +1,3 @@
-
 import { Header } from "/scripts/Common/Header.js";
 import { Components } from "/scripts/Common/Components.js";
 import Routes from "/scripts/Common/Routes.js";
@@ -54,17 +53,16 @@ async function loadReservation() {
   }
 
   try {
-    const reservation = await new ReservationAPIClient()
-      .fetchReservation(reservationID);
+    const reservation = await new ReservationAPIClient().fetchReservation(
+      reservationID,
+    );
 
     statusSelect.value = reservation.status;
 
     workshopName.textContent = reservation.workshop.name;
     workshopCategory.textContent = reservation.workshop.category;
     workshopDate.textContent = reservation.workshop.date;
-    workshopTime.textContent =
-      `${reservation.workshop.startTime} - ${reservation.workshop.endTime}`;
-
+    workshopTime.textContent = `${reservation.workshop.startTime} - ${reservation.workshop.endTime}`
     userName.textContent = reservation.user.name;
     userEmail.textContent = reservation.user.email;
   } catch (error) {

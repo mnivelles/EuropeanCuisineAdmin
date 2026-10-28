@@ -1,0 +1,42 @@
+.formInfos {
+    display: flex;
+    flex-direction: column;
+    align-items: flex-start;
+    gap: 1rem;
+    width: 100%;
+
+    padding-top: 1rem;
+    padding-bottom: 1.5rem;
+}
+
+.reservationDetails {
+  display: flex;
+  flex-direction: column;
+  align-items: flex-start;
+  gap: 0.75rem;
+  width: 100%;
+
+  .reservationDetails_label {
+    font-size: 1.125rem;
+    font-weight: 600;
+  }
+
+  .reservationDetails_row {
+    display: flex;
+    align-items: flex-start;
+    justify-content: space-between;
+    width: 100%;
+
+    .row_label {
+      font-size: 1rem;
+      font-weight: 600;
+    }
+
+    .row_content {
+      font-size: 1rem;
+      font-weight: 400;
+      color: var(--bulma-grey);
+      text-align: right;
+    }
+  }
+}

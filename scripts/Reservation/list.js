@@ -2,6 +2,7 @@ import { Header } from "/scripts/Common/Header.js";
 import { ReservationAPIClient } from "/scripts/APIClient/ReservationAPIClient.js";
 import { TableUtils } from "/scripts/Common/TableUtils.js";
 import { Components } from "/scripts/Common/Components.js";
+import Routes, { SEGMENTS } from "/scripts/Common/Routes.js";
 
 Header.render();
 
@@ -38,7 +39,7 @@ const footerSummary = section.querySelector(".table_footer .footer_summary");
 const pagination = section.querySelector(".table_footer .bulma-pagination");
 
 const defaultSort = sortSelect.value;
-const defaultFilter = filterSelect.value;
+const defaultFilter = "all";
 
 addThead(tableHeaders);
 
@@ -139,13 +140,12 @@ function getEditActions(reservation) {
   return [
     {
       type: "edit",
-      onClick: (reservation) => {
+      onClick: () => {
         window.location.href = Routes.reservations.edit(reservation.id);
       },
     },
   ];
 }
-
 
 function clearTableFooter() {
   footerSummary.textContent = "";

@@ -50,6 +50,7 @@ const footerSummary = section.querySelector(".table_footer .footer_summary");
 const pagination = section.querySelector(".table_footer .bulma-pagination");
 
 const defaultSort = sortSelect.value;
+const defaultSearch = "";
 
 addThead(tableHeaders);
 
@@ -64,13 +65,13 @@ searchInput.addEventListener("keydown", (event) => {
 });
 
 function applyFilters() {
-  appliedFilters = { sort: sortSelect.value, filter: filterSelect.value };
+  appliedFilters = { query: searchInput.value.trim(), sort: sortSelect.value };
   fillTable(1);
 }
 
 function reset() {
+  searchInput.value = defaultSearch;
   sortSelect.value = defaultSort;
-  filterSelect.value = defaultFilter;
 
   applyFilters();
 }
@@ -189,6 +190,7 @@ async function cancelWorkshop(workshop) {
     await new WorkshopAPIClient().cancelWorkshop(workshop.id);
     await fillTable(currentPage);
   } catch (error) {
+    alert("Error cancelling workshop. Checked if workshop has reservations.")
     console.error(error);
   }
 }
