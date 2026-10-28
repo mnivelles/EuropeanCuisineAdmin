@@ -2,7 +2,7 @@ import { Header } from "/scripts/Common/Header.js";
 import { WorkshopAPIClient } from "/scripts/APIClient/WorkshopAPIClient.js";
 import { CalendarUtils } from "/scripts/Common/CalendarUtils.js";
 import { Components } from "/scripts/Common/Components.js";
-import Routes, { SEGMENTS } from "/scripts/Common/Routes.js";
+import { SEGMENTS } from "/scripts/Common/Routes.js";
 
 Header.render();
 

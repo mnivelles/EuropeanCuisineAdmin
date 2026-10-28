@@ -3,6 +3,7 @@ import { Components } from "/scripts/Common/Components.js";
 import Routes, { SEGMENTS } from "/scripts/Common/Routes.js";
 import { UserAPIClient } from "/scripts/APIClient/UserAPIClient.js";
 import { TableUtils } from "/scripts/Common/TableUtils.js";
+import { ModalUtils } from "/scripts/Common/ModalUtils.js";
 
 Header.render();
 
@@ -210,21 +211,37 @@ function getUserActions(user) {
 
 async function enableUser(user) {
   try {
-    await new UserAPIClient().enableUser(user.id);
-    await fillTable(currentPage);
+    const confirmed = await ModalUtils.confirm({
+      title: "Reactivate user",
+      message: `Do you really want to enable user: **${user.name}**?`,
+      confirmLabel: "Yes",
+      cancelLabel: "No",
+      isDanger: false,
+    });
+
+    if (confirmed) {
+      await new UserAPIClient().enableUser(user.id);
+      await fillTable(currentPage);
+    }
   } catch (error) {
     console.error(error);
   }
 }
 
 async function disableUser(user) {
-  if (!confirm("Disable this user?")) {
-    return;
-  }
-
   try {
-    await new UserAPIClient().disableUser(user.id);
-    await fillTable(currentPage);
+    const confirmed = await ModalUtils.confirm({
+      title: "Disable user",
+      message: `Do you really want to disable user: **${user.name}**?`,
+      confirmLabel: "Disable",
+      cancelLabel: "Cancel",
+      isDanger: true,
+    });
+
+    if (confirmed) {
+      await new UserAPIClient().disableUser(user.id);
+      await fillTable(currentPage);
+    }
   } catch (error) {
     console.error(error);
   }

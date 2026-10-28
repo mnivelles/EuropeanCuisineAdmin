@@ -4,6 +4,7 @@ import { SEGMENTS } from "/scripts/Common/Routes.js";
 import { TableUtils } from "/scripts/Common/TableUtils.js";
 import { TileUtils } from "/scripts/Common/TileUtils.js";
 import { UserAPIClient } from "/scripts/APIClient/UserAPIClient.js";
+import { ModalUtils } from "/scripts/Common/ModalUtils.js";
 
 Header.render();
 
@@ -161,8 +162,18 @@ function createSelectOption(value, label) {
 
 async function enableUser(user) {
   try {
-    await new UserAPIClient().enableUser(user.id);
-    await fillTable(currentPage);
+    const confirmed = await ModalUtils.confirm({
+      title: "Reactivate user",
+      message: `Do you really want to enable user: **${user.name}**?`,
+      confirmLabel: "Yes",
+      cancelLabel: "No",
+      isDanger: false,
+    });
+
+    if (confirmed) {
+      await new UserAPIClient().enableUser(user.id);
+      await fillTable(currentPage);
+    }
   } catch (error) {
     console.error(error);
   }
