@@ -46,7 +46,13 @@ async function fillCalendar(page = 1) {
 
   const fromHour = 8; // 8 AM
   const toHour = 19; // 7 PM
-  CalendarUtils.createCalendarIn(container, fromHour, toHour, calendar.items);
+  CalendarUtils.createCalendarIn(
+    container,
+    fromHour,
+    toHour,
+    calendar.items,
+    calendar.legends,
+  );
 
   updateRangeTitle(calendar);
   updateButtonsState(calendar);

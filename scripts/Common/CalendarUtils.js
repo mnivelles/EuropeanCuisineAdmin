@@ -3,7 +3,7 @@ import Routes from "/scripts/Common/Routes.js";
 export class CalendarUtils {
   constructor() {}
 
-  static createCalendarIn(container, from, to, items) {
+  static createCalendarIn(container, from, to, items, categoryLegends) {
     container.innerHTML = "";
 
     const count = to - from;
@@ -13,10 +13,12 @@ export class CalendarUtils {
     const grid = CalendarUtils.#createLineGrid(count, items.length);
     const timeline = CalendarUtils.#createTimeline(from, to);
     const days = CalendarUtils.#createDays(items);
+    const legends = CalendarUtils.#createCategoryLegend(categoryLegends);
 
     calendar.appendChild(grid);
     calendar.appendChild(timeline);
     calendar.appendChild(days);
+    calendar.appendChild(legends);
 
     container.appendChild(calendar);
   }
@@ -139,6 +141,34 @@ export class CalendarUtils {
     numberElement.classList.add("number");
     numberElement.textContent = date;
     container.appendChild(numberElement);
+
+    return container;
+  }
+
+  static #createCategoryLegend(legends) {
+    const container = document.createElement("div");
+    container.className = "legends";
+
+    const elements = legends.map(CalendarUtils.#createCategoryLegendElement);
+
+    container.replaceChildren(...elements);
+
+    return container;
+  }
+
+  static #createCategoryLegendElement(legend) {
+    const container = document.createElement("div");
+    container.className = "legend";
+    container.classList.add(legend.theme);
+
+    const indicator = document.createElement("div");
+    indicator.className = "indicator";
+    container.appendChild(indicator);
+
+    const label = document.createElement("div");
+    label.className = "label";
+    label.textContent = legend.category;
+    container.appendChild(label);
 
     return container;
   }
