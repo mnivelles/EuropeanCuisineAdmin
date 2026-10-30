@@ -18,7 +18,6 @@ const section = document.getElementById("mainTableSection");
 const toolbar = section.querySelector(".table_toolbar");
 const applyButton = toolbar.querySelector(".bulma-button.apply");
 const resetButton = toolbar.querySelector(".bulma-button.reset");
-const sortSelect = toolbar.querySelector(".sortSelect");
 const filterSelect = toolbar.querySelector(".filterSelect");
 
 const thead = document.querySelector("#mainDataTable thead");
@@ -26,7 +25,6 @@ const tbody = document.querySelector("#mainDataTable tbody");
 const footerSummary = section.querySelector(".table_footer .footer_summary");
 const pagination = section.querySelector(".table_footer .bulma-pagination");
 
-const defaultSort = sortSelect.value;
 const defaultFilter = filterSelect.value;
 
 function getWorkshopID() {
@@ -45,7 +43,6 @@ const workshopID = getWorkshopID();
 addThead(tableHeaders);
 
 let appliedFilters = {
-  sort: defaultSort,
   filter: defaultFilter,
 };
 
@@ -54,7 +51,6 @@ resetButton.addEventListener("click", reset);
 
 function applyFilters() {
   appliedFilters = {
-    sort: sortSelect.value,
     filter: filterSelect.value,
   };
 
@@ -62,7 +58,6 @@ function applyFilters() {
 }
 
 function reset() {
-  sortSelect.value = defaultSort;
   filterSelect.value = defaultFilter;
 
   applyFilters();
