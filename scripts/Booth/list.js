@@ -24,7 +24,7 @@ const tableHeaders = [
   "Actions",
 ];
 
-const itemsPerPage = 5;
+const itemsPerPage = 10;
 const COLUMN_COUNT = tableHeaders.length;
 
 const section = document.getElementById("mainTableSection");

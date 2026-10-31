@@ -15,7 +15,7 @@ Components.addBreadcrumbIn(document.getElementById("mainBreadcrumb"), [
   },
 ]);
 
-const itemsPerPage = 3;
+const itemsPerPage = 15;
 
 const mainTabView = document.getElementById("mainTabView");
 const selectedSegment = "tiles";
