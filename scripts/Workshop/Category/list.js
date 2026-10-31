@@ -28,7 +28,7 @@ Components.addSegmentedControlIn(
 
 const tableHeaders = ["Name", "Number of workshops", "Actions"];
 
-const itemsPerPage = 2;
+const itemsPerPage = 10;
 const COLUMN_COUNT = tableHeaders.length;
 
 const section = document.getElementById("mainTableSection");
@@ -90,6 +90,10 @@ async function fillTable(page = 1) {
       page,
       per: itemsPerPage,
     });
+
+    if (result.items.length === 0 && page > 1) {
+      return fillTable(page - 1);
+    }
 
     addCategoriesToTbody(result.items);
 
