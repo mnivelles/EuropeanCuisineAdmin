@@ -46,13 +46,19 @@ export class BoothAPIClient {
   }
 
   async fetchBoothCountryList() {
-    const path = "booth-countries";
+    if (!TokenCookie.has()) {
+      throw Error("User is not authenticated");
+    }
+
+    const token = TokenCookie.get();
+    const path = "admin/booth-countries";
 
     const client = new BaseAPIClient();
 
     const data = await client.perform({
       path,
       method: HTTPMethod.GET,
+      authenticationToken: token,
     });
 
     return data;
