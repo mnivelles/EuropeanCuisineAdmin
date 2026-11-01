@@ -23,7 +23,7 @@ const tableHeaders = [
   "Actions",
 ];
 
-const itemsPerPage = 5;
+const itemsPerPage = 10;
 const COLUMN_COUNT = tableHeaders.length;
 
 const section = document.getElementById("mainTableSection");
@@ -32,18 +32,22 @@ const applyButton = toolbar.querySelector(".bulma-button.apply");
 const resetButton = toolbar.querySelector(".bulma-button.reset");
 const searchInput = toolbar.querySelector(".bulma-input.search");
 const sortSelect = toolbar.querySelector(".sortSelect");
-const filterSelect = toolbar.querySelector(".filterSelect");
+const statusFilterSelect = toolbar.querySelector(".statusFilterSelect");
 const thead = document.querySelector("#mainDataTable thead");
 const tbody = document.querySelector("#mainDataTable tbody");
 const footerSummary = section.querySelector(".table_footer .footer_summary");
 const pagination = section.querySelector(".table_footer .bulma-pagination");
 
 const defaultSort = sortSelect.value;
-const defaultFilter = "all";
+const defaultStatusFilter = "all";
 
 addThead(tableHeaders);
 
-let appliedFilters = { query: "", sort: defaultSort, filter: defaultFilter };
+let appliedFilters = {
+  query: "",
+  sort: defaultSort,
+  status: defaultStatusFilter,
+};
 
 applyButton.addEventListener("click", applyFilters);
 resetButton.addEventListener("click", reset);
@@ -54,14 +58,18 @@ searchInput.addEventListener("keydown", (event) => {
 });
 
 function applyFilters() {
-  appliedFilters = { query: searchInput.value.trim(), sort: sortSelect.value, filter: filterSelect.value };
+  appliedFilters = {
+    query: searchInput.value.trim(),
+    sort: sortSelect.value,
+    status: statusFilterSelect.value,
+  };
   fillTable();
 }
 
 function reset() {
   searchInput.value = "";
   sortSelect.value = defaultSort;
-  filterSelect.value = defaultFilter;
+  statusFilterSelect.value = defaultStatusFilter;
 
   applyFilters();
 }

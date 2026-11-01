@@ -7,7 +7,7 @@ export class ReservationAPIClient {
   async fetchReservationList({
     query = "",
     sort = "name",
-    filter = "status",
+    status = "all",
     page = 1,
     per = 10,
   }) {
@@ -16,8 +16,9 @@ export class ReservationAPIClient {
 
       return [];
     }
+    const updatedStatus = status == "all" ? "" : status;
     const token = TokenCookie.get();
-    const path = `admin/reservations?query=${query.trim()}&sort=${sort}&filter=${filter}&page=${page}&per=${per}`;
+    const path = `admin/reservations?query=${query.trim()}&sort=${sort}&status=${updatedStatus}&page=${page}&per=${per}`;
 
     const client = new BaseAPIClient();
 
@@ -47,41 +48,41 @@ export class ReservationAPIClient {
   }
 
   async fetchReservation(id) {
-  if (!TokenCookie.has()) {
-    throw new Error("Authentication required");
+    if (!TokenCookie.has()) {
+      throw new Error("Authentication required");
+    }
+
+    const client = new BaseAPIClient();
+
+    return await client.perform({
+      path: `admin/reservations/${encodeURIComponent(id)}`,
+      method: HTTPMethod.GET,
+      authenticationToken: TokenCookie.get(),
+    });
   }
 
-  const client = new BaseAPIClient();
+  async updateReservationStatus(id, status) {
+    if (!TokenCookie.has()) {
+      throw new Error("Authentication required");
+    }
 
-  return await client.perform({
-    path: `admin/reservations/${encodeURIComponent(id)}`,
-    method: HTTPMethod.GET,
-    authenticationToken: TokenCookie.get(),
-  });
-}
+    const client = new BaseAPIClient();
 
-async updateReservationStatus(id, status) {
-  if (!TokenCookie.has()) {
-    throw new Error("Authentication required");
+    return await client.perform({
+      path: `admin/reservations/${encodeURIComponent(id)}`,
+      method: HTTPMethod.PATCH,
+      authenticationToken: TokenCookie.get(),
+      body: { status },
+      headers: {
+        "Content-Type": "application/json",
+      },
+    });
   }
-
-  const client = new BaseAPIClient();
-
-  return await client.perform({
-    path: `admin/reservations/${encodeURIComponent(id)}`,
-    method: HTTPMethod.PATCH,
-    authenticationToken: TokenCookie.get(),
-    body: { status },
-    headers: {
-      "Content-Type": "application/json",
-    },
-  });
-}
 
   async fetchWorkshopReservationList({
     workshopID,
     sort = "userName",
-    filter = "status",
+    status = "all",
     page = 1,
     per = 5,
   }) {
@@ -97,9 +98,9 @@ async updateReservationStatus(id, status) {
       };
     }
 
+    const updatedStatus = status == "all" ? "" : status;
     const token = TokenCookie.get();
-
-    const path = `admin/workshops/${encodeURIComponent(workshopID)}/reservations?sort=${encodeURIComponent(sort)}&filter=${encodeURIComponent(filter)}&page=${page}&per=${per}`;
+    const path = `admin/workshops/${encodeURIComponent(workshopID)}/reservations?sort=${sort}&status=${updatedStatus}&page=${page}&per=${per}`;
 
     const client = new BaseAPIClient();
 
@@ -113,8 +114,7 @@ async updateReservationStatus(id, status) {
     const perPage = data.metadata.per;
     const currentPage = data.metadata.page;
     const totalPages = Math.ceil(total / perPage);
-    const startOfPage =
-      total === 0 ? 0 : (currentPage - 1) * perPage + 1;
+    const startOfPage = total === 0 ? 0 : (currentPage - 1) * perPage + 1;
     const endOfPage = Math.min(currentPage * perPage, total);
 
     return {
@@ -126,5 +126,4 @@ async updateReservationStatus(id, status) {
       endOfPage,
     };
   }
-
 }

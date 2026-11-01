@@ -11,21 +11,21 @@ const tableHeaders = ["", "User Name", "Status", "Actions"];
 
 let currentPage = 1;
 
-const itemsPerPage = 5;
+const itemsPerPage = 10;
 const COLUMN_COUNT = tableHeaders.length;
 
 const section = document.getElementById("mainTableSection");
 const toolbar = section.querySelector(".table_toolbar");
 const applyButton = toolbar.querySelector(".bulma-button.apply");
 const resetButton = toolbar.querySelector(".bulma-button.reset");
-const filterSelect = toolbar.querySelector(".filterSelect");
+const statusFilterSelect = toolbar.querySelector(".statusFilterSelect");
 
 const thead = document.querySelector("#mainDataTable thead");
 const tbody = document.querySelector("#mainDataTable tbody");
 const footerSummary = section.querySelector(".table_footer .footer_summary");
 const pagination = section.querySelector(".table_footer .bulma-pagination");
 
-const defaultFilter = filterSelect.value;
+const defaultStatusFilter = statusFilterSelect.value;
 
 function getWorkshopID() {
   const params = new URLSearchParams(window.location.search);
@@ -43,7 +43,7 @@ const workshopID = getWorkshopID();
 addThead(tableHeaders);
 
 let appliedFilters = {
-  filter: defaultFilter,
+  status: defaultStatusFilter,
 };
 
 applyButton.addEventListener("click", applyFilters);
@@ -51,14 +51,14 @@ resetButton.addEventListener("click", reset);
 
 function applyFilters() {
   appliedFilters = {
-    filter: filterSelect.value,
+    status: statusFilterSelect.value,
   };
 
   fillTable(1);
 }
 
 function reset() {
-  filterSelect.value = defaultFilter;
+  statusFilterSelect.value = defaultStatusFilter;
 
   applyFilters();
 }
