@@ -306,6 +306,7 @@ async function submitForm(event) {
   if (isSubmitting || !validateForm()) return;
 
   isSubmitting = true;
+  clearFormSuccess();
   updateButton.classList.add("bulma-is-loading");
   toggleUpdateButtonDisabled();
 
@@ -313,12 +314,14 @@ async function submitForm(event) {
     const body = buildFormData();
     const client = new WorkshopAPIClient();
 
-    await client.updateWorkshop(workshopID, body);
+    const updatedWorkshop = await client.updateWorkshop(workshopID, body);
 
-    window.location.href = Routes.workshops.list;
+    clearFormError();
+    fillForm(updatedWorkshop);
+    showFormSuccess("Workshop updated successfully");
   } catch (error) {
-    showFormError(error.message);
-
+    showFormError(error.message || "Failed to update workshop.");
+  } finally {
     isSubmitting = false;
     updateButton.classList.remove("bulma-is-loading");
     toggleUpdateButtonDisabled();
@@ -557,7 +560,13 @@ function validateForm() {
 }
 
 function toggleUpdateButtonDisabled() {
-  updateButton.disabled = isSubmitting || !isFormValid();
+  const categorySelect = document.getElementById("field_category");
+
+  updateButton.disabled =
+    isSubmitting ||
+    !categorySelect ||
+    !categorySelect.value ||
+    !isFormValid();
 }
 
 function setupFormValidation() {
@@ -664,6 +673,28 @@ function fillForm(workshop) {
     pictureLabel.classList.remove("hasPicture");
   }
 }
+
+function showFormSuccess(message) {
+  const box = document.getElementById("formSuccess");
+  const container = box.querySelector(".messages");
+
+  container.textContent = message;
+  box.hidden = false;
+
+  box.scrollIntoView({ behavior: "smooth", block: "start" });
+
+  setTimeout(clearFormSuccess, 5000);
+}
+
+function clearFormSuccess() {
+  document.getElementById("formSuccess").hidden = true;
+}
+
+document
+  .getElementById("formSuccess")
+  .querySelector(".bulma-delete")
+  .addEventListener("click", clearFormSuccess);
+
 
 async function loadWorkshop() {
   if (!workshopID) {

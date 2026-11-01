@@ -18,18 +18,21 @@
           <div id="mainBreadcrumb"></div>
         </div>
 
-        <div
-          id="formError"
-          class="bulma-notification bulma-is-danger bulma-is-light"
-          hidden
-        >
+        <div id="formError" class="bulma-notification bulma-is-danger" hidden>
+          <button class="bulma-delete" type="button"></button>
+          <div class="messages"></div>
+        </div>
+
+        <div id="formSuccess" class="bulma-notification bulma-is-success" hidden>
           <button class="bulma-delete" type="button"></button>
           <div class="messages"></div>
         </div>
 
         <form action="" id="editForm" class="island_form">
           <div>
-            <p id="attendeesCount" class="bulma-has-text-weight-semibold">Number of attendees:</p>
+            <p id="attendeesCount" class="bulma-has-text-weight-semibold">
+              Number of attendees:
+            </p>
           </div>
           <div>
             <img id="picturePreview" alt="Preview" />
