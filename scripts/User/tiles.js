@@ -178,3 +178,25 @@ async function enableUser(user) {
     console.error(error);
   }
 }
+
+async function renderGuardedUsersTable() {
+  let main = document.querySelector(".page_main");
+  let emptyContent = document.getElementById("emptyContent");
+  main.hidden = true;
+  try {
+    const result = await new UserAPIClient().canManageUsers();
+    const can = result.canManageUsers;
+
+    console.log(can);
+
+    if (can) {
+      main.style.display = "block";
+      emptyContent.style.display = "none";
+    } else {
+      main.style.display = "none";
+      emptyContent.style.display = "flex";
+    }
+  } catch {}
+}
+
+renderGuardedUsersTable();

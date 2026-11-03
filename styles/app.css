@@ -568,3 +568,26 @@ body {
     --gauge-active: #4292d2;
   }
 }
+
+#emptyContent {
+  width: 16rem;
+  padding: 1rem;
+  border-radius: var(--bulma-radius);
+  background-color: white;
+
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  gap: 0.5rem;
+
+  margin: 0 auto;
+
+  .es-icon {
+    font-size: 4rem;
+    color: var(--bulma-danger-25);
+  }
+
+  p {
+    text-align: center;
+  }
+}

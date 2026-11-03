@@ -159,4 +159,23 @@ export class UserAPIClient {
       authenticationToken: token,
     });
   }
+
+  async canManageUsers() {
+    if (!TokenCookie.has()) {
+      throw Error("User is not authenticated");
+    }
+
+    const token = TokenCookie.get();
+    const path = "admin/users/can-manage-users";
+
+    const client = new BaseAPIClient();
+
+    const data = await client.perform({
+      path,
+      method: HTTPMethod.GET,
+      authenticationToken: token,
+    });
+
+    return data;
+  }
 }
