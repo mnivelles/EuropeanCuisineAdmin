@@ -162,10 +162,7 @@ function validateForm() {
 }
 
 function toggleCreateButtonDisabled() {
-  const categorySelect = document.getElementById("field_category");
-
-  createButton.disabled =
-    isSubmitting || !categorySelect || !categorySelect.value || !isFormValid();
+  createButton.disabled = isSubmitting || !isFormValid();
 }
 
 function setupFormValidation() {
@@ -183,8 +180,7 @@ function setupFormValidation() {
       }
     });
 
-    form.elements.category.addEventListener("change", () => {
-      validateCategory();
+    nameElement.addEventListener("change", () => {
       toggleCreateButtonDisabled();
     });
   }
